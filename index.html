@@ -6227,46 +6227,45 @@ function saveAllAttendance() {
             document.getElementById('gradesModal').style.display = 'none';
         }
 
-        // Save Grades
-        function saveGrades(event) {
-            event.preventDefault();
-            
-            const studentId = document.getElementById('gradesStudent').value;
-            const level = document.getElementById('gradesLevel').value;
-            const group = document.getElementById('gradesGroup').value;
-            const course = document.getElementById('gradesClass').value;
-            const semester = document.getElementById('gradesSemesterSelect').value;
-            
-            const gradesData = {
-                studentId: studentId,
-                studentName: allStudents.find(s => s.id === studentId)?.name || 'نەناسراو',
-                level: level,
-                group: group,
-                course: course,
-                semester: semester,
-                daily: parseInt(document.getElementById('dailyGrade').value) || 0,
-                absence: parseInt(document.getElementById('absenceGrade').value) || 0,
-                theory: parseInt(document.getElementById('theoryGrade').value) || 0,
-                practical: parseInt(document.getElementById('practicalGrade').value) || 0,
-                teacher: currentUser.name,
-                timestamp: new Date().toISOString()
-            };
-            
-            // کۆکردنەوەی نمرەکان
-            gradesData.totalSemester = gradesData.daily + gradesData.absence + gradesData.theory + gradesData.practical;
-            
-            // پاشەکەوتکردن لە فایەربەیس
-            const gradesPath = `grades/${level}${group}/${course}/${semester}/${studentId}`;
-            database.ref(gradesPath).set(gradesData)
-                .then(() => {
-                    showGradesSuccess('نمرەکان بە سەرکەوتووی پاشەکەوتکران! ✅');
-                    closeGradesModal();
-                    loadGradesStudents();
-                })
-                .catch((error) => {
-                    alert('هەڵە لە پاشەکەوتکردن: ' + error.message);
-                });
-        }
+        // Save Grades - چاککراوە
+function saveGrades(event) {
+    event.preventDefault();
+    
+    const studentId = document.getElementById('gradesStudent').value;
+    const level = document.getElementById('gradesLevel').value;
+    const group = document.getElementById('gradesGroup').value;
+    const course = document.getElementById('gradesClass').value;
+    const semester = document.getElementById('gradesSemesterSelect').value;
+    
+    const gradesData = {
+        studentId: studentId,
+        studentName: allStudents.find(s => s.id === studentId)?.name || 'نەناسراو',
+        level: level,
+        group: group,
+        course: course,
+        semester: semester,
+        daily: parseInt(document.getElementById('dailyGrade').value) || 0,
+        absence: parseInt(document.getElementById('absenceGrade').value) || 0,
+        theory: parseInt(document.getElementById('theoryGrade').value) || 0,
+        practical: parseInt(document.getElementById('practicalGrade').value) || 0,
+        teacher: currentUser.name,
+        timestamp: new Date().toISOString()
+    };
+    
+    gradesData.totalSemester = gradesData.daily + gradesData.absence + gradesData.theory + gradesData.practical;
+    
+    // گۆڕانکاری لە ڕێڕەوی پاشەکەوتکردن - ناوی مامۆستا زیادکرا
+    const gradesPath = `grades/${level}${group}/${course}/${currentUser.name}/${semester}/${studentId}`;
+    database.ref(gradesPath).set(gradesData)
+        .then(() => {
+            showGradesSuccess('نمرەکان بە سەرکەوتوویی پاشەکەوتکران! ✅');
+            closeGradesModal();
+            loadGradesStudents();
+        })
+        .catch((error) => {
+            alert('هەڵە لە پاشەکەوتکردن: ' + error.message);
+        });
+}
 
         // Show Grades Success
         function showGradesSuccess(message) {
@@ -6289,59 +6288,61 @@ function saveAllAttendance() {
             document.getElementById('allGradesModal').style.display = 'none';
         }
 
-        // Load All Grades
-        function loadAllGrades() {
-            const level = document.getElementById('allGradesLevel').value;
-            const group = document.getElementById('allGradesGroup').value;
-            const semester = document.getElementById('allGradesSemester').value;
-            const course = document.getElementById('allGradesClass').value;
-            
-            const container = document.getElementById('allGradesTableBody');
-            container.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px; color: var(--gray);"><i class="fas fa-spinner fa-spin"></i> کەمێک چاوەڕێ بکە...</td></tr>';
-            
-            // بارکردنی نمرەکان لە فایەربەیس
-            const gradesRef = database.ref('grades');
-            gradesRef.once('value', (snapshot) => {
-                const gradesData = snapshot.val();
-                const grades = [];
+       // Load All Grades - چاککراوە
+function loadAllGrades() {
+    const level = document.getElementById('allGradesLevel').value;
+    const group = document.getElementById('allGradesGroup').value;
+    const semester = document.getElementById('allGradesSemester').value;
+    const course = document.getElementById('allGradesClass').value;
+    
+    const container = document.getElementById('allGradesTableBody');
+    container.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px; color: var(--gray);"><i class="fas fa-spinner fa-spin"></i> کەمێک چاوەڕێ بکە...</td></tr>';
+    
+    const gradesRef = database.ref('grades');
+    gradesRef.once('value', (snapshot) => {
+        const gradesData = snapshot.val();
+        const grades = [];
+        
+        if (gradesData) {
+            Object.keys(gradesData).forEach(levelGroup => {
+                const currentLevel = levelGroup.substring(0, levelGroup.length - 1);
+                const currentGroup = levelGroup.substring(levelGroup.length - 1);
                 
-                if (gradesData) {
-                    // گەڕان بەناو هەموو نمرەکاندا
-                    Object.keys(gradesData).forEach(levelGroup => {
-                        const currentLevel = levelGroup.substring(0, levelGroup.length - 1);
-                        const currentGroup = levelGroup.substring(levelGroup.length - 1);
+                if (level && currentLevel !== level) return;
+                if (group && currentGroup !== group) return;
+                
+                const levelGroupData = gradesData[levelGroup];
+                
+                Object.keys(levelGroupData).forEach(courseName => {
+                    if (course && courseName !== course) return;
+                    
+                    const courseData = levelGroupData[courseName];
+                    
+                    // گەڕان بەناو مامۆستایاندا
+                    Object.keys(courseData).forEach(teacherName => {
+                        // تەنها نمرەکانی مامۆستای ئێستا نیشان بدە
+                        if (teacherName !== currentUser.name) return;
                         
-                        // فلتەرکردن بەپێی ئاست
-                        if (level && currentLevel !== level) return;
-                        // فلتەرکردن بەپێی گرووپ
-                        if (group && currentGroup !== group) return;
+                        const teacherData = courseData[teacherName];
                         
-                        const levelGroupData = gradesData[levelGroup];
-                        
-                        Object.keys(levelGroupData).forEach(courseName => {
-                            // فلتەرکردن بەپێی وانە
-                            if (course && courseName !== course) return;
+                        Object.keys(teacherData).forEach(semesterNum => {
+                            if (semester && semesterNum !== semester) return;
                             
-                            const courseData = levelGroupData[courseName];
+                            const semesterData = teacherData[semesterNum];
                             
-                            Object.keys(courseData).forEach(semesterNum => {
-                                // فلتەرکردن بەپێی وەرز
-                                if (semester && semesterNum !== semester) return;
-                                
-                                const semesterData = courseData[semesterNum];
-                                
-                                Object.keys(semesterData).forEach(studentId => {
-                                    const grade = semesterData[studentId];
-                                    grades.push(grade);
-                                });
+                            Object.keys(semesterData).forEach(studentId => {
+                                const grade = semesterData[studentId];
+                                grades.push(grade);
                             });
                         });
                     });
-                }
-                
-                displayAllGrades(grades);
+                });
             });
         }
+        
+        displayAllGrades(grades);
+    });
+}
 
         // Display All Grades
         function displayAllGrades(grades) {
@@ -6378,135 +6379,150 @@ function saveAllAttendance() {
             });
         }
 
-        // Edit Grade
-        function editGrade(studentId, level, group, course, semester) {
-            const gradesPath = `grades/${level}${group}/${course}/${semester}/${studentId}`;
-            database.ref(gradesPath).once('value', (snapshot) => {
-                const grade = snapshot.val();
-                if (!grade) return;
-                
-                document.getElementById('gradesModalTitle').textContent = `دەستکاریکردنی نمرە بۆ ${grade.studentName}`;
-                document.getElementById('editGradesId').value = studentId;
-                document.getElementById('gradesStudent').innerHTML = `<option value="${studentId}">${grade.studentName}</option>`;
-                document.getElementById('dailyGrade').value = grade.daily;
-                document.getElementById('absenceGrade').value = grade.absence;
-                document.getElementById('theoryGrade').value = grade.theory;
-                document.getElementById('practicalGrade').value = grade.practical;
-                document.getElementById('gradesSemesterSelect').value = grade.semester;
-                
-                document.getElementById('gradesModal').style.display = 'flex';
+      
+
+       // Edit Grade - چاککراوە
+function editGrade(studentId, level, group, course, semester) {
+    // ڕێڕەوی نوێ کە ناوی مامۆستا لەخۆدەگرێت
+    const gradesPath = `grades/${level}${group}/${course}/${currentUser.name}/${semester}/${studentId}`;
+    database.ref(gradesPath).once('value', (snapshot) => {
+        const grade = snapshot.val();
+        if (!grade) return;
+        
+        document.getElementById('gradesModalTitle').textContent = `دەستکاریکردنی نمرە بە ${grade.studentName}`;
+        document.getElementById('editGradesId').value = studentId;
+        document.getElementById('gradesStudent').innerHTML = `<option value="${studentId}">${grade.studentName}</option>`;
+        document.getElementById('dailyGrade').value = grade.daily;
+        document.getElementById('absenceGrade').value = grade.absence;
+        document.getElementById('theoryGrade').value = grade.theory;
+        document.getElementById('practicalGrade').value = grade.practical;
+        document.getElementById('gradesSemesterSelect').value = grade.semester;
+        
+        document.getElementById('gradesModal').style.display = 'flex';
+    });
+}
+
+// Delete Grade - چاککراوە
+function deleteGrade(studentId, level, group, course, semester) {
+    if (confirm('دڵنیای لە سڕینەوەی ئەم نمرەیە؟')) {
+        const gradesPath = `grades/${level}${group}/${course}/${currentUser.name}/${semester}/${studentId}`;
+        database.ref(gradesPath).remove()
+            .then(() => {
+                showGradesSuccess('نمرە بە سەرکەوتوویی سڕایەوە! ✅');
+                loadAllGrades();
+            })
+            .catch((error) => {
+                alert('هەڵە لە سڕینەوە: ' + error.message);
             });
-        }
+    }
+}
 
-        // Delete Grade
-        function deleteGrade(studentId, level, group, course, semester) {
-            if (confirm('دڵنیای لە سڕینەوەی ئەم نمرەیە؟')) {
-                const gradesPath = `grades/${level}${group}/${course}/${semester}/${studentId}`;
-                database.ref(gradesPath).remove()
-                    .then(() => {
-                        showGradesSuccess('نمرە بە سەرکەوتووی سڕایەوە! ✅');
-                        loadAllGrades();
-                    })
-                    .catch((error) => {
-                        alert('هەڵە لە سڕینەوە: ' + error.message);
-                    });
-            }
-        }
-
-        // View Student Grades
-        function viewStudentGrades(studentId, studentName) {
-            const level = document.getElementById('gradesLevel').value;
-            const group = document.getElementById('gradesGroup').value;
-            const course = document.getElementById('gradesClass').value;
-            
-            if (!level || !group || !course) {
-                alert('تکایە ئاست و گرووپ و وانە هەڵبژێرە!');
-                return;
-            }
-            
-            const container = document.getElementById('attendanceDetailsContent');
-            container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">کەمێك چاوەڕێ بکە...</p>';
-            
-            document.getElementById('attendanceDetailsTitle').textContent = `نمرەکانی ${studentName}`;
-            
-            // بارکردنی نمرەکانی خوێندکار
-            const gradesRef = database.ref('grades');
-            gradesRef.once('value', (snapshot) => {
-                const gradesData = snapshot.val();
-                const studentGrades = [];
+      // View Student Grades - چاککراوە
+function viewStudentGrades(studentId, studentName) {
+    const level = document.getElementById('gradesLevel').value;
+    const group = document.getElementById('gradesGroup').value;
+    const course = document.getElementById('gradesClass').value;
+    
+    if (!level || !group || !course) {
+        alert('تکایە ئاست و گروپ و وانە هەڵبژێرە!');
+        return;
+    }
+    
+    const container = document.getElementById('attendanceDetailsContent');
+    container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">کەمێک چاوەڕێ بکە...</p>';
+    
+    document.getElementById('attendanceDetailsTitle').textContent = `نمرەکانی ${studentName}`;
+    
+    const gradesRef = database.ref('grades');
+    gradesRef.once('value', (snapshot) => {
+        const gradesData = snapshot.val();
+        const studentGrades = [];
+        
+        if (gradesData) {
+            Object.keys(gradesData).forEach(levelGroup => {
+                if (levelGroup !== level + group) return;
                 
-                if (gradesData) {
-                    Object.keys(gradesData).forEach(levelGroup => {
-                        if (levelGroup !== level + group) return;
+                const levelGroupData = gradesData[levelGroup];
+                Object.keys(levelGroupData).forEach(courseName => {
+                    const courseData = levelGroupData[courseName];
+                    
+                    // گەڕان بەناو مامۆستایاندا
+                    Object.keys(courseData).forEach(teacherName => {
+                        // تەنها نمرەکانی مامۆستای ئێستا نیشان بدە
+                        if (teacherName !== currentUser.name) return;
                         
-                        const levelGroupData = gradesData[levelGroup];
-                        Object.keys(levelGroupData).forEach(courseName => {
-                            const courseData = levelGroupData[courseName];
-                            Object.keys(courseData).forEach(semester => {
-                                const semesterData = courseData[semester];
-                                if (semesterData[studentId]) {
-                                    studentGrades.push({
-                                        course: courseName,
-                                        semester: semester,
-                                        ...semesterData[studentId]
-                                    });
-                                }
-                            });
+                        const teacherData = courseData[teacherName];
+                        
+                        Object.keys(teacherData).forEach(semester => {
+                            const semesterData = teacherData[semester];
+                            if (semesterData[studentId]) {
+                                studentGrades.push({
+                                    course: courseName,
+                                    semester: semester,
+                                    teacher: teacherName,
+                                    ...semesterData[studentId]
+                                });
+                            }
                         });
                     });
-                }
-                
-                container.innerHTML = '';
-                
-                if (studentGrades.length === 0) {
-                    container.innerHTML = '<p class="no-results">هیچ نمرەیەک بۆ ئەم خوێندکارە نییە</p>';
-                    return;
-                }
-                
-                // دروستکردنی لیستی نمرەکان
-                studentGrades.forEach(grade => {
-                    const totalGrade = grade.daily + grade.absence + grade.theory + grade.practical;
-                    
-                    const gradeCard = document.createElement('div');
-                    gradeCard.className = 'schedule-card';
-                    gradeCard.innerHTML = `
-                        <div class="schedule-card-header">
-                            <span>📚 ${grade.course}</span>
-                            <span>وەرزی ${grade.semester}</span>
-                        </div>
-                        <div class="schedule-card-body">
-                            <div class="schedule-info-row">
-                                <span>نمرەی ڕۆژانە:</span>
-                                <span>${grade.daily}</span>
-                            </div>
-                            <div class="schedule-info-row">
-                                <span>نمرەی غیابات:</span>
-                                <span>${grade.absence}</span>
-                            </div>
-                            <div class="schedule-info-row">
-                                <span>نمرەی تیۆری:</span>
-                                <span>${grade.theory}</span>
-                            </div>
-                            <div class="schedule-info-row">
-                                <span>نمرەی پراکتیک:</span>
-                                <span>${grade.practical}</span>
-                            </div>
-                            <div class="schedule-info-row">
-                                <span><strong>کۆی وەرز:</strong></span>
-                                <span><strong>${grade.totalSemester}</strong></span>
-                            </div>
-                            <div class="schedule-info-row">
-                                <span><strong>کۆی گشتی:</strong></span>
-                                <span><strong style="color: var(--primary);">${totalGrade}</strong></span>
-                            </div>
-                        </div>
-                    `;
-                    container.appendChild(gradeCard);
                 });
             });
-            
-            document.getElementById('attendanceDetailsModal').style.display = 'flex';
         }
+        
+        container.innerHTML = '';
+        
+        if (studentGrades.length === 0) {
+            container.innerHTML = '<p class="no-results">هیچ نمرەیەک بە ئەم خوێندکارە نییە</p>';
+            return;
+        }
+        
+        studentGrades.forEach(grade => {
+            const totalGrade = grade.daily + grade.absence + grade.theory + grade.practical;
+            
+            const gradeCard = document.createElement('div');
+            gradeCard.className = 'schedule-card';
+            gradeCard.innerHTML = `
+                <div class="schedule-card-header">
+                    <span>📚 ${grade.course}</span>
+                    <span>وەرزی ${grade.semester}</span>
+                </div>
+                <div class="schedule-card-body">
+                    <div class="schedule-info-row">
+                        <span>مامۆستا:</span>
+                        <span>${grade.teacher}</span>
+                    </div>
+                    <div class="schedule-info-row">
+                        <span>نمرەی ڕۆژانە:</span>
+                        <span>${grade.daily}</span>
+                    </div>
+                    <div class="schedule-info-row">
+                        <span>نمرەی غیابات:</span>
+                        <span>${grade.absence}</span>
+                    </div>
+                    <div class="schedule-info-row">
+                        <span>نمرەی تیۆری:</span>
+                        <span>${grade.theory}</span>
+                    </div>
+                    <div class="schedule-info-row">
+                        <span>نمرەی پراکتیک:</span>
+                        <span>${grade.practical}</span>
+                    </div>
+                    <div class="schedule-info-row">
+                        <span><strong>کۆی وەرز:</strong></span>
+                        <span><strong>${grade.totalSemester}</strong></span>
+                    </div>
+                    <div class="schedule-info-row">
+                        <span><strong>کۆی گشتی:</strong></span>
+                        <span><strong style="color: var(--primary);">${totalGrade}</strong></span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(gradeCard);
+        });
+    });
+    
+    document.getElementById('attendanceDetailsModal').style.display = 'flex';
+}
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
