@@ -3953,56 +3953,83 @@
             }
         }
 
-        // Save All Attendance
-        function saveAllAttendance() {
-            const level = document.getElementById('attendanceLevel').value;
-            const group = document.getElementById('attendanceGroup').value;
-            const course = document.getElementById('attendanceClass').value;
-            const time = document.getElementById('attendanceTime').value;
-            const date = document.getElementById('attendanceDate').value;
+     // Save All Attendance
+function saveAllAttendance() {
+    const level = document.getElementById('attendanceLevel').value;
+    const group = document.getElementById('attendanceGroup').value;
+    const course = document.getElementById('attendanceClass').value;
+    const time = document.getElementById('attendanceTime').value;
+    const date = document.getElementById('attendanceDate').value;
+    
+    if (!level || !group || !course || !time || !date) {
+        alert('تکایە هەموو خانەکان پڕ بکەرەوە!');
+        return;
+    }
+    
+    const attendanceData = {};
+    
+    // Collect all attendance data
+    document.querySelectorAll('.attendance-card').forEach(card => {
+        const studentId = card.querySelector('input[type="radio"]').name.split('_')[1];
+        const status = card.querySelector('input[type="radio"]:checked');
+        
+        if (status) {
+            attendanceData[studentId] = status.value;
+        }
+    });
+    
+    if (Object.keys(attendanceData).length === 0) {
+        alert('تکایە کەمێک خوێندکار دیاری بکە!');
+        return;
+    }
+    
+    // Save to Firebase
+    const attendancePath = `attendance/${date}/${level}${group}/${course}/${time}/${currentUser.name}`;
+    database.ref(attendancePath).set(attendanceData)
+        .then(() => {
+            showTeacherSuccess('تۆماری ئامادەبوون بە سەرکەوتووی پاشەکەوتکرا! ✅');
             
-            if (!level || !group || !course || !time || !date) {
-                alert('تکایە هەموو خانەکان پڕ بکەرەوە!');
-                return;
-            }
-            
-            const attendanceData = {};
-            
-            // Collect all attendance data
-            document.querySelectorAll('.attendance-card').forEach(card => {
-                const studentId = card.querySelector('input[type="radio"]').name.split('_')[1];
-                const status = card.querySelector('input[type="radio"]:checked');
-                
-                if (status) {
-                    attendanceData[studentId] = status.value;
-                }
+            // Calculate present and absent counts
+            let presentCount = 0;
+            let absentCount = 0;
+            Object.values(attendanceData).forEach(status => {
+                if (status === 'present') presentCount++;
+                if (status === 'absent') absentCount++;
             });
             
-            if (Object.keys(attendanceData).length === 0) {
-                alert('تکایە کەمێک خوێندکار دیاری بکە!');
-                return;
-            }
+            // Add notification for admin and staff with COMPLETE information
+            const notification = {
+                message: `مامۆستایی ${currentUser.name} تۆماری ئامادەبوونی پاشەکەوت کرد بۆ ئاستی ${level} گروپی ${group} - وانە ${course} - کات ${time} - ${date} (ئامادە: ${presentCount}, غیاب: ${absentCount})`,
+                type: 'success',
+                timestamp: new Date().toISOString(),
+                read: false,
+                // Additional details for easier filtering/display
+                details: {
+                    teacher: currentUser.name,
+                    level: level,
+                    group: group,
+                    course: course,
+                    time: time,
+                    date: date,
+                    presentCount: presentCount,
+                    absentCount: absentCount,
+                    totalCount: presentCount + absentCount
+                }
+            };
             
-            // Save to Firebase
-            const attendancePath = `attendance/${date}/${level}${group}/${course}/${time}/${currentUser.name}`;
-            database.ref(attendancePath).set(attendanceData)
+            // Save notification to Firebase
+            database.ref('notifications').push(notification)
                 .then(() => {
-                    showTeacherSuccess('تۆماری ئامادەبوون بە سەرکەوتووی پاشەکەوتکرا! ✅');
-                    
-                    // Add notification for admin
-                    const notification = {
-                        message: `مامۆستای ${currentUser.name} تۆماری ئامادەبوونی پاشەکەوت کرد بۆ ئاستی ${level} گرووپی ${group} - وانە ${course} - کات ${time} - ${date}`,
-                        type: 'info',
-                        timestamp: new Date().toISOString(),
-                        read: false
-                    };
-                    database.ref('notifications').push(notification);
+                    console.log('Notification added successfully');
                 })
                 .catch((error) => {
-                    alert('هەڵە لە پاشەکەوتکردن: ' + error.message);
+                    console.error('Error adding notification:', error);
                 });
-        }
-
+        })
+        .catch((error) => {
+            alert('هەڵە لە پاشەکەوتکردن: ' + error.message);
+        });
+}
         // Load Admin Attendance
         function loadAdminAttendance() {
             const date = document.getElementById('adminAttendanceDate').value;
