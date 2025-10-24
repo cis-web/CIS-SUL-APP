@@ -541,7 +541,7 @@
             cursor: pointer;
         }
         
-        .checkbox-item input[type="checkbox"] {
+        .checkbox-item input[type="radio"] {
             width: 18px;
             height: 18px;
             cursor: pointer;
@@ -895,7 +895,7 @@
         /* وردەکاری ئامادەبوون - Detailed Attendance Styles */
         .attendance-details-stats {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             margin-bottom: 20px;
         }
@@ -919,10 +919,6 @@
 
         .detail-stat-total {
             border-left-color: var(--primary);
-        }
-
-        .detail-stat-not-marked {
-            border-left-color: var(--warning);
         }
 
         .detail-stat-number {
@@ -992,12 +988,6 @@
             background: rgba(220, 53, 69, 0.1);
             color: var(--danger);
             border: 1px solid rgba(220, 53, 69, 0.3);
-        }
-
-        .status-not-marked {
-            background: rgba(255, 193, 7, 0.1);
-            color: var(--warning);
-            border: 1px solid rgba(255, 193, 7, 0.3);
         }
         
         /* چاپکردنی وردەکاری ئامادەبوون */
@@ -1435,7 +1425,7 @@
                 font-size: 16px;
             }
             
-            .checkbox-item input[type="checkbox"] {
+            .checkbox-item input[type="radio"] {
                 width: 24px;
                 height: 24px;
             }
@@ -1917,9 +1907,6 @@
             <button class="action-btn" onclick="switchTeacherSection('attendance')" style="background: var(--success);">
                 <i class="fas fa-clipboard-check"></i> غیابات
             </button>
-            <button class="action-btn" onclick="switchTeacherSection('grades')" style="background: var(--warning); color: var(--dark);">
-                <i class="fas fa-chart-bar"></i> نمرەکان
-            </button>
             <button class="action-btn" onclick="switchTeacherSection('profile')" style="background: var(--info);">
                 <i class="fas fa-user"></i> پڕۆفایل
             </button>
@@ -2027,56 +2014,6 @@
                     </button>
                     <button class="print-btn" onclick="printTeacherAttendanceDetails()" style="background: #4CAF50;">
                         <i class="fas fa-print"></i> چاپی وردەکاری ئامادەبوون
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Teacher Grades Section -->
-        <div class="action-section" id="teacherGradesSection" style="display: none;">
-            <h3><i class="fas fa-chart-bar"></i> سیستەمی نمرەدان</h3>
-            
-            <div class="success-msg" id="gradesSuccessMsg"></div>
-            
-            <div class="filter-container">
-                <select id="gradesLevel" onchange="loadGradesStudents()" class="filter-select">
-                    <option value="">هەڵبژاردنی ئاست...</option>
-                    <option value="1">ئاستی 1</option>
-                    <option value="2">ئاستی 2</option>
-                    <option value="3">ئاستی 3</option>
-                    <option value="4">ئاستی 4</option>
-                    <option value="5">ئاستی 5</option>
-                </select>
-                
-                <select id="gradesGroup" onchange="loadGradesStudents()" class="filter-select">
-                    <option value="">هەڵبژاردنی گرووپ...</option>
-                    <option value="A">گرووپی A</option>
-                    <option value="B">گرووپی B</option>
-                    <option value="C">گرووپی C</option>
-                    <option value="D">گرووپی D</option>
-                    <option value="E">گرووپی E</option>
-                </select>
-
-                <select id="gradesClass" onchange="loadGradesStudents()" class="filter-select">
-                    <option value="">هەڵبژاردنی وانە...</option>
-                </select>
-            </div>
-            
-            <div id="gradesStudentsList">
-                <p style="text-align: center; color: var(--gray); padding: 40px;">تکایە ئاست و گرووپ و وانە هەڵبژێرە</p>
-            </div>
-            
-            <!-- View Grades Section -->
-            <div class="save-attendance-section" id="viewGradesSection" style="display: none;">
-                <div class="search-container">
-                    <button class="details-btn" onclick="openAllGradesModal()">
-                        <i class="fas fa-table"></i> بینینی هەموو نمرەکان
-                    </button>
-                    <button class="export-btn" onclick="exportToExcel('grades')">
-                        <i class="fas fa-file-excel"></i> هەناردەی نمرەکان بۆ Excel
-                    </button>
-                    <button class="print-btn" onclick="printSection('grades')">
-                        <i class="fas fa-print"></i> چاپی نمرەکان
                     </button>
                 </div>
             </div>
@@ -2565,124 +2502,6 @@
         </div>
     </div>
 
-    <!-- Grades Modal -->
-    <div id="gradesModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="gradesModalTitle"><i class="fas fa-plus"></i> زیادکردنی نمرە</h3>
-                <button class="close-btn" onclick="closeGradesModal()">&times;</button>
-            </div>
-            
-            <form onsubmit="saveGrades(event)">
-                <div class="form-group">
-                    <label><i class="fas fa-user-graduate"></i> خوێندکار</label>
-                    <select id="gradesStudent" required>
-                        <option value="">هەڵبژاردن...</option>
-                    </select>
-                </div>
-                
-                <fieldset style="border: 1px solid #e0e0e0; border-radius: 10px; padding: 15px; margin-bottom: 20px;">
-                    <legend style="font-weight: bold; color: var(--dark); padding: 0 10px;">نمرەکان (لە ٢٠)</legend>
-                    
-                    <div class="form-group">
-                        <label>نمرەی ڕۆژانە</label>
-                        <input type="number" id="dailyGrade" min="0" max="5" placeholder="٠ - ٥" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>نمرەی غیابات</label>
-                        <input type="number" id="absenceGrade" min="0" max="5" placeholder="٠ - ٥" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>نمرەی تیۆری</label>
-                        <input type="number" id="theoryGrade" min="0" max="40" placeholder="٠ - ٤٠" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>نمرەی پراکتیک</label>
-                        <input type="number" id="practicalGrade" min="0" max="40" placeholder="٠ - ٤٠" required>
-                    </div>
-                </fieldset>
-                
-                <div class="form-group">
-                    <label><i class="fas fa-calendar-alt"></i> وەرز</label>
-                    <select id="gradesSemesterSelect" required>
-                        <option value="1">وەرزی یەکەم</option>
-                        <option value="2">وەرزی دووەم</option>
-                    </select>
-                </div>
-                
-                <input type="hidden" id="editGradesId">
-                
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-save"></i> پاشەکەوتکردنی نمرەکان
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- All Grades Modal -->
-    <div id="allGradesModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="allGradesModalTitle"><i class="fas fa-table"></i> هەموو نمرەکان</h3>
-                <button class="close-btn" onclick="closeAllGradesModal()">&times;</button>
-            </div>
-            
-            <div class="filter-container">
-                <select id="allGradesLevel" onchange="loadAllGrades()" class="filter-select">
-                    <option value="">هەموو ئاستەکان</option>
-                    <option value="1">ئاستی 1</option>
-                    <option value="2">ئاستی 2</option>
-                    <option value="3">ئاستی 3</option>
-                    <option value="4">ئاستی 4</option>
-                    <option value="5">ئاستی 5</option>
-                </select>
-                
-                <select id="allGradesGroup" onchange="loadAllGrades()" class="filter-select">
-                    <option value="">هەموو گرووپەکان</option>
-                    <option value="A">گرووپی A</option>
-                    <option value="B">گرووپی B</option>
-                    <option value="C">گرووپی C</option>
-                    <option value="D">گرووپی D</option>
-                    <option value="E">گرووپی E</option>
-                </select>
-
-                <select id="allGradesSemester" onchange="loadAllGrades()" class="filter-select">
-                    <option value="">هەموو وەرزەکان</option>
-                    <option value="1">وەرزی یەکەم</option>
-                    <option value="2">وەرزی دووەم</option>
-                </select>
-
-                <select id="allGradesClass" onchange="loadAllGrades()" class="filter-select">
-                    <option value="">هەموو وانەکان</option>
-                </select>
-            </div>
-            
-            <div style="overflow-x: auto; margin-top: 20px;">
-                <table class="schedule-table">
-                    <thead>
-                        <tr>
-                            <th>ناوی خوێندکار</th>
-                            <th>ڕۆژانە</th>
-                            <th>غیابات</th>
-                            <th>تیۆری</th>
-                            <th>پراکتیک</th>
-                            <th>کۆی وەرز</th>
-                            <th>کۆی گشتی</th>
-                            <th>وەرز</th>
-                            <th>کردارەکان</th>
-                        </tr>
-                    </thead>
-                    <tbody id="allGradesTableBody">
-                        <!-- نمرەکان لێرە دەردەکەون -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -2792,32 +2611,6 @@
             }
         }
 
-        // Function to populate course dropdowns for grades
-        function populateCourseDropdownsForGrades() {
-            const gradesClass = document.getElementById('gradesClass');
-            const allGradesClass = document.getElementById('allGradesClass');
-            
-            if (gradesClass) {
-                gradesClass.innerHTML = '<option value="">هەڵبژاردنی وانە...</option>';
-                courses.forEach(course => {
-                    const option = document.createElement('option');
-                    option.value = course;
-                    option.textContent = course;
-                    gradesClass.appendChild(option);
-                });
-            }
-            
-            if (allGradesClass) {
-                allGradesClass.innerHTML = '<option value="">هەموو وانەکان</option>';
-                courses.forEach(course => {
-                    const option = document.createElement('option');
-                    option.value = course;
-                    option.textContent = course;
-                    allGradesClass.appendChild(option);
-                });
-            }
-        }
-
         // Initialize Firebase with initial data
         function initializeData() {
             // Check if teachers data exists, if not create initial data
@@ -2896,7 +2689,6 @@
 
             // Populate course dropdowns
             populateCourseDropdowns();
-            populateCourseDropdownsForGrades();
         }
 
         // Call initialization when the page loads
@@ -3308,7 +3100,6 @@
             
             document.getElementById('teacherScheduleSection').style.display = 'none';
             document.getElementById('teacherAttendanceSection').style.display = 'none';
-            document.getElementById('teacherGradesSection').style.display = 'none';
             document.getElementById('teacherProfileSection').style.display = 'none';
             
             if (section === 'schedule') {
@@ -3318,9 +3109,6 @@
                 document.getElementById('teacherAttendanceSection').style.display = 'block';
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('attendanceDate').value = today;
-            } else if (section === 'grades') {
-                document.getElementById('teacherGradesSection').style.display = 'block';
-                populateCourseDropdownsForGrades();
             } else if (section === 'profile') {
                 document.getElementById('teacherProfileSection').style.display = 'block';
                 loadTeacherProfile();
@@ -3380,7 +3168,6 @@
             loadStudents();
             loadTeachers();
             populateCourseDropdowns();
-            populateCourseDropdownsForGrades();
             loadAdminNotifications(); // Load notifications for admin
         }
 
@@ -3392,7 +3179,6 @@
             updateTeacherScheduleCounts();
             loadTeacherProfile();
             populateCourseDropdowns();
-            populateCourseDropdownsForGrades();
             switchTeacherSection('schedule');
         }
 
@@ -3591,7 +3377,6 @@
                 
                 let presentCount = 0;
                 let absentCount = 0;
-                let notMarkedCount = 0;
                 
                 container.innerHTML = '';
                 
@@ -3612,10 +3397,6 @@
                         <div class="detail-stat-number" id="detailAbsentCount">0</div>
                         <div class="detail-stat-label">غیاب</div>
                     </div>
-                    <div class="detail-stat-card detail-stat-not-marked">
-                        <div class="detail-stat-number" id="detailNotMarkedCount">0</div>
-                        <div class="detail-stat-label">نەنوسراوە</div>
-                    </div>
                     <div class="detail-stat-card detail-stat-total">
                         <div class="detail-stat-number">${studentsInGroup.length}</div>
                         <div class="detail-stat-label">کۆی گشتی</div>
@@ -3634,13 +3415,12 @@
                 listDiv.className = 'student-attendance-list';
                 
                 studentsInGroup.forEach(student => {
-                    const status = attendanceData && attendanceData[student.id] ? attendanceData[student.id] : 'not-marked';
+                    const status = attendanceData && attendanceData[student.id] ? attendanceData[student.id] : 'absent';
                     const item = document.createElement('div');
                     item.className = 'student-attendance-item';
                     
                     if (status === 'present') presentCount++;
-                    else if (status === 'absent') absentCount++;
-                    else notMarkedCount++;
+                    else absentCount++;
                     
                     let statusText = '';
                     let statusClass = '';
@@ -3648,12 +3428,9 @@
                     if (status === 'present') {
                         statusText = 'ئامادە';
                         statusClass = 'status-present';
-                    } else if (status === 'absent') {
+                    } else {
                         statusText = 'غیاب';
                         statusClass = 'status-absent';
-                    } else {
-                        statusText = 'نەنوسراوە';
-                        statusClass = 'status-not-marked';
                     }
                     
                     item.innerHTML = `
@@ -3673,7 +3450,6 @@
                 // Update statistics counts
                 document.getElementById('detailPresentCount').textContent = presentCount;
                 document.getElementById('detailAbsentCount').textContent = absentCount;
-                document.getElementById('detailNotMarkedCount').textContent = notMarkedCount;
             });
             
             document.getElementById('attendanceDetailsModal').style.display = 'flex';
@@ -4096,10 +3872,20 @@
                 
                 // Create student list
                 studentsInGroup.forEach((student) => {
-                    const currentStatus = attendanceData[student.id] || '';
+                    // گۆڕانکاری: Default بۆ غیاب ئەگەر تۆمارێک نییە
+                    const currentStatus = attendanceData[student.id] || 'absent';
                     
                     const card = document.createElement('div');
                     card.className = 'attendance-card';
+                    card.setAttribute('data-student-id', student.id);
+
+                    // زیادکردنی کلاس بەپێی دۆخی ئێستا
+                    if (currentStatus === 'present') {
+                        card.classList.add('present');
+                    } else if (currentStatus === 'absent') {
+                        card.classList.add('absent');
+                    }
+                    
                     card.innerHTML = `
                         <div class="student-info-attendance">
                             <span class="student-name-large">${student.name}</span>
@@ -4122,29 +3908,46 @@
                             </div>
                         </div>
                     `;
+                    
                     container.appendChild(card);
                 });
                 
                 document.getElementById('saveAttendanceSection').style.display = 'block';
-                
-                // Update statistics
                 updateAttendanceStats();
                 
-                // Add event listeners for checkboxes
+                // زیادکردنی Event Listeners
                 container.querySelectorAll('input[type="radio"]').forEach(radio => {
-                    radio.addEventListener('change', updateAttendanceStats);
+                    radio.addEventListener('change', function() {
+                        updateAttendanceStats();
+                        const card = this.closest('.attendance-card');
+                        card.classList.remove('present', 'absent');
+                        
+                        if (this.value === 'present') {
+                            card.classList.add('present');
+                        } else if (this.value === 'absent') {
+                            card.classList.add('absent');
+                        }
+                    });
                 });
             });
         }
 
         // Update Attendance Statistics
         function updateAttendanceStats() {
-            const presentCount = document.querySelectorAll('input[type="radio"]:checked[value="present"]').length;
-            const absentCount = document.querySelectorAll('input[type="radio"]:checked[value="absent"]').length;
+            let presentCount = 0;
+            let absentCount = 0;
             
-            const stats = document.querySelector('.attendance-stats');
-            if (stats) {
-                stats.innerHTML = `
+            document.querySelectorAll('.attendance-card').forEach(card => {
+                const presentRadio = card.querySelector('input[value="present"]');
+                const absentRadio = card.querySelector('input[value="absent"]');
+                
+                if (presentRadio.checked) presentCount++;
+                if (absentRadio.checked) absentCount++;
+            });
+            
+            const statsContainer = document.querySelector('.attendance-stats');
+            if (statsContainer) {
+                statsContainer.innerHTML = `
                     <div class="attendance-stat present-stat">
                         <div style="font-size: 24px; font-weight: bold;">${presentCount}</div>
                         <div>ئامادە</div>
@@ -4157,83 +3960,95 @@
             }
         }
 
-     // Save All Attendance
-function saveAllAttendance() {
-    const level = document.getElementById('attendanceLevel').value;
-    const group = document.getElementById('attendanceGroup').value;
-    const course = document.getElementById('attendanceClass').value;
-    const time = document.getElementById('attendanceTime').value;
-    const date = document.getElementById('attendanceDate').value;
-    
-    if (!level || !group || !course || !time || !date) {
-        alert('تکایە هەموو خانەکان پڕ بکەرەوە!');
-        return;
-    }
-    
-    const attendanceData = {};
-    
-    // Collect all attendance data
-    document.querySelectorAll('.attendance-card').forEach(card => {
-        const studentId = card.querySelector('input[type="radio"]').name.split('_')[1];
-        const status = card.querySelector('input[type="radio"]:checked');
-        
-        if (status) {
-            attendanceData[studentId] = status.value;
-        }
-    });
-    
-    if (Object.keys(attendanceData).length === 0) {
-        alert('تکایە کەمێک خوێندکار دیاری بکە!');
-        return;
-    }
-    
-    // Save to Firebase
-    const attendancePath = `attendance/${date}/${level}${group}/${course}/${time}/${currentUser.name}`;
-    database.ref(attendancePath).set(attendanceData)
-        .then(() => {
-            showTeacherSuccess('تۆماری ئامادەبوون بە سەرکەوتووی پاشەکەوتکرا! ✅');
+        // Save All Attendance
+        function saveAllAttendance() {
+            const level = document.getElementById('attendanceLevel').value;
+            const group = document.getElementById('attendanceGroup').value;
+            const course = document.getElementById('attendanceClass').value;
+            const time = document.getElementById('attendanceTime').value;
+            const date = document.getElementById('attendanceDate').value;
             
-            // Calculate present and absent counts
-            let presentCount = 0;
-            let absentCount = 0;
-            Object.values(attendanceData).forEach(status => {
-                if (status === 'present') presentCount++;
-                if (status === 'absent') absentCount++;
+            if (!level || !group || !course || !time || !date) {
+                alert('تکایە هەموو خانەکان پڕ بکەرەوە!');
+                return;
+            }
+            
+            // چێکەکی نوێ: دڵنیابوون لەوەی هەموو خوێندکاران دیاری کراون
+            const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
+            let allStudentsMarked = true;
+            const unmarkedStudents = [];
+
+            studentsInGroup.forEach(student => {
+                const radioButton = document.querySelector(`input[name="attendance_${student.id}"]:checked`);
+                if (!radioButton) {
+                    allStudentsMarked = false;
+                    unmarkedStudents.push(student.name);
+                }
+            });
+
+            if (!allStudentsMarked) {
+                alert(`تکایە هەموو خوێندکاران دیاری بکە! ئەم خوێندانە دیاری نەکراون: ${unmarkedStudents.join(', ')}`);
+                return;
+            }
+            
+            const attendanceData = {};
+            
+            // کۆکردنەوەی هەموو داتاکانی ئامادەبوون
+            document.querySelectorAll('.attendance-card').forEach(card => {
+                const studentId = card.getAttribute('data-student-id');
+                const status = card.querySelector('input[type="radio"]:checked');
+                
+                if (status) {
+                    attendanceData[studentId] = status.value;
+                }
             });
             
-            // Add notification for admin and staff with COMPLETE information
-            const notification = {
-                message: `مامۆستایی ${currentUser.name} تۆماری ئامادەبوونی پاشەکەوت کرد بۆ ئاستی ${level} گروپی ${group} - وانە ${course} - کات ${time} - ${date} (ئامادە: ${presentCount}, غیاب: ${absentCount})`,
-                type: 'success',
-                timestamp: new Date().toISOString(),
-                read: false,
-                // Additional details for easier filtering/display
-                details: {
-                    teacher: currentUser.name,
-                    level: level,
-                    group: group,
-                    course: course,
-                    time: time,
-                    date: date,
-                    presentCount: presentCount,
-                    absentCount: absentCount,
-                    totalCount: presentCount + absentCount
-                }
-            };
-            
-            // Save notification to Firebase
-            database.ref('notifications').push(notification)
+            // پاشەکەوتکردن بۆ Firebase
+            const attendancePath = `attendance/${date}/${level}${group}/${course}/${time}/${currentUser.name}`;
+            database.ref(attendancePath).set(attendanceData)
                 .then(() => {
-                    console.log('Notification added successfully');
+                    showTeacherSuccess('تۆماری ئامادەبوون بە سەرکەوتووی پاشەکەوتکرا! ✅');
+                    
+                    // ژماردنی ئامادە و غیاب
+                    let presentCount = 0;
+                    let absentCount = 0;
+                    Object.values(attendanceData).forEach(status => {
+                        if (status === 'present') presentCount++;
+                        if (status === 'absent') absentCount++;
+                    });
+                    
+                    // زیادکردنی ئاگادارکردنەوە
+                    const notification = {
+                        message: `مامۆستایی ${currentUser.name} تۆماری ئامادەبوونی پاشەکەوت کرد بۆ ئاستی ${level} گروپی ${group} - وانە ${course} - کات ${time} - ${date} (ئامادە: ${presentCount}, غیاب: ${absentCount})`,
+                        type: 'success',
+                        timestamp: new Date().toISOString(),
+                        read: false,
+                        details: {
+                            teacher: currentUser.name,
+                            level: level,
+                            group: group,
+                            course: course,
+                            time: time,
+                            date: date,
+                            presentCount: presentCount,
+                            absentCount: absentCount,
+                            totalCount: presentCount + absentCount
+                        }
+                    };
+                    
+                    database.ref('notifications').push(notification)
+                        .then(() => {
+                            console.log('Notification added successfully');
+                        })
+                        .catch((error) => {
+                            console.error('Error adding notification:', error);
+                        });
                 })
                 .catch((error) => {
-                    console.error('Error adding notification:', error);
+                    alert('هەڵە لە پاشەکەوتکردن: ' + error.message);
                 });
-        })
-        .catch((error) => {
-            alert('هەڵە لە پاشەکەوتکردن: ' + error.message);
-        });
-}
+        }
+
         // Load Admin Attendance
         function loadAdminAttendance() {
             const date = document.getElementById('adminAttendanceDate').value;
@@ -4463,14 +4278,15 @@ function saveAllAttendance() {
                 const studentsInGroup = allStudents.filter(s => s.level === record.level && s.group === record.group);
                 
                 studentsInGroup.forEach(student => {
-                    const status = record.attendance[student.id] || 'نەنوسراوە';
-                    let statusClass = 'status-not-marked';
+                    // گۆڕانکاری: Default بۆ غیاب
+                    const status = record.attendance[student.id] || 'غیاب';
+                    let statusClass = 'status-absent';
                     let statusText = status;
                     
                     if (status === 'present') {
                         statusClass = 'status-present';
                         statusText = 'ئامادە';
-                    } else if (status === 'absent') {
+                    } else {
                         statusClass = 'status-absent';
                         statusText = 'غیاب';
                     }
@@ -4539,10 +4355,6 @@ function saveAllAttendance() {
                         <div class="detail-stat-number" id="detailAbsentCount">0</div>
                         <div class="detail-stat-label">غیاب</div>
                     </div>
-                    <div class="detail-stat-card detail-stat-not-marked">
-                        <div class="detail-stat-number" id="detailNotMarkedCount">0</div>
-                        <div class="detail-stat-label">نەنوسراوە</div>
-                    </div>
                     <div class="detail-stat-card detail-stat-total">
                         <div class="detail-stat-number">${studentsInGroup.length}</div>
                         <div class="detail-stat-label">کۆی گشتی</div>
@@ -4561,7 +4373,8 @@ function saveAllAttendance() {
                 listDiv.className = 'student-attendance-list';
                 
                 studentsInGroup.forEach(student => {
-                    const status = attendanceData && attendanceData[student.id] ? attendanceData[student.id] : 'not-marked';
+                    // گۆڕانکاری: Default بۆ غیاب
+                    const status = attendanceData && attendanceData[student.id] ? attendanceData[student.id] : 'absent';
                     const item = document.createElement('div');
                     item.className = 'student-attendance-item';
                     
@@ -4571,12 +4384,9 @@ function saveAllAttendance() {
                     if (status === 'present') {
                         statusText = 'ئامادە';
                         statusClass = 'status-present';
-                    } else if (status === 'absent') {
+                    } else {
                         statusText = 'غیاب';
                         statusClass = 'status-absent';
-                    } else {
-                        statusText = 'نەنوسراوە';
-                        statusClass = 'status-not-marked';
                     }
                     
                     item.innerHTML = `
@@ -4595,12 +4405,10 @@ function saveAllAttendance() {
                 
                 // Update statistics counts
                 const presentCount = Object.values(attendanceData || {}).filter(status => status === 'present').length;
-                const absentCount = Object.values(attendanceData || {}).filter(status => status === 'absent').length;
-                const notMarkedCount = studentsInGroup.length - presentCount - absentCount;
+                const absentCount = studentsInGroup.length - presentCount;
                 
                 document.getElementById('detailPresentCount').textContent = presentCount;
                 document.getElementById('detailAbsentCount').textContent = absentCount;
-                document.getElementById('detailNotMarkedCount').textContent = notMarkedCount;
             });
             
             document.getElementById('attendanceDetailsModal').style.display = 'flex';
@@ -4759,11 +4567,11 @@ function saveAllAttendance() {
                     const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
                     
                     const records = studentsInGroup.map(student => {
-                        const status = attendanceData && attendanceData[student.id] ? attendanceData[student.id] : 'نەنوسراوە';
+                        const status = attendanceData && attendanceData[student.id] ? attendanceData[student.id] : 'غیاب';
                         let statusText = status;
                         
                         if (status === 'present') statusText = 'ئامادە';
-                        else if (status === 'absent') statusText = 'غیاب';
+                        else statusText = 'غیاب';
                         
                         return {
                             'کۆد': student.code,
@@ -4842,67 +4650,6 @@ function saveAllAttendance() {
                     }
                     
                     exportDataToExcel(records, `تۆماری_غیابات_${date}.xlsx`);
-                });
-                return;
-            } else if (type === 'grades') {
-                // Get grades data
-                const level = document.getElementById('gradesLevel').value;
-                const group = document.getElementById('gradesGroup').value;
-                const course = document.getElementById('gradesClass').value;
-                
-                if (!level || !group || !course) {
-                    alert('تکایە ئاست و گرووپ و وانە هەڵبژێرە!');
-                    return;
-                }
-                
-                // Load grades data
-                const gradesRef = database.ref('grades');
-                gradesRef.once('value', (snapshot) => {
-                    const gradesData = snapshot.val();
-                    const records = [];
-                    
-                    if (gradesData) {
-                        Object.keys(gradesData).forEach(levelGroup => {
-                            const currentLevel = levelGroup.substring(0, levelGroup.length - 1);
-                            const currentGroup = levelGroup.substring(levelGroup.length - 1);
-                            
-                            // Apply filters
-                            if (level && currentLevel !== level) return;
-                            if (group && currentGroup !== group) return;
-                            
-                            const levelGroupData = gradesData[levelGroup];
-                            
-                            Object.keys(levelGroupData).forEach(courseName => {
-                                // Apply course filter
-                                if (course && courseName !== course) return;
-                                
-                                const courseData = levelGroupData[courseName];
-                                
-                                Object.keys(courseData).forEach(semester => {
-                                    const semesterData = courseData[semester];
-                                    
-                                    Object.keys(semesterData).forEach(studentId => {
-                                        const grade = semesterData[studentId];
-                                        const totalGrade = grade.daily + grade.absence + grade.theory + grade.practical;
-                                        
-                                        records.push({
-                                            'ناوی خوێندکار': grade.studentName,
-                                            'کۆد': studentId,
-                                            'ڕۆژانە': grade.daily,
-                                            'غیابات': grade.absence,
-                                            'تیۆری': grade.theory,
-                                            'پراکتیک': grade.practical,
-                                            'کۆی وەرز': grade.totalSemester,
-                                            'کۆی گشتی': totalGrade,
-                                            'وەرز': 'وەرزی ' + grade.semester
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    }
-                    
-                    exportDataToExcel(records, `نمرەکان_${level}${group}_${course}.xlsx`);
                 });
                 return;
             }
@@ -5167,8 +4914,7 @@ function saveAllAttendance() {
                     const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
                     
                     const presentCount = Object.values(attendanceData || {}).filter(status => status === 'present').length;
-                    const absentCount = Object.values(attendanceData || {}).filter(status => status === 'absent').length;
-                    const notMarkedCount = studentsInGroup.length - presentCount - absentCount;
+                    const absentCount = studentsInGroup.length - presentCount;
                     
                     title = `تۆماری غیابات - ${date}`;
                     content = `
@@ -5192,10 +4938,6 @@ function saveAllAttendance() {
                                     <div>غیاب</div>
                                 </div>
                                 <div class="attendance-print-stat">
-                                    <div style="font-size: 24px; font-weight: bold;">${notMarkedCount}</div>
-                                    <div>نەنوسراوە</div>
-                                </div>
-                                <div class="attendance-print-stat">
                                     <div style="font-size: 24px; font-weight: bold;">${studentsInGroup.length}</div>
                                     <div>کۆی گشتی</div>
                                 </div>
@@ -5212,11 +4954,11 @@ function saveAllAttendance() {
                             </thead>
                             <tbody>
                                 ${studentsInGroup.map(student => {
-                                    const status = attendanceData && attendanceData[student.id] ? attendanceData[student.id] : 'نەنوسراوە';
+                                    const status = attendanceData && attendanceData[student.id] ? attendanceData[student.id] : 'غیاب';
                                     let statusText = status;
                                     
                                     if (status === 'present') statusText = 'ئامادە';
-                                    else if (status === 'absent') statusText = 'غیاب';
+                                    else statusText = 'غیاب';
                                     
                                     return `
                                         <tr>
@@ -5327,101 +5069,6 @@ function saveAllAttendance() {
                                         <td>${record.present}</td>
                                         <td>${record.absent}</td>
                                         <td>${record.total}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    `;
-                    
-                    showPrintPreview(content);
-                });
-                return;
-            } else if (type === 'grades') {
-                // Get grades data
-                const level = document.getElementById('gradesLevel').value;
-                const group = document.getElementById('gradesGroup').value;
-                const course = document.getElementById('gradesClass').value;
-                
-                if (!level || !group || !course) {
-                    alert('تکایە ئاست و گرووپ و وانە هەڵبژێرە!');
-                    return;
-                }
-                
-                // Load grades data
-                const gradesRef = database.ref('grades');
-                gradesRef.once('value', (snapshot) => {
-                    const gradesData = snapshot.val();
-                    const records = [];
-                    
-                    if (gradesData) {
-                        Object.keys(gradesData).forEach(levelGroup => {
-                            const currentLevel = levelGroup.substring(0, levelGroup.length - 1);
-                            const currentGroup = levelGroup.substring(levelGroup.length - 1);
-                            
-                            // Apply filters
-                            if (level && currentLevel !== level) return;
-                            if (group && currentGroup !== group) return;
-                            
-                            const levelGroupData = gradesData[levelGroup];
-                            
-                            Object.keys(levelGroupData).forEach(courseName => {
-                                // Apply course filter
-                                if (course && courseName !== course) return;
-                                
-                                const courseData = levelGroupData[courseName];
-                                
-                                Object.keys(courseData).forEach(semester => {
-                                    const semesterData = courseData[semester];
-                                    
-                                    Object.keys(semesterData).forEach(studentId => {
-                                        const grade = semesterData[studentId];
-                                        const totalGrade = grade.daily + grade.absence + grade.theory + grade.practical;
-                                        
-                                        records.push({
-                                            student: grade.studentName,
-                                            daily: grade.daily,
-                                            absence: grade.absence,
-                                            theory: grade.theory,
-                                            practical: grade.practical,
-                                            totalSemester: grade.totalSemester,
-                                            total: totalGrade,
-                                            semester: 'وەرزی ' + grade.semester
-                                        });
-                                    });
-                                });
-                            });
-                        });
-                    }
-                    
-                    title = `نمرەکان - ئاستی ${level} گرووپی ${group} - ${course}`;
-                    content = `
-                        <div class="attendance-print-header">
-                            <h1 class="attendance-print-title">${title}</h1>
-                        </div>
-                        <table class="attendance-print-list">
-                            <thead>
-                                <tr>
-                                    <th>ناوی خوێندکار</th>
-                                    <th>ڕۆژانە</th>
-                                    <th>غیابات</th>
-                                    <th>تیۆری</th>
-                                    <th>پراکتیک</th>
-                                    <th>کۆی وەرز</th>
-                                    <th>کۆی گشتی</th>
-                                    <th>وەرز</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${records.map(record => `
-                                    <tr>
-                                        <td>${record.student}</td>
-                                        <td>${record.daily}</td>
-                                        <td>${record.absence}</td>
-                                        <td>${record.theory}</td>
-                                        <td>${record.practical}</td>
-                                        <td>${record.totalSemester}</td>
-                                        <td>${record.total}</td>
-                                        <td>${record.semester}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -5559,8 +5206,7 @@ function saveAllAttendance() {
                 const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
                 
                 const presentCount = Object.values(attendanceData || {}).filter(status => status === 'present').length;
-                const absentCount = Object.values(attendanceData || {}).filter(status => status === 'absent').length;
-                const notMarkedCount = studentsInGroup.length - presentCount - absentCount;
+                const absentCount = studentsInGroup.length - presentCount;
                 
                 const title = `وردەکاری ئامادەبوون - ${date}`;
                 const content = `
@@ -5584,10 +5230,6 @@ function saveAllAttendance() {
                                 <div>غیاب</div>
                             </div>
                             <div class="attendance-print-stat">
-                                <div style="font-size: 24px; font-weight: bold;">${notMarkedCount}</div>
-                                <div>نەنوسراوە</div>
-                            </div>
-                            <div class="attendance-print-stat">
                                 <div style="font-size: 24px; font-weight: bold;">${studentsInGroup.length}</div>
                                 <div>کۆی گشتی</div>
                             </div>
@@ -5604,11 +5246,11 @@ function saveAllAttendance() {
                         </thead>
                         <tbody>
                             ${studentsInGroup.map(student => {
-                                const status = attendanceData && attendanceData[student.id] ? attendanceData[student.id] : 'نەنوسراوە';
+                                const status = attendanceData && attendanceData[student.id] ? attendanceData[student.id] : 'غیاب';
                                 let statusText = status;
                                 
                                 if (status === 'present') statusText = 'ئامادە';
-                                else if (status === 'absent') statusText = 'غیاب';
+                                else statusText = 'غیاب';
                                 
                                 return `
                                     <tr>
@@ -5701,8 +5343,7 @@ function saveAllAttendance() {
                         const studentsInGroup = allStudents.filter(s => s.level === record.level && s.group === record.group);
                         
                         const presentCount = Object.values(record.attendance || {}).filter(status => status === 'present').length;
-                        const absentCount = Object.values(record.attendance || {}).filter(status => status === 'absent').length;
-                        const notMarkedCount = studentsInGroup.length - presentCount - absentCount;
+                        const absentCount = studentsInGroup.length - presentCount;
                         
                         content += `
                             <div style="page-break-after: always;">
@@ -5726,10 +5367,6 @@ function saveAllAttendance() {
                                             <div>غیاب</div>
                                         </div>
                                         <div class="attendance-print-stat">
-                                            <div style="font-size: 24px; font-weight: bold;">${notMarkedCount}</div>
-                                            <div>نەنوسراوە</div>
-                                        </div>
-                                        <div class="attendance-print-stat">
                                             <div style="font-size: 24px; font-weight: bold;">${studentsInGroup.length}</div>
                                             <div>کۆی گشتی</div>
                                         </div>
@@ -5746,11 +5383,11 @@ function saveAllAttendance() {
                                     </thead>
                                     <tbody>
                                         ${studentsInGroup.map(student => {
-                                            const status = record.attendance && record.attendance[student.id] ? record.attendance[student.id] : 'نەنوسراوە';
+                                            const status = record.attendance && record.attendance[student.id] ? record.attendance[student.id] : 'غیاب';
                                             let statusText = status;
                                             
                                             if (status === 'present') statusText = 'ئامادە';
-                                            else if (status === 'absent') statusText = 'غیاب';
+                                            else statusText = 'غیاب';
                                             
                                             return `
                                                 <tr>
@@ -5838,8 +5475,7 @@ function saveAllAttendance() {
                         const studentsInGroup = allStudents.filter(s => s.level === record.level && s.group === record.group);
                         
                         const presentCount = Object.values(record.attendance || {}).filter(status => status === 'present').length;
-                        const absentCount = Object.values(record.attendance || {}).filter(status => status === 'absent').length;
-                        const notMarkedCount = studentsInGroup.length - presentCount - absentCount;
+                        const absentCount = studentsInGroup.length - presentCount;
                         
                         content += `
                             <div style="page-break-after: always;">
@@ -5863,10 +5499,6 @@ function saveAllAttendance() {
                                             <div>غیاب</div>
                                         </div>
                                         <div class="attendance-print-stat">
-                                            <div style="font-size: 24px; font-weight: bold;">${notMarkedCount}</div>
-                                            <div>نەنوسراوە</div>
-                                        </div>
-                                        <div class="attendance-print-stat">
                                             <div style="font-size: 24px; font-weight: bold;">${studentsInGroup.length}</div>
                                             <div>کۆی گشتی</div>
                                         </div>
@@ -5883,11 +5515,11 @@ function saveAllAttendance() {
                                     </thead>
                                     <tbody>
                                         ${studentsInGroup.map(student => {
-                                            const status = record.attendance && record.attendance[student.id] ? record.attendance[student.id] : 'نەنوسراوە';
+                                            const status = record.attendance && record.attendance[student.id] ? record.attendance[student.id] : 'غیاب';
                                             let statusText = status;
                                             
                                             if (status === 'present') statusText = 'ئامادە';
-                                            else if (status === 'absent') statusText = 'غیاب';
+                                            else statusText = 'غیاب';
                                             
                                             return `
                                                 <tr>
@@ -6136,393 +5768,11 @@ function saveAllAttendance() {
             document.getElementById('teacherDetailsModal').style.display = 'none';
             document.getElementById('attendanceDetailsModal').style.display = 'none';
             document.getElementById('printPreview').style.display = 'none';
-            document.getElementById('gradesModal').style.display = 'none';
-            document.getElementById('allGradesModal').style.display = 'none';
             
             // Close notification panels
             document.getElementById('adminNotificationPanel').style.display = 'none';
             document.getElementById('staffNotificationPanel').style.display = 'none';
         }
-
-        // ============================
-        // GRADES SYSTEM FUNCTIONS
-        // ============================
-
-        // Load Grades Students
-        function loadGradesStudents() {
-            const level = document.getElementById('gradesLevel').value;
-            const group = document.getElementById('gradesGroup').value;
-            const course = document.getElementById('gradesClass').value;
-            
-            if (!level || !group || !course) {
-                document.getElementById('viewGradesSection').style.display = 'none';
-                document.getElementById('gradesStudentsList').innerHTML = 
-                    '<p style="text-align: center; color: var(--gray); padding: 40px;">تکایە ئاست و گرووپ و وانە هەڵبژێرە</p>';
-                return;
-            }
-            
-            const container = document.getElementById('gradesStudentsList');
-            container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">کەمێك چاوەڕێ بکە...</p>';
-            
-            // فلتەرکردنی خوێندکاران بەپێی ئاست و گرووپ
-            const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
-            
-            container.innerHTML = '';
-            
-            if (studentsInGroup.length === 0) {
-                container.innerHTML = '<p class="no-results">هیچ خوێندکارێک بۆ ئەم گرووپە نییە</p>';
-                document.getElementById('viewGradesSection').style.display = 'none';
-                return;
-            }
-            
-            // دروستکردنی لیستی خوێندکاران
-            studentsInGroup.forEach((student) => {
-                const card = document.createElement('div');
-                card.className = 'attendance-card';
-                card.innerHTML = `
-                    <div class="student-info-attendance">
-                        <span class="student-name-large">${student.name}</span>
-                        <span class="student-details">کۆد: ${student.code} | ${student.institute}</span>
-                    </div>
-                    <div class="attendance-checkbox">
-                        <button class="action-btn" onclick="openGradesModal('${student.id}', '${student.name}')" style="background: var(--warning); color: var(--dark);">
-                            <i class="fas fa-plus"></i> زیادکردنی نمرە
-                        </button>
-                        <button class="action-btn" onclick="viewStudentGrades('${student.id}', '${student.name}')" style="background: var(--info);">
-                            <i class="fas fa-eye"></i> بینینی نمرەکان
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-            
-            document.getElementById('viewGradesSection').style.display = 'block';
-        }
-
-        // Open Grades Modal
-        function openGradesModal(studentId, studentName) {
-            const level = document.getElementById('gradesLevel').value;
-            const group = document.getElementById('gradesGroup').value;
-            const course = document.getElementById('gradesClass').value;
-            
-            if (!level || !group || !course) {
-                alert('تکایە ئاست و گرووپ و وانە هەڵبژێرە!');
-                return;
-            }
-            
-            document.getElementById('gradesModalTitle').textContent = `زیادکردنی نمرە بۆ ${studentName}`;
-            document.getElementById('editGradesId').value = '';
-            document.getElementById('gradesStudent').innerHTML = `<option value="${studentId}">${studentName}</option>`;
-            document.getElementById('dailyGrade').value = '';
-            document.getElementById('absenceGrade').value = '';
-            document.getElementById('theoryGrade').value = '';
-            document.getElementById('practicalGrade').value = '';
-            document.getElementById('gradesSemesterSelect').value = '1';
-            
-            document.getElementById('gradesModal').style.display = 'flex';
-        }
-
-        // Close Grades Modal
-        function closeGradesModal() {
-            document.getElementById('gradesModal').style.display = 'none';
-        }
-
-        // Save Grades - چاککراوە
-function saveGrades(event) {
-    event.preventDefault();
-    
-    const studentId = document.getElementById('gradesStudent').value;
-    const level = document.getElementById('gradesLevel').value;
-    const group = document.getElementById('gradesGroup').value;
-    const course = document.getElementById('gradesClass').value;
-    const semester = document.getElementById('gradesSemesterSelect').value;
-    
-    const gradesData = {
-        studentId: studentId,
-        studentName: allStudents.find(s => s.id === studentId)?.name || 'نەناسراو',
-        level: level,
-        group: group,
-        course: course,
-        semester: semester,
-        daily: parseInt(document.getElementById('dailyGrade').value) || 0,
-        absence: parseInt(document.getElementById('absenceGrade').value) || 0,
-        theory: parseInt(document.getElementById('theoryGrade').value) || 0,
-        practical: parseInt(document.getElementById('practicalGrade').value) || 0,
-        teacher: currentUser.name,
-        timestamp: new Date().toISOString()
-    };
-    
-    gradesData.totalSemester = gradesData.daily + gradesData.absence + gradesData.theory + gradesData.practical;
-    
-    // گۆڕانکاری لە ڕێڕەوی پاشەکەوتکردن - ناوی مامۆستا زیادکرا
-    const gradesPath = `grades/${level}${group}/${course}/${currentUser.name}/${semester}/${studentId}`;
-    database.ref(gradesPath).set(gradesData)
-        .then(() => {
-            showGradesSuccess('نمرەکان بە سەرکەوتوویی پاشەکەوتکران! ✅');
-            closeGradesModal();
-            loadGradesStudents();
-        })
-        .catch((error) => {
-            alert('هەڵە لە پاشەکەوتکردن: ' + error.message);
-        });
-}
-
-        // Show Grades Success
-        function showGradesSuccess(message) {
-            const successMsg = document.getElementById('gradesSuccessMsg');
-            successMsg.textContent = message;
-            successMsg.style.display = 'block';
-            setTimeout(() => {
-                successMsg.style.display = 'none';
-            }, 3000);
-        }
-
-        // Open All Grades Modal
-        function openAllGradesModal() {
-            document.getElementById('allGradesModal').style.display = 'flex';
-            loadAllGrades();
-        }
-
-        // Close All Grades Modal
-        function closeAllGradesModal() {
-            document.getElementById('allGradesModal').style.display = 'none';
-        }
-
-       // Load All Grades - چاککراوە
-function loadAllGrades() {
-    const level = document.getElementById('allGradesLevel').value;
-    const group = document.getElementById('allGradesGroup').value;
-    const semester = document.getElementById('allGradesSemester').value;
-    const course = document.getElementById('allGradesClass').value;
-    
-    const container = document.getElementById('allGradesTableBody');
-    container.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px; color: var(--gray);"><i class="fas fa-spinner fa-spin"></i> کەمێک چاوەڕێ بکە...</td></tr>';
-    
-    const gradesRef = database.ref('grades');
-    gradesRef.once('value', (snapshot) => {
-        const gradesData = snapshot.val();
-        const grades = [];
-        
-        if (gradesData) {
-            Object.keys(gradesData).forEach(levelGroup => {
-                const currentLevel = levelGroup.substring(0, levelGroup.length - 1);
-                const currentGroup = levelGroup.substring(levelGroup.length - 1);
-                
-                if (level && currentLevel !== level) return;
-                if (group && currentGroup !== group) return;
-                
-                const levelGroupData = gradesData[levelGroup];
-                
-                Object.keys(levelGroupData).forEach(courseName => {
-                    if (course && courseName !== course) return;
-                    
-                    const courseData = levelGroupData[courseName];
-                    
-                    // گەڕان بەناو مامۆستایاندا
-                    Object.keys(courseData).forEach(teacherName => {
-                        // تەنها نمرەکانی مامۆستای ئێستا نیشان بدە
-                        if (teacherName !== currentUser.name) return;
-                        
-                        const teacherData = courseData[teacherName];
-                        
-                        Object.keys(teacherData).forEach(semesterNum => {
-                            if (semester && semesterNum !== semester) return;
-                            
-                            const semesterData = teacherData[semesterNum];
-                            
-                            Object.keys(semesterData).forEach(studentId => {
-                                const grade = semesterData[studentId];
-                                grades.push(grade);
-                            });
-                        });
-                    });
-                });
-            });
-        }
-        
-        displayAllGrades(grades);
-    });
-}
-
-        // Display All Grades
-        function displayAllGrades(grades) {
-            const container = document.getElementById('allGradesTableBody');
-            container.innerHTML = '';
-            
-            if (grades.length === 0) {
-                container.innerHTML = '<tr><td colspan="9" class="no-results">هیچ نمرەیەک نەدۆزرایەوە</td></tr>';
-                return;
-            }
-            
-            grades.forEach((grade) => {
-                const row = container.insertRow();
-                const totalGrade = grade.daily + grade.absence + grade.theory + grade.practical;
-                
-                row.innerHTML = `
-                    <td>${grade.studentName}</td>
-                    <td>${grade.daily}</td>
-                    <td>${grade.absence}</td>
-                    <td>${grade.theory}</td>
-                    <td>${grade.practical}</td>
-                    <td><strong>${grade.totalSemester}</strong></td>
-                    <td><strong style="color: var(--primary);">${totalGrade}</strong></td>
-                    <td>وەرزی ${grade.semester}</td>
-                    <td>
-                        <button class="edit-btn" onclick="editGrade('${grade.studentId}', '${grade.level}', '${grade.group}', '${grade.course}', '${grade.semester}')">
-                            <i class="fas fa-edit"></i> دەستکاری
-                        </button>
-                        <button class="delete-btn" onclick="deleteGrade('${grade.studentId}', '${grade.level}', '${grade.group}', '${grade.course}', '${grade.semester}')">
-                            <i class="fas fa-trash"></i> سڕینەوە
-                        </button>
-                    </td>
-                `;
-            });
-        }
-
-      
-
-       // Edit Grade - چاککراوە
-function editGrade(studentId, level, group, course, semester) {
-    // ڕێڕەوی نوێ کە ناوی مامۆستا لەخۆدەگرێت
-    const gradesPath = `grades/${level}${group}/${course}/${currentUser.name}/${semester}/${studentId}`;
-    database.ref(gradesPath).once('value', (snapshot) => {
-        const grade = snapshot.val();
-        if (!grade) return;
-        
-        document.getElementById('gradesModalTitle').textContent = `دەستکاریکردنی نمرە بە ${grade.studentName}`;
-        document.getElementById('editGradesId').value = studentId;
-        document.getElementById('gradesStudent').innerHTML = `<option value="${studentId}">${grade.studentName}</option>`;
-        document.getElementById('dailyGrade').value = grade.daily;
-        document.getElementById('absenceGrade').value = grade.absence;
-        document.getElementById('theoryGrade').value = grade.theory;
-        document.getElementById('practicalGrade').value = grade.practical;
-        document.getElementById('gradesSemesterSelect').value = grade.semester;
-        
-        document.getElementById('gradesModal').style.display = 'flex';
-    });
-}
-
-// Delete Grade - چاککراوە
-function deleteGrade(studentId, level, group, course, semester) {
-    if (confirm('دڵنیای لە سڕینەوەی ئەم نمرەیە؟')) {
-        const gradesPath = `grades/${level}${group}/${course}/${currentUser.name}/${semester}/${studentId}`;
-        database.ref(gradesPath).remove()
-            .then(() => {
-                showGradesSuccess('نمرە بە سەرکەوتوویی سڕایەوە! ✅');
-                loadAllGrades();
-            })
-            .catch((error) => {
-                alert('هەڵە لە سڕینەوە: ' + error.message);
-            });
-    }
-}
-
-      // View Student Grades - چاککراوە
-function viewStudentGrades(studentId, studentName) {
-    const level = document.getElementById('gradesLevel').value;
-    const group = document.getElementById('gradesGroup').value;
-    const course = document.getElementById('gradesClass').value;
-    
-    if (!level || !group || !course) {
-        alert('تکایە ئاست و گروپ و وانە هەڵبژێرە!');
-        return;
-    }
-    
-    const container = document.getElementById('attendanceDetailsContent');
-    container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">کەمێک چاوەڕێ بکە...</p>';
-    
-    document.getElementById('attendanceDetailsTitle').textContent = `نمرەکانی ${studentName}`;
-    
-    const gradesRef = database.ref('grades');
-    gradesRef.once('value', (snapshot) => {
-        const gradesData = snapshot.val();
-        const studentGrades = [];
-        
-        if (gradesData) {
-            Object.keys(gradesData).forEach(levelGroup => {
-                if (levelGroup !== level + group) return;
-                
-                const levelGroupData = gradesData[levelGroup];
-                Object.keys(levelGroupData).forEach(courseName => {
-                    const courseData = levelGroupData[courseName];
-                    
-                    // گەڕان بەناو مامۆستایاندا
-                    Object.keys(courseData).forEach(teacherName => {
-                        // تەنها نمرەکانی مامۆستای ئێستا نیشان بدە
-                        if (teacherName !== currentUser.name) return;
-                        
-                        const teacherData = courseData[teacherName];
-                        
-                        Object.keys(teacherData).forEach(semester => {
-                            const semesterData = teacherData[semester];
-                            if (semesterData[studentId]) {
-                                studentGrades.push({
-                                    course: courseName,
-                                    semester: semester,
-                                    teacher: teacherName,
-                                    ...semesterData[studentId]
-                                });
-                            }
-                        });
-                    });
-                });
-            });
-        }
-        
-        container.innerHTML = '';
-        
-        if (studentGrades.length === 0) {
-            container.innerHTML = '<p class="no-results">هیچ نمرەیەک بە ئەم خوێندکارە نییە</p>';
-            return;
-        }
-        
-        studentGrades.forEach(grade => {
-            const totalGrade = grade.daily + grade.absence + grade.theory + grade.practical;
-            
-            const gradeCard = document.createElement('div');
-            gradeCard.className = 'schedule-card';
-            gradeCard.innerHTML = `
-                <div class="schedule-card-header">
-                    <span>📚 ${grade.course}</span>
-                    <span>وەرزی ${grade.semester}</span>
-                </div>
-                <div class="schedule-card-body">
-                    <div class="schedule-info-row">
-                        <span>مامۆستا:</span>
-                        <span>${grade.teacher}</span>
-                    </div>
-                    <div class="schedule-info-row">
-                        <span>نمرەی ڕۆژانە:</span>
-                        <span>${grade.daily}</span>
-                    </div>
-                    <div class="schedule-info-row">
-                        <span>نمرەی غیابات:</span>
-                        <span>${grade.absence}</span>
-                    </div>
-                    <div class="schedule-info-row">
-                        <span>نمرەی تیۆری:</span>
-                        <span>${grade.theory}</span>
-                    </div>
-                    <div class="schedule-info-row">
-                        <span>نمرەی پراکتیک:</span>
-                        <span>${grade.practical}</span>
-                    </div>
-                    <div class="schedule-info-row">
-                        <span><strong>کۆی وەرز:</strong></span>
-                        <span><strong>${grade.totalSemester}</strong></span>
-                    </div>
-                    <div class="schedule-info-row">
-                        <span><strong>کۆی گشتی:</strong></span>
-                        <span><strong style="color: var(--primary);">${totalGrade}</strong></span>
-                    </div>
-                </div>
-            `;
-            container.appendChild(gradeCard);
-        });
-    });
-    
-    document.getElementById('attendanceDetailsModal').style.display = 'flex';
-}
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
@@ -6540,8 +5790,6 @@ function viewStudentGrades(studentId, studentName) {
                 const printPreview = document.getElementById('printPreview');
                 const adminNotificationPanel = document.getElementById('adminNotificationPanel');
                 const staffNotificationPanel = document.getElementById('staffNotificationPanel');
-                const gradesModal = document.getElementById('gradesModal');
-                const allGradesModal = document.getElementById('allGradesModal');
                 
                 if (event.target === scheduleModal) {
                     scheduleModal.style.display = 'none';
@@ -6566,12 +5814,6 @@ function viewStudentGrades(studentId, studentName) {
                 }
                 if (event.target === staffNotificationPanel) {
                     staffNotificationPanel.style.display = 'none';
-                }
-                if (event.target === gradesModal) {
-                    gradesModal.style.display = 'none';
-                }
-                if (event.target === allGradesModal) {
-                    allGradesModal.style.display = 'none';
                 }
             });
         });
