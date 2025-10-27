@@ -6,6 +6,7 @@
     <title>سیستەمی داشبۆردی مامۆستایان /پەیمانگەی کۆمپیتەری سلێمانی</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* هەموو ستایلەکان هەر وەک خۆیان ماون */
         * {
             margin: 0;
             padding: 0;
@@ -1947,7 +1948,7 @@
 
                 <select id="attendanceClass" onchange="loadAttendanceStudents()" class="filter-select">
                     <option value="">هەڵبژاردنی وانە...</option>
-                    <!-- Courses will be dynamically loaded here -->
+                    <!-- Courses will be dynamically loaded here - ONLY TEACHER'S COURSES -->
                 </select>
 
                 <select id="attendanceTime" onchange="loadAttendanceStudents()" class="filter-select">
@@ -2024,7 +2025,7 @@
 
                 <select id="gradesClass" onchange="loadGradesStudents()" class="filter-select">
                     <option value="">هەڵبژاردنی وانە...</option>
-                    <!-- Courses will be dynamically loaded here -->
+                    <!-- Courses will be dynamically loaded here - ONLY TEACHER'S COURSES -->
                 </select>
             </div>
             
@@ -2768,18 +2769,6 @@
 
         // Function to populate course dropdowns
         function populateCourseDropdowns() {
-            // Populate teacher attendance dropdown
-            const teacherAttendanceClass = document.getElementById('attendanceClass');
-            if (teacherAttendanceClass) {
-                teacherAttendanceClass.innerHTML = '<option value="">هەڵبژاردنی وانە...</option>';
-                courses.forEach(course => {
-                    const option = document.createElement('option');
-                    option.value = course;
-                    option.textContent = course;
-                    teacherAttendanceClass.appendChild(option);
-                });
-            }
-
             // Populate admin attendance dropdown
             const adminAttendanceClass = document.getElementById('adminAttendanceClass');
             if (adminAttendanceClass) {
@@ -2792,18 +2781,6 @@
                 });
             }
 
-            // Populate grades course dropdown
-            const gradesClass = document.getElementById('gradesClass');
-            if (gradesClass) {
-                gradesClass.innerHTML = '<option value="">هەڵبژاردنی وانە...</option>';
-                courses.forEach(course => {
-                    const option = document.createElement('option');
-                    option.value = course;
-                    option.textContent = course;
-                    gradesClass.appendChild(option);
-                });
-            }
-
             const allGradesClass = document.getElementById('allGradesClass');
             if (allGradesClass) {
                 allGradesClass.innerHTML = '<option value="">هەموو وانەکان</option>';
@@ -2812,6 +2789,41 @@
                     option.value = course;
                     option.textContent = course;
                     allGradesClass.appendChild(option);
+                });
+            }
+        }
+
+        // Load Teacher's Courses - ONLY TEACHER'S COURSES
+        function loadTeacherCourses() {
+            if (!currentUser || currentUser.type !== 'teacher') return;
+            
+            // Get teacher's schedules from all schedules
+            const teacherSchedules = allSchedules.filter(s => s.teacherName === currentUser.name);
+            
+            // Extract unique courses from teacher's schedules
+            const teacherCourses = [...new Set(teacherSchedules.map(s => s.subject))];
+            
+            // Populate attendance class dropdown - ONLY TEACHER'S COURSES
+            const attendanceClass = document.getElementById('attendanceClass');
+            if (attendanceClass) {
+                attendanceClass.innerHTML = '<option value="">هەڵبژاردنی وانە...</option>';
+                teacherCourses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course;
+                    option.textContent = course;
+                    attendanceClass.appendChild(option);
+                });
+            }
+
+            // Populate grades class dropdown - ONLY TEACHER'S COURSES
+            const gradesClass = document.getElementById('gradesClass');
+            if (gradesClass) {
+                gradesClass.innerHTML = '<option value="">هەڵبژاردنی وانە...</option>';
+                teacherCourses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course;
+                    option.textContent = course;
+                    gradesClass.appendChild(option);
                 });
             }
         }
@@ -2882,7 +2894,9 @@
                     const sampleSchedules = [
                         { teacherName: 'Omed Sadiq Abdulkarim', day: 'یەکشەممە', subject: 'ASP.NET', classNum: '1A', time: '8:30 - 10:30' },
                         { teacherName: 'Kawa Aziz Saeed Sharif', day: 'یەکشەممە', subject: 'Arabic', classNum: '2B', time: '10:30 - 12:30' },
-                        { teacherName: 'Sawen Latif Amin', day: 'دووشەممە', subject: 'Kurdish', classNum: '3C', time: '8:30 - 10:30' }
+                        { teacherName: 'Sawen Latif Amin', day: 'دووشەممە', subject: 'Kurdish', classNum: '3C', time: '8:30 - 10:30' },
+                        { teacherName: 'Majid Anwer Hama Rahim', day: 'یەکشەممە', subject: 'Csharp', classNum: '4A', time: '8:30 - 10:30' },
+                        { teacherName: 'Majid Anwer Hama Rahim', day: 'سێشەممە', subject: 'Internet', classNum: '4B', time: '10:30 - 12:30' }
                     ];
                     
                     sampleSchedules.forEach(schedule => {
@@ -2973,10 +2987,11 @@
                 searchSchedules();
                 document.getElementById('totalSchedules').textContent = allSchedules.length;
                 
-                // Update teacher schedule counts
+                // Update teacher schedule counts and load teacher courses
                 if (currentUser && currentUser.type === 'teacher') {
                     updateTeacherScheduleCounts();
                     loadTeacherSchedules();
+                    loadTeacherCourses(); // Load teacher's specific courses
                 }
             });
         }
@@ -3386,7 +3401,7 @@
                 `بەخێربێیت، ${currentUser.name}!`;
             updateTeacherScheduleCounts();
             loadTeacherProfile();
-            populateCourseDropdowns();
+            loadTeacherCourses(); // Load teacher's specific courses
             switchTeacherSection('schedule');
         }
 
@@ -5932,6 +5947,27 @@
             if (confirm('دڵنیای لە سڕینەوەی هەموو ئاگادارکردنەوەکان؟')) {
                 database.ref('notifications').remove();
             }
+        }
+
+        // Refresh Teacher Data
+        function refreshTeacherData() {
+            // Show loading indicator
+            const icon = event.target.querySelector('i');
+            if (icon) {
+                icon.classList.add('fa-spin');
+            }
+            
+            // Reload all data
+            loadSchedules();
+            loadStudents();
+            
+            // Remove loading after 1 second
+            setTimeout(() => {
+                if (icon) {
+                    icon.classList.remove('fa-spin');
+                }
+                showTeacherSuccess('داتاکان بە سەرکەوتوویی نوێکرانەوە! ✅');
+            }, 1000);
         }
 
         // Logout Function
