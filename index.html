@@ -967,67 +967,6 @@
             display: none;
         }
         
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            .print-preview, .print-preview *,
-            .attendance-print-section, .attendance-print-section * {
-                visibility: visible !important;
-            }
-            .print-preview {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100% !important;
-                height: auto !important;
-                background: white !important;
-                overflow: visible !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .no-print {
-                display: none !important;
-            }
-            
-            /* ڕەنگەکان بگۆڕە بۆ ڕەش و سپی */
-            .attendance-print-stat {
-                background: #f5f5f5 !important;
-                color: black !important;
-                border: 1px solid #ddd !important;
-            }
-            
-            .attendance-print-list th {
-                background: #f0f0f0 !important;
-                color: black !important;
-                border: 1px solid #000 !important;
-            }
-            
-            .attendance-print-list td {
-                border: 1px solid #000 !important;
-                color: black !important;
-            }
-            
-            .attendance-print-list tr:nth-child(even) {
-                background: #f9f9f9 !important;
-            }
-            
-            /* باشترکردنی خشتەکان بۆ چاپ */
-            table {
-                page-break-inside: auto !important;
-                border-collapse: collapse !important;
-            }
-            
-            tr {
-                page-break-inside: avoid !important;
-                page-break-after: auto !important;
-            }
-            
-            thead {
-                display: table-header-group !important;
-            }
-        }
-        
         .attendance-print-header {
             text-align: center;
             margin-bottom: 20px;
@@ -1296,6 +1235,406 @@
         @keyframes fa-spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* وەشاندنەوەی ستایلی نمرەکان بۆ مامۆستای تیۆری و پراکتیکی */
+        .theory-teacher .practical-grade-section {
+            display: none !important;
+        }
+        
+        .practical-teacher .theory-grade-section {
+            display: block !important;
+        }
+        
+        .grades-input-section {
+            margin-bottom: 15px;
+        }
+        
+        .grade-input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .grade-input-group label {
+            font-weight: 600;
+            color: var(--dark);
+            flex: 1;
+        }
+        
+        .grade-input-group input {
+            width: 80px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .grade-max {
+            color: var(--gray);
+            font-size: 12px;
+            margin-right: 10px;
+        }
+
+        /* ستایلە نوێیەکان بۆ چاپکردنی باشتر */
+        .attendance-details-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-stat-card {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .detail-stat-present {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+
+        .detail-stat-absent {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+
+        .detail-stat-total {
+            background: rgba(0, 123, 255, 0.1);
+            color: var(--info);
+        }
+
+        .detail-stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .detail-stat-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .student-attendance-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .student-attendance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s;
+        }
+
+        .student-attendance-item:hover {
+            background: #f8f9fa;
+        }
+
+        .student-info-detailed {
+            flex: 1;
+        }
+
+        .student-name-detailed {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--dark);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .student-code-detailed {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .attendance-status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .status-present {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+
+        .status-absent {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+
+        /* چاکسازیەکانی چاپکردن */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .print-preview, .print-preview *,
+            .attendance-print-section, .attendance-print-section * {
+                visibility: visible !important;
+            }
+            
+            .print-preview {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                background: white !important;
+                overflow: visible !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            /* چاکسازی فۆنت و قەبارەکان بۆ چاپ */
+            body {
+                font-size: 10px !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .attendance-print-header {
+                margin-bottom: 8px !important;
+                padding-bottom: 6px !important;
+                border-bottom: 1px solid #000 !important;
+            }
+            
+            .attendance-print-title {
+                font-size: 16px !important;
+                margin-bottom: 6px !important;
+                font-weight: bold !important;
+            }
+            
+            .attendance-print-details {
+                font-size: 8px !important;
+                margin-bottom: 6px !important;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                gap: 10px !important;
+            }
+            
+            .attendance-print-details div {
+                font-size: 8px !important;
+                margin-bottom: 2px !important;
+            }
+            
+            .attendance-print-stats {
+                margin-bottom: 8px !important;
+                display: flex !important;
+                justify-content: space-around !important;
+            }
+            
+            .attendance-print-stat {
+                background: #f5f5f5 !important;
+                color: black !important;
+                border: 1px solid #ddd !important;
+                padding: 6px !important;
+                min-width: 70px !important;
+                text-align: center !important;
+            }
+            
+            .attendance-print-stat div {
+                font-size: 8px !important;
+            }
+            
+            .attendance-print-stat div:first-child {
+                font-size: 12px !important;
+                font-weight: bold !important;
+            }
+            
+            .attendance-print-list {
+                font-size: 7px !important;
+                margin-top: 8px !important;
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+            
+            .attendance-print-list th {
+                background: #f0f0f0 !important;
+                color: black !important;
+                border: 1px solid #000 !important;
+                padding: 3px 4px !important;
+                font-size: 7px !important;
+                font-weight: bold !important;
+                text-align: right !important;
+            }
+            
+            .attendance-print-list td {
+                border: 1px solid #000 !important;
+                color: black !important;
+                padding: 3px 4px !important;
+                font-size: 7px !important;
+                text-align: right !important;
+            }
+            
+            .attendance-print-list tr:nth-child(even) {
+                background: #f9f9f9 !important;
+            }
+            
+            /* چاکسازی خشتەکان بۆ چاپ */
+            table {
+                page-break-inside: auto !important;
+                border-collapse: collapse !important;
+                width: 100% !important;
+                font-size: 7px !important;
+            }
+            
+            tr {
+                page-break-inside: avoid !important;
+                page-break-after: auto !important;
+            }
+            
+            thead {
+                display: table-header-group !important;
+            }
+            
+            /* چاکسازی بۆ ناوە درێژەکان */
+            .student-name-detailed,
+            .student-name-large {
+                font-size: 8px !important;
+                font-weight: bold !important;
+            }
+            
+            .student-code-detailed,
+            .student-details {
+                font-size: 7px !important;
+                color: #666 !important;
+            }
+            
+            /* چاکسازی بۆ پەڕە */
+            @page {
+                margin: 0.5cm !important;
+                size: A4 portrait !important;
+            }
+            
+            /* چاکسازی بۆ کۆنترۆڵی پەڕەشکاندن */
+            .student-attendance-item,
+            .attendance-item,
+            .attendance-card {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            
+            /* چاکسازی بۆ دەقە درێژەکان */
+            .attendance-print-list td,
+            .attendance-print-list th {
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
+                max-width: 80px !important;
+            }
+            
+            /* چاکسازی بۆ ناوەکانی خوێندکاران */
+            .student-info-detailed,
+            .student-info-attendance {
+                min-width: 120px !important;
+                max-width: 150px !important;
+            }
+
+            /* چاکسازیەکانی تری چاپ */
+            .attendance-details-stats {
+                display: flex !important;
+                justify-content: space-around !important;
+                margin-bottom: 10px !important;
+                page-break-inside: avoid !important;
+            }
+            
+            .detail-stat-card {
+                text-align: center !important;
+                padding: 8px !important;
+                border: 1px solid #000 !important;
+                border-radius: 4px !important;
+                min-width: 60px !important;
+            }
+            
+            .detail-stat-present {
+                background: rgba(40, 167, 69, 0.1) !important;
+            }
+            
+            .detail-stat-absent {
+                background: rgba(220, 53, 69, 0.1) !important;
+            }
+            
+            .detail-stat-total {
+                background: rgba(0, 123, 255, 0.1) !important;
+            }
+            
+            .detail-stat-number {
+                font-size: 14px !important;
+                font-weight: bold !important;
+            }
+            
+            .detail-stat-label {
+                font-size: 8px !important;
+            }
+            
+            .student-attendance-list {
+                page-break-inside: auto !important;
+            }
+            
+            .student-attendance-item {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding: 4px !important;
+                border-bottom: 1px solid #eee !important;
+                page-break-inside: avoid !important;
+            }
+            
+            .attendance-status-badge {
+                padding: 2px 6px !important;
+                border-radius: 10px !important;
+                font-size: 7px !important;
+                font-weight: bold !important;
+                min-width: 40px !important;
+                text-align: center !important;
+            }
+            
+            .status-present {
+                background: rgba(40, 167, 69, 0.2) !important;
+                color: #155724 !important;
+            }
+            
+            .status-absent {
+                background: rgba(220, 53, 69, 0.2) !important;
+                color: #721c24 !important;
+            }
+
+            /* ڕەنگەکان بگۆڕە بۆ ڕەش و سپی */
+            .attendance-print-stat {
+                background: #f5f5f5 !important;
+                color: black !important;
+                border: 1px solid #ddd !important;
+            }
+            
+            .attendance-print-list th {
+                background: #f0f0f0 !important;
+                color: black !important;
+                border: 1px solid #000 !important;
+            }
+            
+            .attendance-print-list td {
+                border: 1px solid #000 !important;
+                color: black !important;
+            }
+            
+            .attendance-print-list tr:nth-child(even) {
+                background: #f9f9f9 !important;
+            }
         }
 
         /* Responsive Design for Mobile - Improved Button Styles */
@@ -2027,6 +2366,12 @@
                     <option value="">هەڵبژاردنی وانە...</option>
                     <!-- Courses will be dynamically loaded here - ONLY TEACHER'S COURSES -->
                 </select>
+
+                <select id="gradesSemester" onchange="loadGradesStudents()" class="filter-select">
+                    <option value="">هەڵبژاردنی وەرز...</option>
+                    <option value="1">وەرزی 1</option>
+                    <option value="2">وەرزی 2</option>
+                </select>
             </div>
             
             <div class="search-container">
@@ -2078,6 +2423,10 @@
                     <div class="teacher-info-row">
                         <span>کۆی وانەکان:</span>
                         <span id="teacherProfileClasses">0</span>
+                    </div>
+                    <div class="teacher-info-row">
+                        <span>جۆری مامۆستا:</span>
+                        <span id="teacherProfileType"></span>
                     </div>
                 </div>
             </div>
@@ -2216,6 +2565,9 @@
                     </button>
                     <button class="print-btn" onclick="printSection('staff_attendance')">
                         <i class="fas fa-print"></i> چاپ
+                    </button>
+                    <button class="print-btn" onclick="printTotalAbsenceToday()" style="background: var(--danger);">
+                        <i class="fas fa-print"></i> چاپی کۆی غیاباتەکانی ئەمڕۆ
                     </button>
                 </div>
             </h3>
@@ -2449,6 +2801,15 @@
                 </div>
                 
                 <div class="form-group">
+                    <label><i class="fas fa-chalkboard"></i> جۆری مامۆستا</label>
+                    <select id="teacherType" required>
+                        <option value="">هەڵبژاردن...</option>
+                        <option value="theory">مامۆستای تیۆری</option>
+                        <option value="practical">مامۆستای پراکتیکی</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
                     <label><i class="fas fa-phone"></i> ژمارەی مۆبایل</label>
                     <input type="text" id="teacherPhone" placeholder="نموونە: 07501234567">
                 </div>
@@ -2491,6 +2852,10 @@
                     <div class="teacher-info-row">
                         <span>بەشی وانە:</span>
                         <span id="detailTeacherSubject"></span>
+                    </div>
+                    <div class="teacher-info-row">
+                        <span>جۆری مامۆستا:</span>
+                        <span id="detailTeacherType"></span>
                     </div>
                     <div class="teacher-info-row">
                         <span>ژمارەی مۆبایل:</span>
@@ -2550,45 +2915,56 @@
             <form onsubmit="saveGrades(event)">
                 <div class="form-group">
                     <label><i class="fas fa-user-graduate"></i> خوێندکار</label>
-                    <select id="gradesStudent" required>
-                        <option value="">هەڵبژاردن...</option>
-                    </select>
+                    <input type="text" id="gradesStudentName" readonly style="background: #f5f5f5;">
                 </div>
                 
-                <div class="form-group">
-                    <label><i class="fas fa-calendar-alt"></i> وەرز</label>
-                    <select id="gradesSemesterSelect" required>
-                        <option value="1">وەرزی 1</option>
-                        <option value="2">وەرزی 2</option>
-                    </select>
+                <!-- نمرەی ڕۆژانە و غیابات -->
+                <div class="grades-input-section">
+                    <div class="grade-input-group">
+                        <label>نمرەی ڕۆژانە</label>
+                        <div>
+                            <input type="number" id="dailyGrade" class="grade-input" min="0" max="3" placeholder="0" oninput="calculateTotal()">
+                            <span class="grade-max">/ 3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grade-input-group">
+                        <label>نمرەی غیابات</label>
+                        <div>
+                            <input type="number" id="absenceGrade" class="grade-input" min="0" max="2" placeholder="0" oninput="calculateTotal()">
+                            <span class="grade-max">/ 2</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label><i class="fas fa-book"></i> نمرەی ڕۆژانە</label>
-                    <input type="number" id="dailyGrade" class="grade-input" min="0" max="25" placeholder="0-25">
+                <!-- نمرەی پراکتیک - بۆ مامۆستای پراکتیکی -->
+                <div class="grades-input-section practical-grade-section">
+                    <div class="grade-input-group">
+                        <label>نمرەی پراکتیک</label>
+                        <div>
+                            <input type="number" id="practicalGrade" class="grade-input" min="0" max="8" placeholder="0" oninput="calculateTotal()">
+                            <span class="grade-max">/ 8</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="form-group">
-                    <label><i class="fas fa-user-times"></i> نمرەی غیابات</label>
-                    <input type="number" id="absenceGrade" class="grade-input" min="0" max="25" placeholder="0-25">
-                </div>
-                
-                <div class="form-group">
-                    <label><i class="fas fa-pen"></i> نمرەی تیۆری</label>
-                    <input type="number" id="theoryGrade" class="grade-input" min="0" max="25" placeholder="0-25">
-                </div>
-                
-                <div class="form-group">
-                    <label><i class="fas fa-flask"></i> نمرەی پراکتیک</label>
-                    <input type="number" id="practicalGrade" class="grade-input" min="0" max="25" placeholder="0-25">
+                <!-- نمرەی تیۆری - بۆ هەردوو جۆرەکە -->
+                <div class="grades-input-section theory-grade-section">
+                    <div class="grade-input-group">
+                        <label id="theoryGradeLabel">نمرەی تیۆری</label>
+                        <div>
+                            <input type="number" id="theoryGrade" class="grade-input" min="0" max="15" placeholder="0" oninput="calculateTotal()">
+                            <span class="grade-max" id="theoryGradeMax">/ 15</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="grades-info-row" style="margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 8px;">
                     <span><strong>کۆی گشتی:</strong></span>
-                    <span id="totalGradeDisplay" class="grades-total">٠ / ١٠٠</span>
+                    <span id="totalGradeDisplay" class="grades-total">٠ / ٢٠</span>
                 </div>
                 
-                <input type="hidden" id="editGradesId">
+                <input type="hidden" id="editGradesStudentId">
                 
                 <button type="submit" class="submit-btn">
                     <i class="fas fa-save"></i> پاشەکەوتکردنی نمرەکان
@@ -2646,9 +3022,8 @@
                             <th>ناوی خوێندکار</th>
                             <th>نمرەی ڕۆژانە</th>
                             <th>نمرەی غیابات</th>
-                            <th>نمرەی تیۆری</th>
                             <th>نمرەی پراکتیک</th>
-                            <th>کۆی وەرز</th>
+                            <th>نمرەی تیۆری</th>
                             <th>کۆی گشتی</th>
                             <th>وەرز</th>
                             <th>کردارەکان</th>
@@ -2696,41 +3071,41 @@
             "LIBRARY", "WIRELESS"
         ];
 
-        // Define the teachers array with the provided names
+        // Define the teachers array with the provided names and teacherType
         const allTeachers = [
-            { username: 'omedsadiq', name: 'Omed Sadiq Abdulkarim', password: 'password', subject: 'ASP.NET', type: 'teacher' },
-            { username: 'kawaaziz', name: 'Kawa Aziz Saeed Sharif', password: 'password', subject: 'Arabic', type: 'teacher' },
-            { username: 'sawenlatif', name: 'Sawen Latif Amin', password: 'password', subject: 'Kurdish', type: 'teacher' },
-            { username: 'kaleasaad', name: 'Kale Asaad Muhammad', password: 'password', subject: 'Kurdish', type: 'teacher' },
-            { username: 'shnomahmood', name: 'Shno Mahmood Hama Muhammad', password: 'password', subject: 'Madani, Kurdology', type: 'teacher' },
-            { username: 'bafrinomar', name: 'Bafrin Omar Qadir', password: 'password', subject: 'Religion', type: 'teacher' },
-            { username: 'kanilatif', name: 'Kani Latif Najib', password: 'password', subject: 'Religion', type: 'teacher' },
-            { username: 'daroonjamal', name: 'Daroon Jamal', password: 'password', subject: 'Psychology, Genocide, Human Rights', type: 'teacher' },
-            { username: 'herosalih', name: 'Hero Salih Muhammad', password: 'password', subject: 'English (H)', type: 'teacher' },
-            { username: 'muhammadamin', name: 'Muhammad Amin Hussein Abdullah', password: 'password', subject: 'English (M)', type: 'teacher' },
-            { username: 'binarnajmaddin', name: 'Binar Najmaddin Mustafa', password: 'password', subject: 'English (BN)', type: 'teacher' },
-            { username: 'bahraraouf', name: 'Bahra Raouf Salih', password: 'password', subject: 'English (BH)', type: 'teacher' },
-            { username: 'saranusrat', name: 'Sara Nusrat Ali', password: 'password', subject: 'Banking (S)', type: 'teacher' },
-            { username: 'kanyanmiqdad', name: 'Kanyan Miqdad Mustafa', password: 'password', subject: 'Banking (K)', type: 'teacher' },
-            { username: 'hawnazrafiq', name: 'Hawnaz Rafiq Abd', password: 'password', subject: 'Banking (H)', type: 'teacher' },
-            { username: 'razmuhammad', name: 'Raz Muhammad Qadir', password: 'password', subject: 'Linux + Windows Server, Linux', type: 'teacher' },
-            { username: 'lenjanajmaddin', name: 'Lenja Najmaddin Mustafa', password: 'password', subject: 'Server, IS, Server', type: 'teacher' },
-            { username: 'sararaouf', name: 'Sara Raouf Ismail', password: 'password', subject: 'CCNA4, Wireless, CCNA1, CCNA2', type: 'teacher' },
-            { username: 'aramibrahim', name: 'Aram Ibrahim Abdulkarim', password: 'password', subject: 'IT, CCNA3', type: 'teacher' },
-            { username: 'arkanahmad', name: 'Arkan Ahmad Mahmood', password: 'password', subject: 'DBA, WA, GSM', type: 'teacher' },
-            { username: 'saramuhammad', name: 'Sara Muhammad Ahmad', password: 'password', subject: 'PowerPoint, NDBA', type: 'teacher' },
-            { username: 'azheennajmaddin', name: 'Azheen Jabbar Abdulhussein', password: 'password', subject: 'C++, GRP, SQL', type: 'teacher' },
-            { username: 'naznajib', name: 'Naz Najib Abdullah', password: 'password', subject: 'Java OOP, Java, Android', type: 'teacher' },
-            { username: 'majidanwer', name: 'Majid Anwer Hama Rahim', password: 'password', subject: 'Csharp, Internet', type: 'teacher' },
-            { username: 'dilshadhamza', name: 'Dilshad Hamza Hama Salih', password: 'password', subject: 'Windows', type: 'teacher' },
-            { username: 'khoshifuad', name: 'Khoshi Fuad Latif', password: 'password', subject: 'Excel, Dreamweaver', type: 'teacher' },
-            { username: 'thywestmajid', name: 'Thywest Majid Karim', password: 'password', subject: 'Photoshop, HTML5', type: 'teacher' },
-            { username: 'alanomar', name: 'Alan Omar Ibrahim', password: 'password', subject: 'PHP Text File, PHP MySQL, GRP', type: 'teacher' },
-            { username: 'didarfalah', name: 'Didar Falah Ahmad', password: 'password', subject: 'JavaScript, Access', type: 'teacher' },
-            { username: 'khandanajmaddin', name: 'Khanda Najmaddin Mustafa', password: 'password', subject: 'Word, AJAX', type: 'teacher' },
-            { username: 'sharanesar', name: 'Shara Nesar Amin', password: 'password', subject: 'CSS, HTML, MIS', type: 'teacher' },
-            { username: 'hawarhussein', name: 'Hawar Hussein Yaba', password: 'password', subject: 'Mobile, Visual Basic', type: 'teacher' },
-            { username: 'karwanlatif', name: 'Karwan Latif Wali', password: 'password', subject: 'Sport', type: 'teacher' }
+            { username: 'omedsadiq', name: 'Omed Sadiq Abdulkarim', password: 'password', subject: 'ASP.NET', type: 'teacher', teacherType: 'practical' },
+            { username: 'kawaaziz', name: 'Kawa Aziz Saeed Sharif', password: 'password', subject: 'Arabic', type: 'teacher', teacherType: 'theory' },
+            { username: 'sawenlatif', name: 'Sawen Latif Amin', password: 'password', subject: 'Kurdish', type: 'teacher', teacherType: 'theory' },
+            { username: 'kaleasaad', name: 'Kale Asaad Muhammad', password: 'password', subject: 'Kurdish', type: 'teacher', teacherType: 'theory' },
+            { username: 'shnomahmood', name: 'Shno Mahmood Hama Muhammad', password: 'password', subject: 'Madani, Kurdology', type: 'teacher', teacherType: 'theory' },
+            { username: 'bafrinomar', name: 'Bafrin Omar Qadir', password: 'password', subject: 'Religion', type: 'teacher', teacherType: 'theory' },
+            { username: 'kanilatif', name: 'Kani Latif Najib', password: 'password', subject: 'Religion', type: 'teacher', teacherType: 'theory' },
+            { username: 'daroonjamal', name: 'Daroon Jamal', password: 'password', subject: 'Psychology, Genocide, Human Rights', type: 'teacher', teacherType: 'theory' },
+            { username: 'herosalih', name: 'Hero Salih Muhammad', password: 'password', subject: 'English (H)', type: 'teacher', teacherType: 'theory' },
+            { username: 'muhammadamin', name: 'Muhammad Amin Hussein Abdullah', password: 'password', subject: 'English (M)', type: 'teacher', teacherType: 'theory' },
+            { username: 'binarnajmaddin', name: 'Binar Najmaddin Mustafa', password: 'password', subject: 'English (BN)', type: 'teacher', teacherType: 'theory' },
+            { username: 'bahraraouf', name: 'Bahra Raouf Salih', password: 'password', subject: 'English (BH)', type: 'teacher', teacherType: 'theory' },
+            { username: 'saranusrat', name: 'Sara Nusrat Ali', password: 'password', subject: 'Banking (S)', type: 'teacher', teacherType: 'theory' },
+            { username: 'kanyanmiqdad', name: 'Kanyan Miqdad Mustafa', password: 'password', subject: 'Banking (K)', type: 'teacher', teacherType: 'theory' },
+            { username: 'hawnazrafiq', name: 'Hawnaz Rafiq Abd', password: 'password', subject: 'Banking (H)', type: 'teacher', teacherType: 'theory' },
+            { username: 'razmuhammad', name: 'Raz Muhammad Qadir', password: 'password', subject: 'Linux + Windows Server, Linux', type: 'teacher', teacherType: 'practical' },
+            { username: 'lenjanajmaddin', name: 'Lenja Najmaddin Mustafa', password: 'password', subject: 'Server, IS, Server', type: 'teacher', teacherType: 'practical' },
+            { username: 'sararaouf', name: 'Sara Raouf Ismail', password: 'password', subject: 'CCNA4, Wireless, CCNA1, CCNA2', type: 'teacher', teacherType: 'practical' },
+            { username: 'aramibrahim', name: 'Aram Ibrahim Abdulkarim', password: 'password', subject: 'IT, CCNA3', type: 'teacher', teacherType: 'practical' },
+            { username: 'arkanahmad', name: 'Arkan Ahmad Mahmood', password: 'password', subject: 'DBA, WA, GSM', type: 'teacher', teacherType: 'practical' },
+            { username: 'saramuhammad', name: 'Sara Muhammad Ahmad', password: 'password', subject: 'PowerPoint, NDBA', type: 'teacher', teacherType: 'practical' },
+            { username: 'azheennajmaddin', name: 'Azheen Jabbar Abdulhussein', password: 'password', subject: 'C++, GRP, SQL', type: 'teacher', teacherType: 'practical' },
+            { username: 'naznajib', name: 'Naz Najib Abdullah', password: 'password', subject: 'Java OOP, Java, Android', type: 'teacher', teacherType: 'practical' },
+            { username: 'majidanwer', name: 'Majid Anwer Hama Rahim', password: 'password', subject: 'Csharp, Internet', type: 'teacher', teacherType: 'practical' },
+            { username: 'dilshadhamza', name: 'Dilshad Hamza Hama Salih', password: 'password', subject: 'Windows', type: 'teacher', teacherType: 'practical' },
+            { username: 'khoshifuad', name: 'Khoshi Fuad Latif', password: 'password', subject: 'Excel, Dreamweaver', type: 'teacher', teacherType: 'practical' },
+            { username: 'thywestmajid', name: 'Thywest Majid Karim', password: 'password', subject: 'Photoshop, HTML5', type: 'teacher', teacherType: 'practical' },
+            { username: 'alanomar', name: 'Alan Omar Ibrahim', password: 'password', subject: 'PHP Text File, PHP MySQL, GRP', type: 'teacher', teacherType: 'practical' },
+            { username: 'didarfalah', name: 'Didar Falah Ahmad', password: 'password', subject: 'JavaScript, Access', type: 'teacher', teacherType: 'practical' },
+            { username: 'khandanajmaddin', name: 'Khanda Najmaddin Mustafa', password: 'password', subject: 'Word, AJAX', type: 'teacher', teacherType: 'practical' },
+            { username: 'sharanesar', name: 'Shara Nesar Amin', password: 'password', subject: 'CSS, HTML, MIS', type: 'teacher', teacherType: 'practical' },
+            { username: 'hawarhussein', name: 'Hawar Hussein Yaba', password: 'password', subject: 'Mobile, Visual Basic', type: 'teacher', teacherType: 'practical' },
+            { username: 'karwanlatif', name: 'Karwan Latif Wali', password: 'password', subject: 'Sport', type: 'teacher', teacherType: 'theory' }
         ];
 
         let currentUser = null;
@@ -2850,7 +3225,8 @@
                             name: teacher.name,
                             password: teacher.password,
                             subject: teacher.subject,
-                            type: teacher.type
+                            type: teacher.type,
+                            teacherType: teacher.teacherType || null
                         });
                     });
                     console.log('All teachers and attendance staff data added to Firebase');
@@ -3192,8 +3568,8 @@
                             <span>${teacher.subject || 'دیاری نەکراوە'}</span>
                         </div>
                         <div class="teacher-info-row">
-                            <span>ژمارەی مۆبایل:</span>
-                            <span>${teacher.phone || 'دیاری نەکراوە'}</span>
+                            <span>جۆری مامۆستا:</span>
+                            <span>${teacher.teacherType === 'theory' ? 'تیۆری' : teacher.teacherType === 'practical' ? 'پراکتیکی' : 'دیاری نەکراوە'}</span>
                         </div>
                     </div>
                     <div class="teacher-actions">
@@ -3741,6 +4117,8 @@
             document.getElementById('teacherProfileUsername').textContent = currentUser.username;
             document.getElementById('teacherProfileClasses').textContent = 
                 allSchedules.filter(s => s.teacherName === currentUser.name).length;
+            document.getElementById('teacherProfileType').textContent = 
+                currentUser.teacherType === 'theory' ? 'تیۆری' : 'پراکتیکی';
         }
 
         // Modal Functions
@@ -3781,6 +4159,7 @@
             document.getElementById('teacherUsername').value = '';
             document.getElementById('teacherPassword').value = '';
             document.getElementById('teacherSubject').value = '';
+            document.getElementById('teacherType').value = '';
             document.getElementById('teacherPhone').value = '';
             document.getElementById('teacherEmail').value = '';
             document.getElementById('teacherModal').style.display = 'flex';
@@ -3799,6 +4178,7 @@
                 document.getElementById('detailTeacherName').textContent = teacher.name;
                 document.getElementById('detailTeacherUsername').textContent = teacherUsername;
                 document.getElementById('detailTeacherSubject').textContent = teacher.subject || 'دیاری نەکراوە';
+                document.getElementById('detailTeacherType').textContent = teacher.teacherType === 'theory' ? 'تیۆری' : teacher.teacherType === 'practical' ? 'پراکتیکی' : 'دیاری نەکراوە';
                 document.getElementById('detailTeacherPhone').textContent = teacher.phone || 'دیاری نەکراوە';
                 document.getElementById('detailTeacherEmail').textContent = teacher.email || 'دیاری نەکراوە';
                 
@@ -3910,6 +4290,7 @@
                 name: document.getElementById('teacherFullName').value,
                 password: document.getElementById('teacherPassword').value,
                 subject: document.getElementById('teacherSubject').value,
+                teacherType: document.getElementById('teacherType').value,
                 phone: document.getElementById('teacherPhone').value,
                 email: document.getElementById('teacherEmail').value,
                 type: 'teacher'
@@ -3963,6 +4344,7 @@
                 document.getElementById('teacherUsername').value = username;
                 document.getElementById('teacherPassword').value = teacher.password;
                 document.getElementById('teacherSubject').value = teacher.subject || '';
+                document.getElementById('teacherType').value = teacher.teacherType || '';
                 document.getElementById('teacherPhone').value = teacher.phone || '';
                 document.getElementById('teacherEmail').value = teacher.email || '';
                 document.getElementById('teacherModal').style.display = 'flex';
@@ -4663,6 +5045,7 @@
                     'ناو': teacher.name,
                     'ناوی بەکارهێنەر': teacher.username,
                     'بەشی وانە': teacher.subject || '',
+                    'جۆری مامۆستا': teacher.teacherType === 'theory' ? 'تیۆری' : teacher.teacherType === 'practical' ? 'پراکتیکی' : '',
                     'ژمارەی مۆبایل': teacher.phone || '',
                     'ئیمەیل': teacher.email || ''
                 }));
@@ -4878,7 +5261,9 @@
             if (type === 'schedules') {
                 title = 'خشتەی وانەکان';
                 content = `
-                    <h1 style="text-align: center; margin-bottom: 20px;">${title}</h1>
+                    <div class="attendance-print-header">
+                        <h1 class="attendance-print-title">${title}</h1>
+                    </div>
                     <table class="attendance-print-list">
                         <thead>
                             <tr>
@@ -4905,7 +5290,9 @@
             } else if (type === 'students') {
                 title = 'خوێندکاران';
                 content = `
-                    <h1 style="text-align: center; margin-bottom: 20px;">${title}</h1>
+                    <div class="attendance-print-header">
+                        <h1 class="attendance-print-title">${title}</h1>
+                    </div>
                     <table class="attendance-print-list">
                         <thead>
                             <tr>
@@ -4932,13 +5319,16 @@
             } else if (type === 'teachers') {
                 title = 'مامۆستایان';
                 content = `
-                    <h1 style="text-align: center; margin-bottom: 20px;">${title}</h1>
+                    <div class="attendance-print-header">
+                        <h1 class="attendance-print-title">${title}</h1>
+                    </div>
                     <table class="attendance-print-list">
                         <thead>
                             <tr>
                                 <th>ناو</th>
                                 <th>ناوی بەکارهێنەر</th>
                                 <th>بەشی وانە</th>
+                                <th>جۆری مامۆستا</th>
                                 <th>ژمارەی مۆبایل</th>
                                 <th>ئیمەیل</th>
                             </tr>
@@ -4949,6 +5339,7 @@
                                     <td>${teacher.name}</td>
                                     <td>${teacher.username}</td>
                                     <td>${teacher.subject || ''}</td>
+                                    <td>${teacher.teacherType === 'theory' ? 'تیۆری' : teacher.teacherType === 'practical' ? 'پراکتیکی' : ''}</td>
                                     <td>${teacher.phone || ''}</td>
                                     <td>${teacher.email || ''}</td>
                                 </tr>
@@ -5069,7 +5460,9 @@
                 const teacherSchedules = allSchedules.filter(s => s.teacherName === currentUser.name);
                 title = `خشتەی وانەکانی ${currentUser.name}`;
                 content = `
-                    <h1 style="text-align: center; margin-bottom: 20px;">${title}</h1>
+                    <div class="attendance-print-header">
+                        <h1 class="attendance-print-title">${title}</h1>
+                    </div>
                     <table class="attendance-print-list">
                         <thead>
                             <tr>
@@ -5968,6 +6361,637 @@
                 }
                 showTeacherSuccess('داتاکان بە سەرکەوتوویی نوێکرانەوە! ✅');
             }, 1000);
+        }
+
+        // =============================================
+        // نمرەکان - فەنکشنە نوێیەکان
+        // =============================================
+
+        // Load Grades Students
+        function loadGradesStudents() {
+            const level = document.getElementById('gradesLevel').value;
+            const group = document.getElementById('gradesGroup').value;
+            const course = document.getElementById('gradesClass').value;
+            const semester = document.getElementById('gradesSemester').value;
+            
+            if (!level || !group || !course || !semester) {
+                document.getElementById('viewGradesSection').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('currentLevelDisplay').textContent = level;
+            document.getElementById('currentGroupDisplay').textContent = group;
+            
+            const container = document.getElementById('gradesStudentsList');
+            container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">کەمێك چاوەڕێ بکە...</p>';
+            
+            // Filter students for this level and group
+            const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
+            
+            container.innerHTML = '';
+            
+            if (studentsInGroup.length === 0) {
+                container.innerHTML = '<p class="no-results">هیچ خوێندکارێک بۆ ئەم گرووپە نییە</p>';
+                document.getElementById('viewGradesSection').style.display = 'block';
+                return;
+            }
+            
+            // Load existing grades for these students
+            const gradesPath = `grades/${level}${group}/${course}/${semester}/${currentUser.username}`;
+            database.ref(gradesPath).once('value', (snapshot) => {
+                const gradesData = snapshot.val() || {};
+                
+                studentsInGroup.forEach((student) => {
+                    const studentGrades = gradesData[student.id] || {};
+                    
+                    const card = document.createElement('div');
+                    card.className = 'grades-card';
+                    card.innerHTML = `
+                        <div class="grades-card-header">
+                            <span>👨‍🎓 ${student.name}</span>
+                            <span>کۆد: ${student.code}</span>
+                        </div>
+                        <div class="grades-card-body">
+                            <div class="grades-info-row">
+                                <span>نمرەی ڕۆژانە:</span>
+                                <span>${studentGrades.daily || 0} / 3</span>
+                            </div>
+                            <div class="grades-info-row">
+                                <span>نمرەی غیابات:</span>
+                                <span>${studentGrades.absence || 0} / 2</span>
+                            </div>
+                            ${currentUser.teacherType === 'practical' ? `
+                                <div class="grades-info-row">
+                                    <span>نمرەی پراکتیک:</span>
+                                    <span>${studentGrades.practical || 0} / 8</span>
+                                </div>
+                                <div class="grades-info-row">
+                                    <span>نمرەی تیۆری:</span>
+                                    <span>${studentGrades.theory || 0} / 7</span>
+                                </div>
+                            ` : `
+                                <div class="grades-info-row">
+                                    <span>نمرەی تیۆری:</span>
+                                    <span>${studentGrades.theory || 0} / 15</span>
+                                </div>
+                            `}
+                            <div class="grades-info-row">
+                                <span><strong>کۆی گشتی:</strong></span>
+                                <span class="grades-total">${studentGrades.total || 0} / 20</span>
+                            </div>
+                        </div>
+                        <div class="teacher-actions">
+                            <button class="edit-btn" onclick="openGradesModal('${student.id}', '${student.name}')">
+                                <i class="fas fa-edit"></i> ${studentGrades.total ? 'دەستکاری' : 'زیادکردن'}
+                            </button>
+                            ${studentGrades.total ? `
+                                <button class="delete-btn" onclick="deleteGrade('${student.id}')">
+                                    <i class="fas fa-trash"></i> سڕینەوە
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+                
+                document.getElementById('viewGradesSection').style.display = 'block';
+            });
+        }
+
+        // Open Grades Modal
+        function openGradesModal(studentId, studentName) {
+            const level = document.getElementById('gradesLevel').value;
+            const group = document.getElementById('gradesGroup').value;
+            const course = document.getElementById('gradesClass').value;
+            const semester = document.getElementById('gradesSemester').value;
+            
+            document.getElementById('gradesStudentName').value = studentName;
+            document.getElementById('editGradesStudentId').value = studentId;
+            
+            // Set modal class based on teacher type
+            const modal = document.getElementById('gradesModal');
+            if (currentUser.teacherType === 'theory') {
+                modal.className = 'modal theory-teacher';
+            } else {
+                modal.className = 'modal practical-teacher';
+            }
+            
+            // Load existing grades if any
+            const gradesPath = `grades/${level}${group}/${course}/${semester}/${currentUser.username}/${studentId}`;
+            database.ref(gradesPath).once('value', (snapshot) => {
+                const grades = snapshot.val();
+                
+                if (grades) {
+                    document.getElementById('dailyGrade').value = grades.daily || 0;
+                    document.getElementById('absenceGrade').value = grades.absence || 0;
+                    document.getElementById('practicalGrade').value = grades.practical || 0;
+                    document.getElementById('theoryGrade').value = grades.theory || 0;
+                    document.getElementById('gradesModalTitle').innerHTML = '<i class="fas fa-edit"></i> دەستکاریکردنی نمرە';
+                } else {
+                    document.getElementById('dailyGrade').value = '';
+                    document.getElementById('absenceGrade').value = '';
+                    document.getElementById('practicalGrade').value = '';
+                    document.getElementById('theoryGrade').value = '';
+                    document.getElementById('gradesModalTitle').innerHTML = '<i class="fas fa-plus"></i> زیادکردنی نمرە';
+                }
+                
+                // Update theory grade label and max based on teacher type
+                if (currentUser.teacherType === 'practical') {
+                    document.getElementById('theoryGradeLabel').textContent = 'نمرەی تیۆری';
+                    document.getElementById('theoryGradeMax').textContent = '/ 7';
+                    document.getElementById('theoryGrade').max = 7;
+                } else {
+                    document.getElementById('theoryGradeLabel').textContent = 'نمرەی تیۆری';
+                    document.getElementById('theoryGradeMax').textContent = '/ 15';
+                    document.getElementById('theoryGrade').max = 15;
+                }
+                
+                calculateTotal();
+            });
+            
+            document.getElementById('gradesModal').style.display = 'flex';
+        }
+
+        // Close Grades Modal
+        function closeGradesModal() {
+            document.getElementById('gradesModal').style.display = 'none';
+        }
+
+        // Calculate Total
+        function calculateTotal() {
+            const daily = parseInt(document.getElementById('dailyGrade').value) || 0;
+            const absence = parseInt(document.getElementById('absenceGrade').value) || 0;
+            const practical = currentUser.teacherType === 'practical' ? (parseInt(document.getElementById('practicalGrade').value) || 0) : 0;
+            const theory = parseInt(document.getElementById('theoryGrade').value) || 0;
+            
+            const total = daily + absence + practical + theory;
+            document.getElementById('totalGradeDisplay').textContent = `${total} / 20`;
+        }
+
+        // Save Grades
+        function saveGrades(event) {
+            event.preventDefault();
+            
+            const level = document.getElementById('gradesLevel').value;
+            const group = document.getElementById('gradesGroup').value;
+            const course = document.getElementById('gradesClass').value;
+            const semester = document.getElementById('gradesSemester').value;
+            const studentId = document.getElementById('editGradesStudentId').value;
+            
+            const daily = parseInt(document.getElementById('dailyGrade').value) || 0;
+            const absence = parseInt(document.getElementById('absenceGrade').value) || 0;
+            const practical = currentUser.teacherType === 'practical' ? (parseInt(document.getElementById('practicalGrade').value) || 0) : 0;
+            const theory = parseInt(document.getElementById('theoryGrade').value) || 0;
+            
+            // Validate grades based on teacher type
+            if (daily < 0 || daily > 3) {
+                alert('نمرەی رۆژانە دەبێت لە نێوان ٠ بۆ ٣ بێت!');
+                return;
+            }
+            if (absence < 0 || absence > 2) {
+                alert('نمرەی غیابات دەبێت لە نێوان ٠ بۆ ٢ بێت!');
+                return;
+            }
+            
+            if (currentUser.teacherType === 'practical') {
+                if (practical < 0 || practical > 8) {
+                    alert('نمرەی پراکتیک دەبێت لە نێوان ٠ بۆ ٨ بێت!');
+                    return;
+                }
+                if (theory < 0 || theory > 7) {
+                    alert('نمرەی تیۆری دەبێت لە نێوان ٠ بۆ ٧ بێت!');
+                    return;
+                }
+            } else {
+                if (theory < 0 || theory > 15) {
+                    alert('نمرەی تیۆری دەبێت لە نێوان ٠ بۆ ١٥ بێت!');
+                    return;
+                }
+            }
+            
+            const gradesData = {
+                daily: daily,
+                absence: absence,
+                practical: practical,
+                theory: theory,
+                total: daily + absence + practical + theory,
+                timestamp: new Date().toISOString()
+            };
+            
+            const gradesPath = `grades/${level}${group}/${course}/${semester}/${currentUser.username}/${studentId}`;
+            database.ref(gradesPath).set(gradesData)
+                .then(() => {
+                    showGradesSuccess('نمرەکان بە سەرکەوتوویی پاشەکەوت کران! ✅');
+                    closeGradesModal();
+                    loadGradesStudents();
+                })
+                .catch((error) => {
+                    alert('هەڵە لە پاشەکەوتکردن: ' + error.message);
+                });
+        }
+
+        // Delete Grade
+        function deleteGrade(studentId) {
+            if (!confirm('دڵنیایی لە سڕینەوەی ئەم نمرەیە؟')) return;
+            
+            const level = document.getElementById('gradesLevel').value;
+            const group = document.getElementById('gradesGroup').value;
+            const course = document.getElementById('gradesClass').value;
+            const semester = document.getElementById('gradesSemester').value;
+            
+            const gradesPath = `grades/${level}${group}/${course}/${semester}/${currentUser.username}/${studentId}`;
+            database.ref(gradesPath).remove()
+                .then(() => {
+                    showGradesSuccess('نمرە بە سەرکەوتوویی سڕایەوە! ✅');
+                    loadGradesStudents();
+                })
+                .catch((error) => {
+                    alert('هەڵە لە سڕینەوە: ' + error.message);
+                });
+        }
+
+        // Show Grades Success Message
+        function showGradesSuccess(message) {
+            const successMsg = document.getElementById('gradesSuccessMsg');
+            successMsg.textContent = message;
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        // Open All Grades Modal
+        function openAllGradesModal() {
+            loadAllGrades();
+            document.getElementById('allGradesModal').style.display = 'flex';
+        }
+
+        // Close All Grades Modal
+        function closeAllGradesModal() {
+            document.getElementById('allGradesModal').style.display = 'none';
+        }
+
+        // Load All Grades
+        function loadAllGrades() {
+            const level = document.getElementById('allGradesLevel').value;
+            const group = document.getElementById('allGradesGroup').value;
+            const course = document.getElementById('allGradesClass').value;
+            const semester = document.getElementById('allGradesSemester').value;
+            
+            const tbody = document.getElementById('allGradesTableBody');
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">کەمێک چاوەڕێ بکە...</td></tr>';
+            
+            // Build path based on filters
+            let gradesPath = 'grades/';
+            if (level && group) {
+                gradesPath += `${level}${group}/`;
+                if (course) {
+                    gradesPath += `${course}/`;
+                    if (semester) {
+                        gradesPath += `${semester}/${currentUser.username}`;
+                    }
+                }
+            }
+            
+            database.ref(gradesPath).once('value', (snapshot) => {
+                const gradesData = snapshot.val();
+                tbody.innerHTML = '';
+                
+                if (!gradesData) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px; color: var(--gray);">هیچ نمرەیەک نەدۆزرایەوە</td></tr>';
+                    return;
+                }
+                
+                // Process grades data
+                const grades = [];
+                
+                function processGrades(data, levelGroup = '', courseName = '', semesterNum = '') {
+                    if (data && typeof data === 'object') {
+                        Object.keys(data).forEach(key => {
+                            if (key === currentUser.username) {
+                                // Teacher's grades
+                                Object.keys(data[key]).forEach(studentId => {
+                                    const student = allStudents.find(s => s.id === studentId);
+                                    if (student) {
+                                        grades.push({
+                                            student: student,
+                                            grades: data[key][studentId],
+                                            levelGroup: levelGroup,
+                                            course: courseName,
+                                            semester: semesterNum
+                                        });
+                                    }
+                                });
+                            } else {
+                                // Navigate deeper
+                                processGrades(data[key], 
+                                    levelGroup || key, 
+                                    courseName || key, 
+                                    semesterNum || key);
+                            }
+                        });
+                    }
+                }
+                
+                processGrades(gradesData);
+                
+                if (grades.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px; color: var(--gray);">هیچ نمرەیەک نەدۆزرایەوە</td></tr>';
+                    return;
+                }
+                
+                grades.forEach(item => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${item.student.name}</td>
+                        <td>${item.grades.daily || 0} / 3</td>
+                        <td>${item.grades.absence || 0} / 2</td>
+                        <td>${currentUser.teacherType === 'practical' ? `${item.grades.practical || 0} / 8` : '-'}</td>
+                        <td>${item.grades.theory || 0} / ${currentUser.teacherType === 'practical' ? '7' : '15'}</td>
+                        <td><strong>${item.grades.total || 0} / 20</strong></td>
+                        <td>وەرزی ${item.semester}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editGradeFromAll('${item.student.id}', '${item.levelGroup}', '${item.course}', '${item.semester}')">
+                                <i class="fas fa-edit"></i> دەستکاری
+                            </button>
+                        </td>
+                    `;
+                });
+            });
+        }
+
+        // Edit Grade from All Grades
+        function editGradeFromAll(studentId, levelGroup, course, semester) {
+            // Extract level and group
+            const level = levelGroup.replace(/[^0-9]/g, '');
+            const group = levelGroup.replace(/[0-9]/g, '');
+            
+            // Set filters
+            document.getElementById('gradesLevel').value = level;
+            document.getElementById('gradesGroup').value = group;
+            document.getElementById('gradesClass').value = course;
+            document.getElementById('gradesSemester').value = semester;
+            
+            // Close all grades modal
+            closeAllGradesModal();
+            
+            // Load students and open grade modal
+            loadGradesStudents();
+            
+            setTimeout(() => {
+                const student = allStudents.find(s => s.id === studentId);
+                if (student) {
+                    openGradesModal(studentId, student.name);
+                }
+            }, 500);
+        }
+
+        // Export Grades to Excel
+        function exportGradesToExcel() {
+            const level = document.getElementById('gradesLevel').value;
+            const group = document.getElementById('gradesGroup').value;
+            const course = document.getElementById('gradesClass').value;
+            const semester = document.getElementById('gradesSemester').value;
+            
+            if (!level || !group || !course || !semester) {
+                alert('تکایە هەموو خانەکان پڕ بکەرەوە!');
+                return;
+            }
+            
+            // Load grades data
+            const gradesPath = `grades/${level}${group}/${course}/${semester}/${currentUser.username}`;
+            database.ref(gradesPath).once('value', (snapshot) => {
+                const gradesData = snapshot.val();
+                
+                // Filter students for this level and group
+                const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
+                
+                const records = studentsInGroup.map(student => {
+                    const studentGrades = gradesData && gradesData[student.id] ? gradesData[student.id] : {};
+                    
+                    return {
+                        'کۆد': student.code,
+                        'ناو': student.name,
+                        'پەیمانگە': student.institute,
+                        'نمرەی ڕۆژانە': studentGrades.daily || 0,
+                        'نمرەی غیابات': studentGrades.absence || 0,
+                        'نمرەی پراکتیک': currentUser.teacherType === 'practical' ? (studentGrades.practical || 0) : '-',
+                        'نمرەی تیۆری': studentGrades.theory || 0,
+                        'کۆی گشتی': studentGrades.total || 0
+                    };
+                });
+                
+                exportDataToExcel(records, `نمرەکان_${level}${group}_${course}_وەرزی_${semester}.xlsx`);
+            });
+        }
+
+        // Print Grades Report
+        function printGradesReport() {
+            const level = document.getElementById('gradesLevel').value;
+            const group = document.getElementById('gradesGroup').value;
+            const course = document.getElementById('gradesClass').value;
+            const semester = document.getElementById('gradesSemester').value;
+            
+            if (!level || !group || !course || !semester) {
+                alert('تکایە هەموو خانەکان پڕ بکەرەوە!');
+                return;
+            }
+            
+            // Load grades data
+            const gradesPath = `grades/${level}${group}/${course}/${semester}/${currentUser.username}`;
+            database.ref(gradesPath).once('value', (snapshot) => {
+                const gradesData = snapshot.val();
+                
+                // Filter students for this level and group
+                const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
+                
+                const title = `ڕاپۆرتی نمرەکان - ئاستی ${level} گرووپی ${group} - وانە ${course} - وەرزی ${semester}`;
+                
+                let content = `
+                    <div class="attendance-print-header">
+                        <h1 class="attendance-print-title">${title}</h1>
+                        <div class="attendance-print-details">
+                            <div><strong>مامۆستا:</strong> ${currentUser.name}</div>
+                            <div><strong>وانە:</strong> ${course}</div>
+                            <div><strong>ئاست:</strong> ${level}</div>
+                            <div><strong>گرووپ:</strong> ${group}</div>
+                            <div><strong>وەرز:</strong> ${semester}</div>
+                            <div><strong>جۆری مامۆستا:</strong> ${currentUser.teacherType === 'theory' ? 'تیۆری' : 'پراکتیکی'}</div>
+                        </div>
+                    </div>
+                    <table class="attendance-print-list">
+                        <thead>
+                            <tr>
+                                <th>کۆد</th>
+                                <th>ناو</th>
+                                <th>پەیمانگە</th>
+                                <th>نمرەی ڕۆژانە</th>
+                                <th>نمرەی غیابات</th>
+                                ${currentUser.teacherType === 'practical' ? '<th>نمرەی پراکتیک</th>' : ''}
+                                <th>نمرەی تیۆری</th>
+                                <th>کۆی گشتی</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                studentsInGroup.forEach(student => {
+                    const studentGrades = gradesData && gradesData[student.id] ? gradesData[student.id] : {};
+                    
+                    content += `
+                        <tr>
+                            <td>${student.code}</td>
+                            <td>${student.name}</td>
+                            <td>${student.institute}</td>
+                            <td>${studentGrades.daily || 0} / 3</td>
+                            <td>${studentGrades.absence || 0} / 2</td>
+                            ${currentUser.teacherType === 'practical' ? `<td>${studentGrades.practical || 0} / 8</td>` : ''}
+                            <td>${studentGrades.theory || 0} / ${currentUser.teacherType === 'practical' ? '7' : '15'}</td>
+                            <td><strong>${studentGrades.total || 0} / 20</strong></td>
+                        </tr>
+                    `;
+                });
+                
+                content += `
+                        </tbody>
+                    </table>
+                `;
+                
+                showPrintPreview(content);
+            });
+        }
+
+        // Print Total Absence Today for Staff
+        function printTotalAbsenceToday() {
+            const date = document.getElementById('staffAttendanceDate').value;
+            
+            if (!date) {
+                alert('تکایە بەروار هەڵبژێرە!');
+                return;
+            }
+            
+            // Load attendance data
+            const attendanceRef = database.ref('attendance/' + date);
+            attendanceRef.once('value', (snapshot) => {
+                const attendanceData = snapshot.val();
+                const absenceRecords = [];
+                
+                if (attendanceData) {
+                    Object.keys(attendanceData).forEach(levelGroup => {
+                        const { currentLevel, currentGroup } = parseLevelGroup(levelGroup);
+                        
+                        const levelGroupData = attendanceData[levelGroup];
+                        
+                        Object.keys(levelGroupData).forEach(subject => {
+                            const subjectData = levelGroupData[subject];
+                            
+                            Object.keys(subjectData).forEach(timeSlot => {
+                                const timeData = subjectData[timeSlot];
+                                
+                                Object.keys(timeData).forEach(teacherName => {
+                                    const teacherAttendance = timeData[teacherName];
+                                    
+                                    // Collect absent students
+                                    Object.keys(teacherAttendance).forEach(studentId => {
+                                        if (teacherAttendance[studentId] === 'absent') {
+                                            const student = allStudents.find(s => s.id === studentId);
+                                            if (student) {
+                                                absenceRecords.push({
+                                                    student: student,
+                                                    teacher: teacherName,
+                                                    subject: subject,
+                                                    level: currentLevel,
+                                                    group: currentGroup,
+                                                    time: timeSlot
+                                                });
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+                        });
+                    });
+                }
+                
+                const title = `کۆی غیاباتەکانی ئەمڕۆ - ${date}`;
+                let content = '';
+                
+                if (absenceRecords.length === 0) {
+                    content = '<p class="no-results">هیچ غیاباتێک بۆ ئەمڕۆ نییە</p>';
+                } else {
+                    // Group by student
+                    const studentAbsenceMap = {};
+                    
+                    absenceRecords.forEach(record => {
+                        const studentKey = `${record.student.id}-${record.student.name}`;
+                        if (!studentAbsenceMap[studentKey]) {
+                            studentAbsenceMap[studentKey] = {
+                                student: record.student,
+                                absences: []
+                            };
+                        }
+                        studentAbsenceMap[studentKey].absences.push({
+                            teacher: record.teacher,
+                            subject: record.subject,
+                            level: record.level,
+                            group: record.group,
+                            time: record.time
+                        });
+                    });
+                    
+                    content = `
+                        <div class="attendance-print-header">
+                            <h1 class="attendance-print-title">${title}</h1>
+                            <div class="attendance-print-stats">
+                                <div class="attendance-print-stat" style="background: rgba(220, 53, 69, 0.1);">
+                                    <div style="font-size: 24px; font-weight: bold;">${Object.keys(studentAbsenceMap).length}</div>
+                                    <div>کۆی غیابەکان</div>
+                                </div>
+                            </div>
+                        </div>
+                        <table class="attendance-print-list">
+                            <thead>
+                                <tr>
+                                    <th>کۆد</th>
+                                    <th>ناو</th>
+                                    <th>پەیمانگە</th>
+                                    <th>ئاست</th>
+                                    <th>گرووپ</th>
+                                    <th>مامۆستا</th>
+                                    <th>وانە</th>
+                                    <th>کات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    Object.values(studentAbsenceMap).forEach(item => {
+                        item.absences.forEach((absence, index) => {
+                            content += `
+                                <tr>
+                                    ${index === 0 ? `
+                                        <td rowspan="${item.absences.length}">${item.student.code}</td>
+                                        <td rowspan="${item.absences.length}">${item.student.name}</td>
+                                        <td rowspan="${item.absences.length}">${item.student.institute}</td>
+                                    ` : ''}
+                                    <td>${absence.level}</td>
+                                    <td>${absence.group}</td>
+                                    <td>${absence.teacher}</td>
+                                    <td>${absence.subject}</td>
+                                    <td>${absence.time}</td>
+                                </tr>
+                            `;
+                        });
+                    });
+                    
+                    content += `
+                            </tbody>
+                        </table>
+                    `;
+                }
+                
+                showPrintPreview(content);
+            });
         }
 
         // Logout Function
