@@ -685,10 +685,27 @@
     </div>
 
     <div class="container">
-        <header>
-            <h1>سیستەمی تویژینەوەی پەیمانگەی کۆمپیتەر</h1>
-            <p class="subtitle">بەخێربێن بۆ سیستەمی تویژینەوەی پەیمانگەی کۆمپیتەر</p>
-        </header>
+   <header>
+    <div class="logo-container" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+        <!-- لۆگۆی سەرەکی لە GitHub -->
+        <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
+             alt="پەیمانگەی کۆمپیتەری سلێمانی" 
+             class="research-logo"
+             style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.2);"
+             onerror="this.style.display='none'; document.getElementById('research-css-logo').style.display='flex';">
+        
+        <!-- لۆگۆی CSS (ئەگەر وێنەکە کار نەکرد) -->
+        <div id="research-css-logo" style="display: none; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; font-size: 24px; font-weight: bold; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); border: 3px solid white;">
+            CIS
+        </div>
+        
+        <div style="font-size: 40px; color: white;">
+            <i class="fas fa-graduation-cap"></i>
+        </div>
+    </div>
+    <h1>سیستەمی تویژینەوەی پەیمانگەی کۆمپیتەر</h1>
+    <p class="subtitle">بەخێربێن بە سیستەمی تویژینەوەی پەیمانگەی کۆمپیتەر</p>
+</header>
 
         <section class="login-section">
             <h2 class="login-title">چوونەژوورەوە</h2>
