@@ -337,13 +337,24 @@
     <div id="loginPage" class="container">
         <div class="header">
             <!-- لۆگۆ لەسەر شاشەی لۆگین -->
-            <div class="logo-container">
-                <div id="loginLogoContainer">
-                    <img src="https://sanishtech.com/i/690c4fb91619a-1762414521.png" alt="لۆگۆی پەیمانگای کۆمپیوتەری سلێمانی" class="institute-logo" id="loginLogo">
-                </div>
-                <div class="institute-name">پەیمانگای کۆمپیوتەری سلێمانی</div>
-                <div class="institute-subtitle">Slemani Computer Institute</div>
-            </div>
+          <div class="logo-container">
+    <div id="loginLogoContainer">
+        <!-- لۆگۆی سەرەکی لە GitHub -->
+        <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
+             alt="لۆگۆی پەیمانگای کۆمپیوتەری سلێمانی" 
+             class="institute-logo" 
+             id="loginLogo"
+             onerror="this.style.display='none'; document.getElementById('loginLogoPlaceholder').style.display='flex';">
+        
+        <!-- لۆگۆی CSS (پاشەکەوت) -->
+        <div id="loginLogoPlaceholder" class="logo-placeholder" style="display: none;">
+            <i class="fas fa-graduation-cap"></i>
+            <span>پەیمانگای کۆمپیوتەری سلێمانی</span>
+        </div>
+    </div>
+    <div class="institute-name">پەیمانگای کۆمپیوتەری سلێمانی</div>
+    <div class="institute-subtitle">Slemani Computer Institute</div>
+</div>
             <h1>🎓 سیستەمی داشبۆردی تۆماری غیابات</h1>
             <p>تکایە بڕۆ ژوورەوە بۆ سیستەمی بەڕێوەبردنی غیابات</p>
         </div>
