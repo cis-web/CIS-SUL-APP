@@ -626,7 +626,6 @@
             color: var(--danger);
         }
         
-        /* نوێ: ستایلەکانی چاپ */
         .print-actions {
             display: flex;
             gap: 10px;
@@ -674,7 +673,6 @@
             transform: translateY(-2px);
         }
         
-        /* نوێ: ستایلەکانی خشتەی چاپ */
         .print-table {
             width: 100%;
             border-collapse: collapse;
@@ -721,7 +719,6 @@
             font-size: 14px;
         }
         
-        /* نوێ: ستایلەکانی چاپ */
         @media print {
             body * {
                 visibility: hidden;
@@ -766,7 +763,6 @@
             }
         }
         
-        /* نوێ: ستایلەکانی ئاگادارکردنەوە */
         .notification-section {
             background: var(--light);
             padding: 20px;
@@ -814,7 +810,6 @@
             font-size: 14px;
         }
         
-        /* نوێ: ستایلەکانی زەنگۆلەی ئاگادارکردنەوە */
         .notification-bell {
             background: none;
             border: none;
@@ -1005,7 +1000,16 @@
     <div id="loginPage" class="container">
         <div class="header">
             <div class="logo-container">
-                <img src="https://sanishtech.com/i/690ccc23743db-1762446371.png" alt="پەیمانگەی کۆمپیتەری سلێمانی" class="institute-logo">
+                <!-- لۆگۆی سەرەکی لە GitHub -->
+                <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
+                     alt="پەیمانگەی کۆمپیتەری سلێمانی" 
+                     class="institute-logo"
+                     onerror="this.style.display='none'; document.getElementById('login-css-logo').style.display='flex';">
+                
+                <!-- لۆگۆی CSS (ئەگەر وێنەکە کار نەکرد) -->
+                <div id="login-css-logo" style="display: none; width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; font-size: 28px; font-weight: bold; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 3px solid var(--primary);">
+                    CIS
+                </div>
                 <div class="logo">
                     <i class="fas fa-graduation-cap"></i>
                 </div>
@@ -1043,7 +1047,16 @@
     <div id="teacherDashboard" class="container dashboard">
         <div class="dashboard-header">
             <div class="logo-container">
-                <img src="https://sanishtech.com/i/690ccc23743db-1762446371.png" alt="پەیمانگەی کۆمپیتەری سلێمانی" class="institute-logo">
+                <!-- لۆگۆی سەرەکی لە GitHub -->
+                <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
+                     alt="پەیمانگەی کۆمپیتەری سلێمانی" 
+                     class="institute-logo"
+                     onerror="this.style.display='none'; document.getElementById('dashboard-css-logo').style.display='flex';">
+                
+                <!-- لۆگۆی CSS (ئەگەر وێنەکە کار نەکرد) -->
+                <div id="dashboard-css-logo" style="display: none; width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; font-size: 28px; font-weight: bold; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); border: 3px solid white;">
+                    CIS
+                </div>
             </div>
             <h2><i class="fas fa-chalkboard-teacher"></i> داشبۆردی مامۆستا</h2>
             <p class="welcome-text" id="teacherWelcome"></p>
@@ -1367,7 +1380,7 @@
                     <div class="grade-input-group">
                         <label>نمرەی ڕۆژانە</label>
                         <div>
-                            <input type="number" id="dailyGrade" class="grade-input" min="0" max="3" placeholder="0" oninput="calculateTotal()">
+                            <input type="number" id="dailyGrade" class="grade-input" min="0" max="3" step="0.1" placeholder="0" oninput="calculateTotal()">
                             <span class="grade-max">/ 3</span>
                         </div>
                     </div>
@@ -1375,7 +1388,7 @@
                     <div class="grade-input-group">
                         <label>نمرەی غیابات</label>
                         <div>
-                            <input type="number" id="absenceGrade" class="grade-input" min="0" max="2" placeholder="0" oninput="calculateTotal()">
+                            <input type="number" id="absenceGrade" class="grade-input" min="0" max="2" step="0.1" placeholder="0" oninput="calculateTotal()">
                             <span class="grade-max">/ 2</span>
                         </div>
                     </div>
@@ -1386,7 +1399,7 @@
                     <div class="grade-input-group">
                         <label>نمرەی پراکتیک</label>
                         <div>
-                            <input type="number" id="practicalGrade" class="grade-input" min="0" max="8" placeholder="0" oninput="calculateTotal()">
+                            <input type="number" id="practicalGrade" class="grade-input" min="0" max="8" step="0.1" placeholder="0" oninput="calculateTotal()">
                             <span class="grade-max">/ 8</span>
                         </div>
                     </div>
@@ -1397,7 +1410,7 @@
                     <div class="grade-input-group">
                         <label>نمرەی تیۆری</label>
                         <div>
-                            <input type="number" id="theoryGrade" class="grade-input" min="0" max="15" placeholder="0" oninput="calculateTotal()">
+                            <input type="number" id="theoryGrade" class="grade-input" min="0" max="15" step="0.1" placeholder="0" oninput="calculateTotal()">
                             <span class="grade-max">/ 15</span>
                         </div>
                     </div>
@@ -1444,78 +1457,14 @@
         let currentAttendanceData = {};
         let currentStudentsInGroup = [];
 
-        // Define the courses array
-        const courses = [
-            "KURDI", "ARABIC", "MAF", "MADANY", "PHYSIC", "RELIGON", "MATH", 
-            "KURDOLOGI", "ENGLISH", "WINDOWS", "ACCESS", "EXCEL", "PP", "PS", 
-            "IT", "INTERNET", "JAVA", "JS", "WA", "VB", "Csharp", "CCNA1", 
-            "PHPTEXTFILE", "PHPMYSQL", "C++", "GSM", "CCNA2", "LINUX", 
-            "Asp", "ANDRPID", "CCNA4", "SPORT", "MIS", "DW", "MOBILE", 
-            "HTML", "JAVAOOP", "SERVER", "AJAX", "HTML5", "NDBA", "SQL", 
-            "LIBRARY", "WIRELESS"
-        ];
-
         // Define the teachers array
         const allTeachers = [
             { username: 'omedsadiq', name: 'Omed Sadiq Abdulkarim', password: 'password', subject: 'ASP.NET', type: 'teacher', teacherType: 'practical' },
-            { username: 'kawaaziz', name: 'Kawa Aziz Saeed Sharif', password: 'password', subject: 'Arabic', type: 'teacher', teacherType: 'theory' },
-            { username: 'sawenlatif', name: 'Sawen Latif Amin', password: 'password', subject: 'Kurdish', type: 'teacher', teacherType: 'theory' },
-            { username: 'kaleasaad', name: 'Kale Asaad Muhammad', password: 'password', subject: 'Kurdish', type: 'teacher', teacherType: 'theory' },
-            { username: 'shnomahmood', name: 'Shno Mahmood Hama Muhammad', password: 'password', subject: 'Madani, Kurdology', type: 'teacher', teacherType: 'theory' },
-            { username: 'bafrinomar', name: 'Bafrin Omar Qadir', password: 'password', subject: 'Religion', type: 'teacher', teacherType: 'theory' },
-            { username: 'kanilatif', name: 'Kani Latif Najib', password: 'password', subject: 'Religion', type: 'teacher', teacherType: 'theory' },
-            { username: 'daroonjamal', name: 'Daroon Jamal', password: 'password', subject: 'Psychology, Genocide, Human Rights', type: 'teacher', teacherType: 'theory' },
-            { username: 'herosalih', name: 'Hero Salih Muhammad', password: 'password', subject: 'English (H)', type: 'teacher', teacherType: 'theory' },
-            { username: 'muhammadamin', name: 'Muhammad Amin Hussein Abdullah', password: 'password', subject: 'English (M)', type: 'teacher', teacherType: 'theory' },
-            { username: 'binarnajmaddin', name: 'Binar Najmaddin Mustafa', password: 'password', subject: 'English (BN)', type: 'teacher', teacherType: 'theory' },
-            { username: 'bahraraouf', name: 'Bahra Raouf Salih', password: 'password', subject: 'English (BH)', type: 'teacher', teacherType: 'theory' },
-            { username: 'saranusrat', name: 'Sara Nusrat Ali', password: 'password', subject: 'Banking (S)', type: 'teacher', teacherType: 'theory' },
-            { username: 'kanyanmiqdad', name: 'Kanyan Miqdad Mustafa', password: 'password', subject: 'Banking (K)', type: 'teacher', teacherType: 'theory' },
-            { username: 'hawnazrafiq', name: 'Hawnaz Rafiq Abd', password: 'password', subject: 'Banking (H)', type: 'teacher', teacherType: 'theory' },
-            { username: 'razmuhammad', name: 'Raz Muhammad Qadir', password: 'password', subject: 'Linux + Windows Server, Linux', type: 'teacher', teacherType: 'practical' },
-            { username: 'lenjanajmaddin', name: 'Lenja Najmaddin Mustafa', password: 'password', subject: 'Server, IS, Server', type: 'teacher', teacherType: 'practical' },
-            { username: 'sararaouf', name: 'Sara Raouf Ismail', password: 'password', subject: 'CCNA4, Wireless, CCNA1, CCNA2', type: 'teacher', teacherType: 'practical' },
-            { username: 'aramibrahim', name: 'Aram Ibrahim Abdulkarim', password: 'password', subject: 'IT, CCNA3', type: 'teacher', teacherType: 'practical' },
-            { username: 'arkanahmad', name: 'Arkan Ahmad Mahmood', password: 'password', subject: 'DBA, WA, GSM', type: 'teacher', teacherType: 'practical' },
-            { username: 'saramuhammad', name: 'Sara Muhammad Ahmad', password: 'password', subject: 'PowerPoint, NDBA', type: 'teacher', teacherType: 'practical' },
-            { username: 'azheennajmaddin', name: 'Azheen Jabbar Abdulhussein', password: 'password', subject: 'C++, GRP, SQL', type: 'teacher', teacherType: 'practical' },
-            { username: 'naznajib', name: 'Naz Najib Abdullah', password: 'password', subject: 'Java OOP, Java, Android', type: 'teacher', teacherType: 'practical' },
-            { username: 'majidanwer', name: 'Majid Anwer Hama Rahim', password: 'password', subject: 'Csharp, Internet', type: 'teacher', teacherType: 'practical' },
-            { username: 'dilshadhamza', name: 'Dilshad Hamza Hama Salih', password: 'password', subject: 'Windows', type: 'teacher', teacherType: 'practical' },
-            { username: 'khoshifuad', name: 'Khoshi Fuad Latif', password: 'password', subject: 'Excel, Dreamweaver', type: 'teacher', teacherType: 'practical' },
-            { username: 'thywestmajid', name: 'Thywest Majid Karim', password: 'password', subject: 'Photoshop, HTML5', type: 'teacher', teacherType: 'practical' },
-            { username: 'alanomar', name: 'Alan Omar Ibrahim', password: 'password', subject: 'PHP Text File, PHP MySQL, GRP', type: 'teacher', teacherType: 'practical' },
-            { username: 'didarfalah', name: 'Didar Falah Ahmad', password: 'password', subject: 'JavaScript, Access', type: 'teacher', teacherType: 'practical' },
-            { username: 'khandanajmaddin', name: 'Khanda Najmaddin Mustafa', password: 'password', subject: 'Word, AJAX', type: 'teacher', teacherType: 'practical' },
-            { username: 'sharanesar', name: 'Shara Nesar Amin', password: 'password', subject: 'CSS, HTML, MIS', type: 'teacher', teacherType: 'practical' },
-            { username: 'hawarhussein', name: 'Hawar Hussein Yaba', password: 'password', subject: 'Mobile, Visual Basic', type: 'teacher', teacherType: 'practical' },
-            { username: 'karwanlatif', name: 'Karwan Latif Wali', password: 'password', subject: 'Sport', type: 'teacher', teacherType: 'theory' }
+            { username: 'majidanwer', name: 'Majid Anwer Hama Rahim', password: 'password', subject: 'Csharp, Internet', type: 'teacher', teacherType: 'practical' }
         ];
-
-        // چارەسەری گرووپەکان
-        function parseLevelGroup(levelGroup) {
-            let currentLevel, currentGroup;
-            
-            if (levelGroup.includes('WEB')) {
-                currentLevel = levelGroup.replace('WEB', '');
-                currentGroup = 'WEB';
-            } else if (levelGroup.includes('NET')) {
-                currentLevel = levelGroup.replace('NET', '');
-                currentGroup = 'NET';
-            } else if (levelGroup.includes('PRO')) {
-                currentLevel = levelGroup.replace('PRO', '');
-                currentGroup = 'PRO';
-            } else {
-                currentLevel = levelGroup.substring(0, levelGroup.length - 1);
-                currentGroup = levelGroup.substring(levelGroup.length - 1);
-            }
-            
-            return { currentLevel, currentGroup };
-        }
 
         // Initialize Data
         function initializeData() {
-            // Check if teachers data exists, if not create initial data
             database.ref('teachers').once('value', (snapshot) => {
                 if (!snapshot.exists()) {
                     allTeachers.forEach(teacher => {
@@ -1527,55 +1476,10 @@
                             teacherType: teacher.teacherType || null
                         });
                     });
-                    console.log('All teachers data added to Firebase');
-                }
-            });
-
-            // Check if students data exists, if not create sample data
-            database.ref('students').once('value', (snapshot) => {
-                if (!snapshot.exists()) {
-                    const sampleStudents = [];
-                    const names = ['ئاری', 'هێڤی', 'سارا', 'ڕۆژا', 'ڕەوان', 'ئازاد', 'هێمن', 'دیلان', 'ڕێباز', 'شڤان'];
-                    
-                    const institutes = ['کۆمپیوتەر', 'ئەندازیاری', 'بەڕێوەبەری بازرگانی', 'زانست', 'پەروەردە'];
-                    
-                    for (let i = 1; i <= 10; i++) {
-                        const level = Math.floor((i - 1) / 2) + 1;
-                        const group = String.fromCharCode(65 + ((i - 1) % 2));
-                        
-                        sampleStudents.push({
-                            code: i.toString(),
-                            name: names[i - 1] || 'خوێندکار ' + i,
-                            institute: institutes[Math.floor(Math.random() * institutes.length)],
-                            level: level.toString(),
-                            group: group
-                        });
-                    }
-                    
-                    sampleStudents.forEach(student => {
-                        database.ref('students').push(student);
-                    });
-                    console.log('Sample students data added to Firebase');
-                }
-            });
-
-            // Check if schedules data exists, if not create sample data
-            database.ref('schedules').once('value', (snapshot) => {
-                if (!snapshot.exists()) {
-                    const sampleSchedules = [
-                        { teacherName: 'Majid Anwer Hama Rahim', day: 'یەکشەممە', subject: 'Csharp', classNum: '4A', time: '8:30 - 10:30' },
-                        { teacherName: 'Majid Anwer Hama Rahim', day: 'سێشەممە', subject: 'Internet', classNum: '4B', time: '10:30 - 12:30' }
-                    ];
-                    
-                    sampleSchedules.forEach(schedule => {
-                        database.ref('schedules').push(schedule);
-                    });
-                    console.log('Sample schedules data added to Firebase');
                 }
             });
         }
 
-        // Call initialization when the page loads
         initializeData();
 
         // Load Students from Firebase
@@ -1606,7 +1510,6 @@
                     });
                 }
 
-                // Update teacher schedule counts and load teacher courses
                 if (currentUser && currentUser.type === 'teacher') {
                     updateTeacherScheduleCounts();
                     loadTeacherSchedules();
@@ -1663,7 +1566,6 @@
                 container.appendChild(card);
             });
             
-            // Update printable schedule table
             updateSchedulePrintTable(teacherSchedules);
         }
 
@@ -1691,13 +1593,9 @@
         function loadTeacherCourses() {
             if (!currentUser || currentUser.type !== 'teacher') return;
             
-            // Get teacher's schedules from all schedules
             const teacherSchedules = allSchedules.filter(s => s.teacherName === currentUser.name);
-            
-            // Extract unique courses from teacher's schedules
             const teacherCourses = [...new Set(teacherSchedules.map(s => s.subject))];
             
-            // Populate attendance class dropdown
             const attendanceClass = document.getElementById('attendanceClass');
             if (attendanceClass) {
                 attendanceClass.innerHTML = '<option value="">هەڵبژاردنی وانە...</option>';
@@ -1709,7 +1607,6 @@
                 });
             }
 
-            // Populate grades class dropdown
             const gradesClass = document.getElementById('gradesClass');
             if (gradesClass) {
                 gradesClass.innerHTML = '<option value="">هەڵبژاردنی وانە...</option>';
@@ -1754,7 +1651,6 @@
             const password = document.getElementById('password').value.trim();
             const errorMsg = document.getElementById('errorMsg');
 
-            // Check for teacher in Firebase
             database.ref('teachers/' + username).once('value', (snapshot) => {
                 const teacher = snapshot.val();
                 if (teacher && teacher.password === password) {
@@ -1778,8 +1674,6 @@
             loadStudents();
             loadSchedules();
             switchTeacherSection('schedule');
-            
-            // بارکردنی ئاگادارکردنەوەکان کاتێک داشبۆرد دەردەکەوێت
             updateTeacherNotificationBadge();
         }
 
@@ -1801,12 +1695,10 @@
             const container = document.getElementById('attendanceStudentsList');
             container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">کەمێك چاوەڕێ بکە...</p>';
             
-            // Load attendance data
             const attendancePath = `attendance/${date}/${level}${group}/${course}/${time}/${currentUser.name}`;
             database.ref(attendancePath).once('value', (snapshot) => {
                 const attendanceData = snapshot.val() || {};
                 
-                // Filter students for this level and group
                 currentStudentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
                 
                 container.innerHTML = '';
@@ -1818,7 +1710,6 @@
                 }
                 
                 currentStudentsInGroup.forEach((student) => {
-                    // Default بۆ present
                     const currentStatus = attendanceData[student.id] || 'present';
                     
                     const card = document.createElement('div');
@@ -1859,10 +1750,8 @@
                 
                 document.getElementById('saveAttendanceSection').style.display = 'block';
                 
-                // Update printable attendance table
                 updateAttendancePrintTable(currentStudentsInGroup, attendanceData, level, group, course, time, date);
                 
-                // Event Listeners
                 container.querySelectorAll('input[type="radio"]').forEach(radio => {
                     radio.addEventListener('change', function() {
                         const card = this.closest('.attendance-card');
@@ -1902,7 +1791,7 @@
                 `مامۆستا: ${currentUser.name} | ئاست: ${level} - گرووپ: ${group} - وانە: ${course} - کات: ${time} - بەروار: ${date}`;
         }
 
-        // Save All Attendance - چاکسازیکراو
+        // Save All Attendance
         function saveAllAttendance() {
             const level = document.getElementById('attendanceLevel').value;
             const group = document.getElementById('attendanceGroup').value;
@@ -1915,7 +1804,6 @@
                 return;
             }
             
-            // چێکەکی نوێ: دڵنیابوون لەوەی هەموو خوێندکاران دیاری کراون
             const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
             let allStudentsMarked = true;
             const unmarkedStudents = [];
@@ -1935,7 +1823,6 @@
             
             const attendanceData = {};
             
-            // کۆکردنەوەی هەموو داتاکانی ئامادەبوون
             document.querySelectorAll('.attendance-card').forEach(card => {
                 const studentId = card.getAttribute('data-student-id');
                 const status = card.querySelector('input[type="radio"]:checked');
@@ -1945,7 +1832,6 @@
                 }
             });
             
-            // ژماردنی ئامادە و غیاب
             let presentCount = 0;
             let absentCount = 0;
             Object.values(attendanceData).forEach(status => {
@@ -1953,13 +1839,11 @@
                 if (status === 'absent') absentCount++;
             });
             
-            // پاشەکەوتکردن بۆ Firebase
             const attendancePath = `attendance/${date}/${level}${group}/${course}/${time}/${currentUser.name}`;
             database.ref(attendancePath).set(attendanceData)
                 .then(() => {
                     showTeacherSuccess('تۆماری ئامادەبوون بە سەرکەوتووی پاشەکەوتکرا! ✅');
                     
-                    // زیادکردنی ئاگادارکردنەوە بۆ بەڕێوەبەر - چاکسازیکراو
                     const notification = {
                         message: `مامۆستایی ${currentUser.name} تۆماری ئامادەبوونی پاشەکەوت کرد بۆ ئاستی ${level} گروپی ${group} - وانە ${course} - کات ${time} - ${date} (ئامادە: ${presentCount}, غیاب: ${absentCount})`,
                         type: 'success',
@@ -1978,15 +1862,9 @@
                         }
                     };
                     
-                    // پاشەکەوتکردنی ئاگادارکردنەوە لە فایەربەیس
                     database.ref('notifications').push(notification)
                         .then(() => {
-                            console.log('ئاگادارکردنەوە بۆ بەڕێوەبەر زیادکرا');
-                            // زیادکردنی ئاگادارکردنەوە بۆ مامۆستاش
                             addTeacherNotification(notification);
-                        })
-                        .catch((error) => {
-                            console.error('هەڵە لە زیادکردنی ئاگادارکردنەوە:', error);
                         });
                 })
                 .catch((error) => {
@@ -2031,7 +1909,6 @@
             
             const gradeKey = `${level}${group}_${course}_semester${semester}`;
             
-            // بارکردنی نمرەکان لە فایەربەیس
             database.ref('grades/' + gradeKey).once('value', (snapshot) => {
                 const gradesData = snapshot.val() || {};
                 
@@ -2095,7 +1972,6 @@
                     container.appendChild(card);
                 });
                 
-                // Update printable grades table
                 updateGradesPrintTable(studentsInGroup, gradesData, level, group, course, semester);
             });
         }
@@ -2138,7 +2014,6 @@
             const container = document.getElementById('notificationsList');
             container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">بارکردنی ئاگادارکردنەوەکان...</p>';
             
-            // بارکردنی ئاگادارکردنەوەکان لە فایەربەیس
             database.ref('notifications').orderByChild('timestamp').once('value', (snapshot) => {
                 const notifications = snapshot.val();
                 container.innerHTML = '';
@@ -2153,10 +2028,8 @@
                     notificationsArray.push({ id: key, ...notifications[key] });
                 });
                 
-                // ڕیزکردنی ئاگادارکردنەوەکان بەپێی کاتی دروستکردن (نوێترین لەسەرەوە)
                 notificationsArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
-                // نیشاندانی تەنها ١٠ ئاگادارکردنەوەی سەرەکی
                 notificationsArray.slice(0, 10).forEach((notification) => {
                     const notificationItem = document.createElement('div');
                     notificationItem.className = `notification-item ${notification.type}`;
@@ -2186,7 +2059,6 @@
             document.getElementById('editGradesStudentId').value = studentId;
             document.getElementById('gradesStudentName').dataset.gradeKey = gradeKey;
             
-            // بارکردنی نمرەکان لە فایەربەیس
             database.ref('grades/' + gradeKey + '/' + studentId).once('value', (snapshot) => {
                 const grades = snapshot.val();
                 if (grades) {
@@ -2232,7 +2104,6 @@
                 timestamp: Date.now()
             };
             
-            // پاشەکەوتکردنی نمرەکان لە فایەربەیس
             database.ref('grades/' + gradeKey + '/' + studentId).set(grades)
                 .then(() => {
                     showGradesSuccess('نمرەکان بە سەرکەوتووی پاشەکەوتکران! ✅');
@@ -2273,7 +2144,7 @@
             }, 3000);
         }
 
-        // نوێ: فەنکشنەکانی چاپ و پەڕگە - چاککراو (PDF سڕاوەتەوە)
+        // Print Functions
         function printSchedule() {
             const printContent = document.getElementById('printScheduleTable');
             const printWindow = window.open('', '_blank');
@@ -2339,14 +2210,7 @@
             `);
             
             printWindow.document.close();
-            
-            // Wait for content to load then print
-            printWindow.onload = function() {
-                printWindow.print();
-                printWindow.onafterprint = function() {
-                    printWindow.close();
-                };
-            };
+            printWindow.print();
         }
 
         function exportScheduleToExcel() {
@@ -2358,127 +2222,71 @@
         }
 
         function printAttendance() {
-            const level = document.getElementById('attendanceLevel').value;
-            const group = document.getElementById('attendanceGroup').value;
-            const course = document.getElementById('attendanceClass').value;
-            const time = document.getElementById('attendanceTime').value;
-            const date = document.getElementById('attendanceDate').value;
+            const printContent = document.getElementById('printAttendanceTable');
+            const printWindow = window.open('', '_blank');
             
-            if (!level || !group || !course || !time || !date) {
-                alert('تکایە هەموو خانەکان پڕ بکەرەوە!');
-                return;
-            }
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>چاپی تۆماری ئامادەبوون</title>
+                    <style>
+                        body { 
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                            margin: 20px; 
+                            direction: rtl; 
+                            background: white;
+                        }
+                        .print-header { 
+                            text-align: center; 
+                            margin-bottom: 30px; 
+                            padding-bottom: 15px; 
+                            border-bottom: 3px solid #28a745; 
+                        }
+                        .print-header h2 { 
+                            color: #28a745; 
+                            margin-bottom: 10px; 
+                            font-size: 24px;
+                        }
+                        .print-table { 
+                            width: 100%; 
+                            border-collapse: collapse; 
+                            margin: 20px 0; 
+                            font-size: 14px; 
+                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                        }
+                        .print-table th { 
+                            background: #28a745; 
+                            color: white; 
+                            padding: 12px 15px; 
+                            text-align: center; 
+                            font-weight: 600; 
+                            border: 1px solid #218838;
+                        }
+                        .print-table td { 
+                            padding: 10px 15px; 
+                            border-bottom: 1px solid #e0e0e0; 
+                            text-align: center;
+                            border: 1px solid #e0e0e0;
+                        }
+                        .print-table tr:nth-child(even) { 
+                            background: #f8f9fa; 
+                        }
+                        @media print {
+                            body { margin: 0; }
+                            .print-table { box-shadow: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${printContent.innerHTML}
+                </body>
+                </html>
+            `);
             
-            // Load attendance data
-            const attendancePath = `attendance/${date}/${level}${group}/${course}/${time}/${currentUser.name}`;
-            database.ref(attendancePath).once('value', (snapshot) => {
-                const attendanceData = snapshot.val() || {};
-                
-                // Filter students for this level and group
-                const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
-                
-                const presentCount = Object.values(attendanceData).filter(status => status === 'present').length;
-                const absentCount = studentsInGroup.length - presentCount;
-                
-                const title = `تۆماری غیابات - ${date}`;
-                const content = `
-                    <div style="padding: 20px; font-family: 'Segoe UI', Tahoma, sans-serif; direction: rtl;">
-                        <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 15px;">
-                            <h1 style="font-size: 24px; margin-bottom: 10px; color: #667eea;">پەیمانگەی کۆمپیتەری سلێمانی</h1>
-                            <h2 style="font-size: 20px; margin-bottom: 15px;">${title}</h2>
-                            <div style="margin: 10px 0;">
-                                <strong>مامۆستا:</strong> ${currentUser.name} | 
-                                <strong>وانە:</strong> ${course} | 
-                                <strong>ئاست:</strong> ${level} | 
-                                <strong>گروپ:</strong> ${group}
-                            </div>
-                            <div style="margin: 10px 0;">
-                                <strong>کات:</strong> ${time} | 
-                                <strong>بەروار:</strong> ${date}
-                            </div>
-                        </div>
-                        
-                        <div style="display: flex; justify-content: space-around; margin: 20px 0; text-align: center;">
-                            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; border: 1px solid #4caf50; width: 30%;">
-                                <div style="font-size: 28px; font-weight: bold; color: #2e7d32;">${presentCount}</div>
-                                <div style="font-size: 14px;">ئامادە</div>
-                            </div>
-                            <div style="background: #ffebee; padding: 15px; border-radius: 8px; border: 1px solid #f44336; width: 30%;">
-                                <div style="font-size: 28px; font-weight: bold; color: #c62828;">${absentCount}</div>
-                                <div style="font-size: 14px;">غیاب</div>
-                            </div>
-                            <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #2196f3; width: 30%;">
-                                <div style="font-size: 28px; font-weight: bold; color: #1565c0;">${studentsInGroup.length}</div>
-                                <div style="font-size: 14px;">کۆی گشتی</div>
-                            </div>
-                        </div>
-                        
-                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px;">
-                            <thead>
-                                <tr style="background: #f5f5f5;">
-                                    <th style="border: 1px solid #000; padding: 10px; text-align: center;">ژمارە</th>
-                                    <th style="border: 1px solid #000; padding: 10px; text-align: center;">کۆد</th>
-                                    <th style="border: 1px solid #000; padding: 10px; text-align: center;">ناو</th>
-                                    <th style="border: 1px solid #000; padding: 10px; text-align: center;">پەیمانگە</th>
-                                    <th style="border: 1px solid #000; padding: 10px; text-align: center;">دۆخ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${studentsInGroup.map((student, index) => {
-                                    const status = attendanceData[student.id] || 'present';
-                                    const statusText = status === 'present' ? 'ئامادە' : 'غیاب';
-                                    const bgColor = status === 'present' ? '#e8f5e9' : '#ffebee';
-                                    
-                                    return `
-                                        <tr style="background: ${bgColor};">
-                                            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${index + 1}</td>
-                                            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${student.code}</td>
-                                            <td style="border: 1px solid #000; padding: 8px; text-align: right; font-weight: bold;">${student.name}</td>
-                                            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${student.institute}</td>
-                                            <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; color: ${status === 'present' ? '#2e7d32' : '#c62828'};">${statusText}</td>
-                                        </tr>
-                                    `;
-                                }).join('')}
-                            </tbody>
-                        </table>
-                        
-                        <div style="margin-top: 30px; text-align: left; font-size: 12px; color: #666;">
-                            <div>چاپکرا لە: ${new Date().toLocaleString('ku')}</div>
-                            <div>ئەم ڕاپۆرتە لەلایەن سیستەمی داشبۆردی مامۆستایان دروستکراوە</div>
-                        </div>
-                    </div>
-                `;
-                
-                // Open print window
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html dir="rtl">
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>چاپی تۆماری ئامادەبوون</title>
-                        <style>
-                            @media print {
-                                body { margin: 0; padding: 20px; }
-                                @page { margin: 1cm; }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        ${content}
-                        <script>
-                            window.onload = function() {
-                                window.print();
-                                setTimeout(() => {
-                                    window.close();
-                                }, 500);
-                            };
-                        <\/script>
-                    </body>
-                    </html>
-                `);
-                printWindow.document.close();
-            });
+            printWindow.document.close();
+            printWindow.print();
         }
 
         function exportAttendanceToExcel() {
@@ -2554,14 +2362,7 @@
             `);
             
             printWindow.document.close();
-            
-            // Wait for content to load then print
-            printWindow.onload = function() {
-                printWindow.print();
-                printWindow.onafterprint = function() {
-                    printWindow.close();
-                };
-            };
+            printWindow.print();
         }
 
         function exportGradesToExcel() {
@@ -2572,7 +2373,7 @@
             XLSX.writeFile(wb, "نمرەکانی_خوێندکاران.xlsx");
         }
 
-        // نوێ: فەنکشنەکانی بەڕێوەبردنی ئاگادارکردنەوەکان
+        // Notification Functions
         function toggleTeacherNotifications() {
             const panel = document.getElementById('teacherNotificationPanel');
             panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
@@ -2588,7 +2389,6 @@
             const container = document.getElementById('teacherNotifications');
             container.innerHTML = '<div class="notification-panel-item">بارکردنی ئاگادارکردنەوەکان...</div>';
             
-            // بارکردنی ئاگادارکردنەوەکانی ئەم مامۆستایە
             database.ref('notifications').orderByChild('timestamp').once('value', (snapshot) => {
                 const notifications = snapshot.val();
                 container.innerHTML = '';
@@ -2605,7 +2405,6 @@
                     }
                 });
                 
-                // ڕیزکردنی ئاگادارکردنەوەکان بەپێی کاتی دروستکردن (نوێترین لەسەرەوە)
                 notificationsArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
                 if (notificationsArray.length === 0) {
@@ -2645,36 +2444,6 @@
         }
 
         function addTeacherNotification(notification) {
-            // زیادکردنی ئاگادارکردنەوە بۆ لیستی مامۆستا
-            const container = document.getElementById('teacherNotifications');
-            const notificationItem = document.createElement('div');
-            notificationItem.className = `notification-panel-item unread ${notification.type}`;
-            
-            const date = new Date(notification.timestamp);
-            const formattedDate = date.toLocaleDateString('ku') + ' - ' + date.toLocaleTimeString('ku');
-            
-            notificationItem.innerHTML = `
-                <div class="notification-content">
-                    <div class="notification-panel-message">${notification.message}</div>
-                    <div class="notification-panel-time">${formattedDate}</div>
-                </div>
-                <div class="notification-panel-actions">
-                    <button class="notification-panel-btn mark-read" onclick="markTeacherNotificationAsRead('${notification.id}')">
-                        <i class="fas fa-check"></i>
-                    </button>
-                    <button class="notification-panel-btn delete" onclick="deleteTeacherNotification('${notification.id}')">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-            
-            // زیادکردنی ئاگادارکردنەوەی نوێ لەسەرەوە
-            if (container.firstChild) {
-                container.insertBefore(notificationItem, container.firstChild);
-            } else {
-                container.appendChild(notificationItem);
-            }
-            
             updateTeacherNotificationBadge();
         }
 
@@ -2682,9 +2451,6 @@
             database.ref('notifications/' + notificationId).update({ read: true })
                 .then(() => {
                     loadTeacherNotifications();
-                })
-                .catch((error) => {
-                    console.error('هەڵە لە نیشانەکردنی ئاگادارکردنەوە وەک خوێندراو:', error);
                 });
         }
 
@@ -2692,9 +2458,6 @@
             database.ref('notifications/' + notificationId).remove()
                 .then(() => {
                     loadTeacherNotifications();
-                })
-                .catch((error) => {
-                    console.error('هەڵە لە سڕینەوەی ئاگادارکردنەوە:', error);
                 });
         }
 
