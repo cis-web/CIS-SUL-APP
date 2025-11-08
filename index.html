@@ -223,7 +223,7 @@
     <div class="container">
         <div class="header">
             <div class="logo-container">
-                <!-- لینکی ڕاستەقینەی لۆگۆ -->
+                <!-- لینکی ڕاستەقینەی لۆگۆ لە GitHub -->
                 <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
                      alt="پەیمانگەی کۆمپیتەری سلێمانی" 
                      class="institute-logo"
@@ -306,5 +306,28 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // پشکنینی لۆگۆ بە JavaScript
+        window.addEventListener('load', function() {
+            const logoImg = document.querySelector('.institute-logo');
+            const cssLogo = document.getElementById('css-logo');
+            
+            console.log('پشکنینی لۆگۆ دەستپێدەکات...');
+            
+            // ئەگەر وێنە بارنەبوو، لۆگۆی CSS پیشان بده
+            logoImg.addEventListener('error', function() {
+                console.log('لۆگۆ بارنەبوو، لۆگۆی CSS پیشان دەدرێت');
+                this.style.display = 'none';
+                cssLogo.style.display = 'flex';
+            });
+            
+            // ئەگەر وێنە باربوو، لۆگۆی CSS بشارەوە
+            logoImg.addEventListener('load', function() {
+                console.log('لۆگۆ بە سەرکەوتوویی بارکرا');
+                cssLogo.style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>
