@@ -1230,9 +1230,24 @@
     <!-- Admin Dashboard -->
     <div id="adminDashboard" class="container dashboard">
         <div class="dashboard-header">
-            <div class="logo-container">
-                <img src="https://sanishtech.com/i/690ccc23743db-1762446371.png" alt="پەیمانگەی کۆمپیتەری سلێمانی" class="institute-logo">
-            </div>
+        <div class="logo-container">
+    <div id="dashboardLogoContainer">
+        <!-- لۆگۆی سەرەکی لە GitHub -->
+        <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
+             alt="لۆگۆی پەیمانگای کۆمپیوتەری سلێمانی" 
+             class="institute-logo" 
+             id="dashboardLogo"
+             onerror="this.style.display='none'; document.getElementById('dashboardLogoPlaceholder').style.display='flex';">
+        
+        <!-- لۆگۆی CSS (پاشەکەوت) -->
+        <div id="dashboardLogoPlaceholder" class="logo-placeholder" style="display: none;">
+            <i class="fas fa-graduation-cap"></i>
+            <span>پەیمانگای کۆمپیوتەری سلێمانی</span>
+        </div>
+    </div>
+    <div class="institute-name">پەیمانگای کۆمپیوتەری سلێمانی</div>
+    <div class="institute-subtitle">Slemani Computer Institute</div>
+</div>
             <h2><i class="fas fa-user-shield"></i> داشبۆردی بەڕێوەبەر</h2>
             <p class="welcome-text">بەخێربێیت بۆ پانێڵی کۆنتڕۆڵی سیستەم</p>
             
