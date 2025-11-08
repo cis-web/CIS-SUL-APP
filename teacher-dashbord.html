@@ -1,0 +1,2779 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سیستەمی داشبۆردی مامۆستایان / پەیمانگەی کۆمپیتەری سلێمانی</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #764ba2;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            direction: rtl;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 1200px;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .institute-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            box-shadow: var(--shadow);
+        }
+        
+        .logo {
+            font-size: 40px;
+            color: var(--primary);
+        }
+        
+        .header h1 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-group label {
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .form-group input {
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: var(--transition);
+            background: var(--white);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .login-btn, .submit-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .login-btn:hover, .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .error-msg, .success-msg {
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+            margin-bottom: 15px;
+        }
+        
+        .error-msg {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+        
+        .success-msg {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+        
+        .dashboard {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        
+        .dashboard-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .welcome-text {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .stat-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .action-section {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .action-section h3 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-size: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .section-title {
+            font-weight: 700;
+        }
+        
+        .filter-container {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: var(--primary);
+            color: var(--white);
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        
+        .action-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .filter-select {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .logout-btn {
+            background: var(--danger);
+            color: var(--white);
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        .schedule-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-right: 5px solid var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        
+        .schedule-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+        
+        .schedule-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .schedule-card-body {
+            display: grid;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .schedule-info-row {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: var(--gray);
+            padding: 40px;
+            font-size: 16px;
+        }
+        
+        .save-attendance-section {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+            text-align: center;
+        }
+        
+        .developer-info {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .grades-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-right: 5px solid var(--warning);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        
+        .grades-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+        
+        .grades-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .grades-card-body {
+            display: grid;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .grades-info-row {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .grades-total {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 16px;
+        }
+        
+        .teacher-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .edit-btn, .delete-btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            margin: 0 3px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+        }
+        
+        .edit-btn {
+            background: var(--warning);
+            color: var(--dark);
+        }
+        
+        .edit-btn:hover {
+            background: #e0a800;
+        }
+        
+        .delete-btn {
+            background: var(--danger);
+            color: var(--white);
+        }
+        
+        .delete-btn:hover {
+            background: #c82333;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h3 {
+            color: var(--dark);
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+        
+        .close-btn:hover {
+            color: var(--dark);
+        }
+        
+        .grade-input {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .grades-input-section {
+            margin-bottom: 15px;
+        }
+        
+        .grade-input-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .grade-input-group label {
+            font-weight: 600;
+            color: var(--dark);
+            flex: 1;
+        }
+        
+        .grade-max {
+            color: var(--gray);
+            font-size: 12px;
+            margin-right: 10px;
+        }
+
+        .attendance-card {
+            background: var(--white);
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .attendance-card:hover {
+            border-color: var(--primary);
+        }
+        
+        .student-info-attendance {
+            flex: 1;
+        }
+        
+        .student-name-large {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--dark);
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .student-details {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .attendance-checkbox {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .checkbox-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .present-checkbox {
+            color: var(--success);
+        }
+        
+        .absent-checkbox {
+            color: var(--danger);
+        }
+        
+        /* نوێ: ستایلەکانی چاپ */
+        .print-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .print-btn {
+            background: var(--info);
+            color: var(--white);
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+        
+        .print-btn:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+        
+        .excel-btn {
+            background: var(--success);
+            color: var(--white);
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+        
+        .excel-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        
+        /* نوێ: ستایلەکانی خشتەی چاپ */
+        .print-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+        
+        .print-table th {
+            background: var(--primary);
+            color: var(--white);
+            padding: 12px 15px;
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .print-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .print-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .print-table tr:hover {
+            background: #e9ecef;
+        }
+        
+        .print-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .print-header h2 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .print-header p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        /* نوێ: ستایلەکانی چاپ */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .print-section, .print-section * {
+                visibility: visible;
+            }
+            
+            .print-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+                background: white;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            
+            .print-actions, .action-btn, .logout-btn, .developer-info,
+            .dashboard-header, .stats-grid, .filter-container {
+                display: none !important;
+            }
+            
+            .print-table {
+                box-shadow: none;
+                border: 1px solid #000;
+            }
+            
+            .print-table th {
+                background: #667eea !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .print-header {
+                text-align: center;
+                margin-bottom: 20px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid #667eea;
+            }
+        }
+        
+        /* نوێ: ستایلەکانی ئاگادارکردنەوە */
+        .notification-section {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+            text-align: center;
+        }
+        
+        .notification-item {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-right: 4px solid var(--info);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .notification-item.success {
+            border-right-color: var(--success);
+        }
+        
+        .notification-item.warning {
+            border-right-color: var(--warning);
+        }
+        
+        .notification-item.danger {
+            border-right-color: var(--danger);
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .notification-date {
+            color: var(--gray);
+            font-size: 12px;
+        }
+        
+        .notification-message {
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        /* نوێ: ستایلەکانی زەنگۆلەی ئاگادارکردنەوە */
+        .notification-bell {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--white);
+            cursor: pointer;
+            position: relative;
+            padding: 10px;
+            transition: var(--transition);
+        }
+        
+        .notification-bell:hover {
+            transform: scale(1.1);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .notification-panel {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 400px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-height: 500px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        .notification-panel-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-panel-header h4 {
+            margin: 0;
+            color: var(--dark);
+        }
+        
+        .notification-action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        
+        .notification-list {
+            padding: 10px;
+        }
+        
+        .notification-panel-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s;
+        }
+        
+        .notification-panel-item.unread {
+            background: #f0f8ff;
+        }
+        
+        .notification-panel-item.read {
+            opacity: 0.7;
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-panel-message {
+            font-size: 14px;
+            color: var(--dark);
+        }
+        
+        .notification-panel-time {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .notification-panel-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .notification-panel-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        
+        .notification-panel-btn.mark-read {
+            color: var(--success);
+        }
+        
+        .notification-panel-btn.delete {
+            color: var(--danger);
+        }
+        
+        .notification-panel-item.info {
+            border-left: 4px solid var(--info);
+        }
+        
+        .notification-panel-item.warning {
+            border-left: 4px solid var(--warning);
+        }
+        
+        .notification-panel-item.success {
+            border-left: 4px solid var(--success);
+        }
+        
+        .notification-panel-item.danger {
+            border-left: 4px solid var(--danger);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .attendance-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .attendance-checkbox {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .print-actions {
+                flex-direction: column;
+            }
+            
+            .print-btn, .excel-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .notification-panel {
+                width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="container">
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://sanishtech.com/i/690ccc23743db-1762446371.png" alt="پەیمانگەی کۆمپیتەری سلێمانی" class="institute-logo">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+            </div>
+            <h1>سیستەمی داشبۆردی مامۆستایان</h1>
+            <p>تکایە زانیاریەکانت بنووسە بۆ چوونەژوورەوە</p>
+        </div>
+        
+        <div class="error-msg" id="errorMsg">
+            <i class="fas fa-exclamation-circle"></i> ناوی بەکارهێنەر یان وشەی نهێنی هەڵەیە!
+        </div>
+        
+        <form class="login-form" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username"><i class="fas fa-user"></i> ناوی بەکارهێنەر</label>
+                <input type="text" id="username" placeholder="ناوی بەکارهێنەر" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> وشەی نهێنی</label>
+                <input type="password" id="password" placeholder="وشەی نهێنی" required>
+            </div>
+            
+            <button type="submit" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> چوونەژوورەوە
+            </button>
+        </form>
+        
+        <div class="developer-info">
+            ئەم ئەپە لەلایەن ماجدانور دروستکراوە | پەیوەندی: ٠٧٧٠١٤٥٨٤٧٤
+        </div>
+    </div>
+
+    <!-- Teacher Dashboard -->
+    <div id="teacherDashboard" class="container dashboard">
+        <div class="dashboard-header">
+            <div class="logo-container">
+                <img src="https://sanishtech.com/i/690ccc23743db-1762446371.png" alt="پەیمانگەی کۆمپیتەری سلێمانی" class="institute-logo">
+            </div>
+            <h2><i class="fas fa-chalkboard-teacher"></i> داشبۆردی مامۆستا</h2>
+            <p class="welcome-text" id="teacherWelcome"></p>
+            
+            <!-- زەنگۆلەی ئاگادارکردنەوە -->
+            <div style="position: relative; display: inline-block; margin-left: 20px;">
+                <button id="teacherNotificationBell" class="notification-bell" onclick="toggleTeacherNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span id="teacherNotificationBadge" class="notification-badge" style="display: none;">0</span>
+                </button>
+                <div id="teacherNotificationPanel" class="notification-panel">
+                    <div class="notification-panel-header">
+                        <h4>ئاگادارکردنەوەکان</h4>
+                        <div>
+                            <button class="notification-action-btn" onclick="markAllTeacherNotificationsAsRead()">نیشانەکردنی هەموو وەک خوێندراو</button>
+                            <button class="notification-action-btn" onclick="clearAllTeacherNotifications()">سڕینەوەی هەموو</button>
+                        </div>
+                    </div>
+                    <div id="teacherNotifications" class="notification-list">
+                        <!-- ئاگادارکردنەوەکان لێرە دەخرێنەوە -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="stat-number" id="teacherTotalClasses">0</div>
+                <div class="stat-label">کۆی وانەکان</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="stat-number" id="teacherTodayClasses">0</div>
+                <div class="stat-label">وانەکانی ئەمڕۆ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <div class="stat-number" id="teacherTotalStudents">0</div>
+                <div class="stat-label">کۆی خوێندکاران</div>
+            </div>
+        </div>
+        
+        <div class="filter-container">
+            <button class="action-btn" onclick="switchTeacherSection('schedule')">
+                <i class="fas fa-calendar-alt"></i> خشتەی من
+            </button>
+            <button class="action-btn" onclick="switchTeacherSection('attendance')" style="background: var(--success);">
+                <i class="fas fa-clipboard-check"></i> غیابات
+            </button>
+            <button class="action-btn" onclick="switchTeacherSection('grades')" style="background: var(--warning); color: var(--dark);">
+                <i class="fas fa-star"></i> نمرەکان
+            </button>
+            <button class="action-btn" onclick="switchTeacherSection('notifications')" style="background: var(--info);">
+                <i class="fas fa-bell"></i> ئاگادارکردنەوەکان
+            </button>
+        </div>
+        
+        <!-- Teacher Schedule Section -->
+        <div class="action-section" id="teacherScheduleSection">
+            <h3>
+                <i class="fas fa-calendar-alt"></i> خشتەی وانەکانی من
+                <div class="print-actions">
+                    <button class="print-btn" onclick="printSchedule()">
+                        <i class="fas fa-print"></i> چاپ
+                    </button>
+                    <button class="excel-btn" onclick="exportScheduleToExcel()">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                </div>
+            </h3>
+            <div class="teacher-schedule" id="teacherScheduleList">
+                <!-- Teacher schedules will be loaded here -->
+            </div>
+            
+            <!-- Hidden printable schedule table -->
+            <div id="printScheduleTable" style="display: none;">
+                <div class="print-header">
+                    <h2>پەیمانگەی کۆمپیتەری سلێمانی</h2>
+                    <p>خشتەی وانەکانی مامۆستا</p>
+                    <p id="schedulePrintDate"></p>
+                </div>
+                <table class="print-table" id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th>ژمارە</th>
+                            <th>وانە</th>
+                            <th>ڕۆژ</th>
+                            <th>پۆل</th>
+                            <th>کات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Teacher Attendance Section -->
+        <div class="action-section" id="teacherAttendanceSection" style="display: none;">
+            <h3>
+                <i class="fas fa-clipboard-check"></i> تۆمارکردنی ئامادەبوون
+                <div class="print-actions">
+                    <button class="print-btn" onclick="printAttendance()">
+                        <i class="fas fa-print"></i> چاپ
+                    </button>
+                    <button class="excel-btn" onclick="exportAttendanceToExcel()">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                </div>
+            </h3>
+            
+            <div class="success-msg" id="teacherSuccessMsg"></div>
+            
+            <div class="filter-container">
+                <select id="attendanceLevel" onchange="loadAttendanceStudents()" class="filter-select">
+                    <option value="">هەڵبژاردنی ئاست...</option>
+                    <option value="1">ئاستی 1</option>
+                    <option value="2">ئاستی 2</option>
+                    <option value="3">ئاستی 3</option>
+                    <option value="4">ئاستی 4</option>
+                    <option value="5">ئاستی 5</option>
+                </select>
+                
+                <select id="attendanceGroup" onchange="loadAttendanceStudents()" class="filter-select">
+                    <option value="">هەڵبژاردنی گرووپ...</option>
+                    <option value="A">گرووپی A</option>
+                    <option value="B">گرووپی B</option>
+                    <option value="C">گرووپی C</option>
+                    <option value="D">گرووپی D</option>
+                    <option value="E">گرووپی E</option>
+                    <option value="WEB">گرووپی WEB</option>
+                    <option value="NET">گرووپی NET</option>
+                    <option value="PRO">گرووپی PRO</option>
+                </select>
+
+                <select id="attendanceClass" onchange="loadAttendanceStudents()" class="filter-select">
+                    <option value="">هەڵبژاردنی وانە...</option>
+                </select>
+
+                <select id="attendanceTime" onchange="loadAttendanceStudents()" class="filter-select">
+                    <option value="">هەڵبژاردنی کات...</option>
+                    <option value="8:30">٨:٣٠</option>
+                    <option value="9:30">٩:٣٠</option>
+                    <option value="10:30">١٠:٣٠</option>
+                    <option value="11:30">١١:٣٠</option>
+                    <option value="12:30">١٢:٣٠</option>
+                    <option value="1:30">١:٣٠</option>
+                </select>
+                
+                <input type="date" id="attendanceDate" onchange="loadAttendanceStudents()" class="filter-select">
+            </div>
+            
+            <div id="attendanceStudentsList">
+                <p style="text-align: center; color: var(--gray); padding: 40px;">تکایە ئاست، گرووپ، وانە، کات و بەروار هەڵبژێرە</p>
+            </div>
+            
+            <!-- Hidden printable attendance table -->
+            <div id="printAttendanceTable" style="display: none;">
+                <div class="print-header">
+                    <h2>پەیمانگەی کۆمپیتەری سلێمانی</h2>
+                    <p>تۆماری ئامادەبوون</p>
+                    <p id="attendancePrintDate"></p>
+                </div>
+                <table class="print-table" id="attendanceTable">
+                    <thead>
+                        <tr>
+                            <th>ژمارە</th>
+                            <th>کۆدی خوێندکار</th>
+                            <th>ناوی خوێندکار</th>
+                            <th>پەیمانگە</th>
+                            <th>ئامادەبوون</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceTableBody">
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Save Attendance Section -->
+            <div class="save-attendance-section" id="saveAttendanceSection" style="display: none;">
+                <h4 style="margin-bottom: 15px; color: var(--dark);">
+                    <i class="fas fa-save"></i> پاشەکەوتکردنی تۆمارەکانی ئامادەبوون
+                </h4>
+                <p style="color: var(--gray); margin-bottom: 15px; font-size: 14px;">دوای دیاریکردنی ئامادەبوونی هەموو خوێندکاران، دوگمەی خوارەوە کلیک بکە بۆ پاشەکەوتکردن</p>
+                <button class="submit-btn" onclick="saveAllAttendance()" style="margin-top: 10px;">
+                    <i class="fas fa-save"></i> پاشەکەوتکردنی هەموو ئامادەبوونەکان
+                </button>
+            </div>
+        </div>
+        
+        <!-- Teacher Grades Section -->
+        <div class="action-section" id="teacherGradesSection" style="display: none;">
+            <h3>
+                <i class="fas fa-star"></i> سیستەمی نمرەدان
+                <div class="print-actions">
+                    <button class="print-btn" onclick="printGrades()">
+                        <i class="fas fa-print"></i> چاپ
+                    </button>
+                    <button class="excel-btn" onclick="exportGradesToExcel()">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                </div>
+            </h3>
+            
+            <div class="success-msg" id="gradesSuccessMsg"></div>
+            
+            <div class="filter-container">
+                <select id="gradesLevel" onchange="loadGradesStudents()" class="filter-select">
+                    <option value="">هەڵبژاردنی ئاست...</option>
+                    <option value="1">ئاستی 1</option>
+                    <option value="2">ئاستی 2</option>
+                    <option value="3">ئاستی 3</option>
+                    <option value="4">ئاستی 4</option>
+                    <option value="5">ئاستی 5</option>
+                </select>
+                
+                <select id="gradesGroup" onchange="loadGradesStudents()" class="filter-select">
+                    <option value="">هەڵبژاردنی گرووپ...</option>
+                    <option value="A">گرووپی A</option>
+                    <option value="B">گرووپی B</option>
+                    <option value="C">گرووپی C</option>
+                    <option value="D">گرووپی D</option>
+                    <option value="E">گرووپی E</option>
+                    <option value="WEB">گرووپی WEB</option>
+                    <option value="NET">گرووپی NET</option>
+                    <option value="PRO">گرووپی PRO</option>
+                </select>
+
+                <select id="gradesClass" onchange="loadGradesStudents()" class="filter-select">
+                    <option value="">هەڵبژاردنی وانە...</option>
+                </select>
+
+                <select id="gradesSemester" onchange="loadGradesStudents()" class="filter-select">
+                    <option value="">هەڵبژاردنی وەرز...</option>
+                    <option value="1">وەرزی 1</option>
+                    <option value="2">وەرزی 2</option>
+                </select>
+            </div>
+            
+            <div id="viewGradesSection" style="display: none;">
+                <h4 style="margin: 20px 0 15px 0;">
+                    <i class="fas fa-users"></i> خوێندکارانی ئاستی 
+                    <span id="currentLevelDisplay"></span> - گرووپی 
+                    <span id="currentGroupDisplay"></span>
+                </h4>
+                
+                <div id="gradesStudentsList">
+                    <!-- Students will be loaded here -->
+                </div>
+                
+                <!-- Hidden printable grades table -->
+                <div id="printGradesTable" style="display: none;">
+                    <div class="print-header">
+                        <h2>پەیمانگەی کۆمپیتەری سلێمانی</h2>
+                        <p>نمرەکانی خوێندکاران</p>
+                        <p id="gradesPrintDate"></p>
+                    </div>
+                    <table class="print-table" id="gradesTable">
+                        <thead>
+                            <tr>
+                                <th>ژمارە</th>
+                                <th>کۆدی خوێندکار</th>
+                                <th>ناوی خوێندکار</th>
+                                <th>نمرەی ڕۆژانە</th>
+                                <th>نمرەی غیابات</th>
+                                <th>نمرەی پراکتیک</th>
+                                <th>نمرەی تیۆری</th>
+                                <th>کۆی گشتی</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gradesTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Teacher Notifications Section -->
+        <div class="action-section" id="teacherNotificationsSection" style="display: none;">
+            <h3>
+                <i class="fas fa-bell"></i> ئاگادارکردنەوەکان
+            </h3>
+            
+            <div class="notification-section" id="notificationsList">
+                <!-- Notifications will be loaded here -->
+            </div>
+        </div>
+        
+        <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> چوونەدەرەوە
+        </button>
+        
+        <div class="developer-info">
+            ئەم ئەپە لەلایەن ماجدانور دروستکراوە | پەیوەندی: ٠٧٧٠١٤٥٨٤٧٤
+        </div>
+    </div>
+
+    <!-- Grades Modal -->
+    <div id="gradesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="gradesModalTitle"><i class="fas fa-star"></i> زیادکردنی نمرە</h3>
+                <button class="close-btn" onclick="closeGradesModal()">&times;</button>
+            </div>
+            
+            <form onsubmit="saveGrades(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-user-graduate"></i> خوێندکار</label>
+                    <input type="text" id="gradesStudentName" readonly style="background: #f5f5f5;">
+                </div>
+                
+                <!-- نمرەی ڕۆژانە و غیابات -->
+                <div class="grades-input-section">
+                    <div class="grade-input-group">
+                        <label>نمرەی ڕۆژانە</label>
+                        <div>
+                            <input type="number" id="dailyGrade" class="grade-input" min="0" max="3" placeholder="0" oninput="calculateTotal()">
+                            <span class="grade-max">/ 3</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grade-input-group">
+                        <label>نمرەی غیابات</label>
+                        <div>
+                            <input type="number" id="absenceGrade" class="grade-input" min="0" max="2" placeholder="0" oninput="calculateTotal()">
+                            <span class="grade-max">/ 2</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- نمرەی پراکتیک -->
+                <div class="grades-input-section">
+                    <div class="grade-input-group">
+                        <label>نمرەی پراکتیک</label>
+                        <div>
+                            <input type="number" id="practicalGrade" class="grade-input" min="0" max="8" placeholder="0" oninput="calculateTotal()">
+                            <span class="grade-max">/ 8</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- نمرەی تیۆری -->
+                <div class="grades-input-section">
+                    <div class="grade-input-group">
+                        <label>نمرەی تیۆری</label>
+                        <div>
+                            <input type="number" id="theoryGrade" class="grade-input" min="0" max="15" placeholder="0" oninput="calculateTotal()">
+                            <span class="grade-max">/ 15</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grades-info-row" style="margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                    <span><strong>کۆی گشتی:</strong></span>
+                    <span id="totalGradeDisplay" class="grades-total">٠ / ٢٠</span>
+                </div>
+                
+                <input type="hidden" id="editGradesStudentId">
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i> پاشەکەوتکردنی نمرەکان
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummy-Key-For-Public-Database",
+            authDomain: "schedules-77d76.firebaseapp.com",
+            databaseURL: "https://schedules-77d76-default-rtdb.firebaseio.com",
+            projectId: "schedules-77d76",
+            storageBucket: "schedules-77d76.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:dummy"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let currentUser = null;
+        let currentTeacherSection = 'schedule';
+        let allStudents = [];
+        let allSchedules = [];
+        let currentAttendanceData = {};
+        let currentStudentsInGroup = [];
+
+        // Define the courses array
+        const courses = [
+            "KURDI", "ARABIC", "MAF", "MADANY", "PHYSIC", "RELIGON", "MATH", 
+            "KURDOLOGI", "ENGLISH", "WINDOWS", "ACCESS", "EXCEL", "PP", "PS", 
+            "IT", "INTERNET", "JAVA", "JS", "WA", "VB", "Csharp", "CCNA1", 
+            "PHPTEXTFILE", "PHPMYSQL", "C++", "GSM", "CCNA2", "LINUX", 
+            "Asp", "ANDRPID", "CCNA4", "SPORT", "MIS", "DW", "MOBILE", 
+            "HTML", "JAVAOOP", "SERVER", "AJAX", "HTML5", "NDBA", "SQL", 
+            "LIBRARY", "WIRELESS"
+        ];
+
+        // Define the teachers array
+        const allTeachers = [
+            { username: 'omedsadiq', name: 'Omed Sadiq Abdulkarim', password: 'password', subject: 'ASP.NET', type: 'teacher', teacherType: 'practical' },
+            { username: 'kawaaziz', name: 'Kawa Aziz Saeed Sharif', password: 'password', subject: 'Arabic', type: 'teacher', teacherType: 'theory' },
+            { username: 'sawenlatif', name: 'Sawen Latif Amin', password: 'password', subject: 'Kurdish', type: 'teacher', teacherType: 'theory' },
+            { username: 'kaleasaad', name: 'Kale Asaad Muhammad', password: 'password', subject: 'Kurdish', type: 'teacher', teacherType: 'theory' },
+            { username: 'shnomahmood', name: 'Shno Mahmood Hama Muhammad', password: 'password', subject: 'Madani, Kurdology', type: 'teacher', teacherType: 'theory' },
+            { username: 'bafrinomar', name: 'Bafrin Omar Qadir', password: 'password', subject: 'Religion', type: 'teacher', teacherType: 'theory' },
+            { username: 'kanilatif', name: 'Kani Latif Najib', password: 'password', subject: 'Religion', type: 'teacher', teacherType: 'theory' },
+            { username: 'daroonjamal', name: 'Daroon Jamal', password: 'password', subject: 'Psychology, Genocide, Human Rights', type: 'teacher', teacherType: 'theory' },
+            { username: 'herosalih', name: 'Hero Salih Muhammad', password: 'password', subject: 'English (H)', type: 'teacher', teacherType: 'theory' },
+            { username: 'muhammadamin', name: 'Muhammad Amin Hussein Abdullah', password: 'password', subject: 'English (M)', type: 'teacher', teacherType: 'theory' },
+            { username: 'binarnajmaddin', name: 'Binar Najmaddin Mustafa', password: 'password', subject: 'English (BN)', type: 'teacher', teacherType: 'theory' },
+            { username: 'bahraraouf', name: 'Bahra Raouf Salih', password: 'password', subject: 'English (BH)', type: 'teacher', teacherType: 'theory' },
+            { username: 'saranusrat', name: 'Sara Nusrat Ali', password: 'password', subject: 'Banking (S)', type: 'teacher', teacherType: 'theory' },
+            { username: 'kanyanmiqdad', name: 'Kanyan Miqdad Mustafa', password: 'password', subject: 'Banking (K)', type: 'teacher', teacherType: 'theory' },
+            { username: 'hawnazrafiq', name: 'Hawnaz Rafiq Abd', password: 'password', subject: 'Banking (H)', type: 'teacher', teacherType: 'theory' },
+            { username: 'razmuhammad', name: 'Raz Muhammad Qadir', password: 'password', subject: 'Linux + Windows Server, Linux', type: 'teacher', teacherType: 'practical' },
+            { username: 'lenjanajmaddin', name: 'Lenja Najmaddin Mustafa', password: 'password', subject: 'Server, IS, Server', type: 'teacher', teacherType: 'practical' },
+            { username: 'sararaouf', name: 'Sara Raouf Ismail', password: 'password', subject: 'CCNA4, Wireless, CCNA1, CCNA2', type: 'teacher', teacherType: 'practical' },
+            { username: 'aramibrahim', name: 'Aram Ibrahim Abdulkarim', password: 'password', subject: 'IT, CCNA3', type: 'teacher', teacherType: 'practical' },
+            { username: 'arkanahmad', name: 'Arkan Ahmad Mahmood', password: 'password', subject: 'DBA, WA, GSM', type: 'teacher', teacherType: 'practical' },
+            { username: 'saramuhammad', name: 'Sara Muhammad Ahmad', password: 'password', subject: 'PowerPoint, NDBA', type: 'teacher', teacherType: 'practical' },
+            { username: 'azheennajmaddin', name: 'Azheen Jabbar Abdulhussein', password: 'password', subject: 'C++, GRP, SQL', type: 'teacher', teacherType: 'practical' },
+            { username: 'naznajib', name: 'Naz Najib Abdullah', password: 'password', subject: 'Java OOP, Java, Android', type: 'teacher', teacherType: 'practical' },
+            { username: 'majidanwer', name: 'Majid Anwer Hama Rahim', password: 'password', subject: 'Csharp, Internet', type: 'teacher', teacherType: 'practical' },
+            { username: 'dilshadhamza', name: 'Dilshad Hamza Hama Salih', password: 'password', subject: 'Windows', type: 'teacher', teacherType: 'practical' },
+            { username: 'khoshifuad', name: 'Khoshi Fuad Latif', password: 'password', subject: 'Excel, Dreamweaver', type: 'teacher', teacherType: 'practical' },
+            { username: 'thywestmajid', name: 'Thywest Majid Karim', password: 'password', subject: 'Photoshop, HTML5', type: 'teacher', teacherType: 'practical' },
+            { username: 'alanomar', name: 'Alan Omar Ibrahim', password: 'password', subject: 'PHP Text File, PHP MySQL, GRP', type: 'teacher', teacherType: 'practical' },
+            { username: 'didarfalah', name: 'Didar Falah Ahmad', password: 'password', subject: 'JavaScript, Access', type: 'teacher', teacherType: 'practical' },
+            { username: 'khandanajmaddin', name: 'Khanda Najmaddin Mustafa', password: 'password', subject: 'Word, AJAX', type: 'teacher', teacherType: 'practical' },
+            { username: 'sharanesar', name: 'Shara Nesar Amin', password: 'password', subject: 'CSS, HTML, MIS', type: 'teacher', teacherType: 'practical' },
+            { username: 'hawarhussein', name: 'Hawar Hussein Yaba', password: 'password', subject: 'Mobile, Visual Basic', type: 'teacher', teacherType: 'practical' },
+            { username: 'karwanlatif', name: 'Karwan Latif Wali', password: 'password', subject: 'Sport', type: 'teacher', teacherType: 'theory' }
+        ];
+
+        // چارەسەری گرووپەکان
+        function parseLevelGroup(levelGroup) {
+            let currentLevel, currentGroup;
+            
+            if (levelGroup.includes('WEB')) {
+                currentLevel = levelGroup.replace('WEB', '');
+                currentGroup = 'WEB';
+            } else if (levelGroup.includes('NET')) {
+                currentLevel = levelGroup.replace('NET', '');
+                currentGroup = 'NET';
+            } else if (levelGroup.includes('PRO')) {
+                currentLevel = levelGroup.replace('PRO', '');
+                currentGroup = 'PRO';
+            } else {
+                currentLevel = levelGroup.substring(0, levelGroup.length - 1);
+                currentGroup = levelGroup.substring(levelGroup.length - 1);
+            }
+            
+            return { currentLevel, currentGroup };
+        }
+
+        // Initialize Data
+        function initializeData() {
+            // Check if teachers data exists, if not create initial data
+            database.ref('teachers').once('value', (snapshot) => {
+                if (!snapshot.exists()) {
+                    allTeachers.forEach(teacher => {
+                        database.ref('teachers/' + teacher.username).set({
+                            name: teacher.name,
+                            password: teacher.password,
+                            subject: teacher.subject,
+                            type: teacher.type,
+                            teacherType: teacher.teacherType || null
+                        });
+                    });
+                    console.log('All teachers data added to Firebase');
+                }
+            });
+
+            // Check if students data exists, if not create sample data
+            database.ref('students').once('value', (snapshot) => {
+                if (!snapshot.exists()) {
+                    const sampleStudents = [];
+                    const names = ['ئاری', 'هێڤی', 'سارا', 'ڕۆژا', 'ڕەوان', 'ئازاد', 'هێمن', 'دیلان', 'ڕێباز', 'شڤان'];
+                    
+                    const institutes = ['کۆمپیوتەر', 'ئەندازیاری', 'بەڕێوەبەری بازرگانی', 'زانست', 'پەروەردە'];
+                    
+                    for (let i = 1; i <= 10; i++) {
+                        const level = Math.floor((i - 1) / 2) + 1;
+                        const group = String.fromCharCode(65 + ((i - 1) % 2));
+                        
+                        sampleStudents.push({
+                            code: i.toString(),
+                            name: names[i - 1] || 'خوێندکار ' + i,
+                            institute: institutes[Math.floor(Math.random() * institutes.length)],
+                            level: level.toString(),
+                            group: group
+                        });
+                    }
+                    
+                    sampleStudents.forEach(student => {
+                        database.ref('students').push(student);
+                    });
+                    console.log('Sample students data added to Firebase');
+                }
+            });
+
+            // Check if schedules data exists, if not create sample data
+            database.ref('schedules').once('value', (snapshot) => {
+                if (!snapshot.exists()) {
+                    const sampleSchedules = [
+                        { teacherName: 'Majid Anwer Hama Rahim', day: 'یەکشەممە', subject: 'Csharp', classNum: '4A', time: '8:30 - 10:30' },
+                        { teacherName: 'Majid Anwer Hama Rahim', day: 'سێشەممە', subject: 'Internet', classNum: '4B', time: '10:30 - 12:30' }
+                    ];
+                    
+                    sampleSchedules.forEach(schedule => {
+                        database.ref('schedules').push(schedule);
+                    });
+                    console.log('Sample schedules data added to Firebase');
+                }
+            });
+        }
+
+        // Call initialization when the page loads
+        initializeData();
+
+        // Load Students from Firebase
+        function loadStudents() {
+            database.ref('students').on('value', (snapshot) => {
+                const students = snapshot.val();
+                allStudents = [];
+                
+                if (students) {
+                    Object.keys(students).forEach((key) => {
+                        allStudents.push({ id: key, ...students[key] });
+                    });
+                }
+                
+                document.getElementById('teacherTotalStudents').textContent = allStudents.length;
+            });
+        }
+
+        // Load Schedules from Firebase
+        function loadSchedules() {
+            database.ref('schedules').on('value', (snapshot) => {
+                const schedules = snapshot.val();
+                allSchedules = [];
+
+                if (schedules) {
+                    Object.keys(schedules).forEach((key) => {
+                        allSchedules.push({ id: key, ...schedules[key] });
+                    });
+                }
+
+                // Update teacher schedule counts and load teacher courses
+                if (currentUser && currentUser.type === 'teacher') {
+                    updateTeacherScheduleCounts();
+                    loadTeacherSchedules();
+                    loadTeacherCourses();
+                }
+            });
+        }
+
+        // Update teacher schedule counts
+        function updateTeacherScheduleCounts() {
+            if (!currentUser) return;
+            
+            const teacherSchedules = allSchedules.filter(s => s.teacherName === currentUser.name);
+            const today = new Date().toLocaleDateString('ku', { weekday: 'long' });
+            const todaySchedules = teacherSchedules.filter(s => s.day === today);
+            
+            document.getElementById('teacherTotalClasses').textContent = teacherSchedules.length;
+            document.getElementById('teacherTodayClasses').textContent = todaySchedules.length;
+        }
+
+        // Load Teacher Schedules
+        function loadTeacherSchedules() {
+            if (!currentUser) return;
+            
+            const container = document.getElementById('teacherScheduleList');
+            container.innerHTML = '';
+            
+            const teacherSchedules = allSchedules.filter(s => s.teacherName === currentUser.name);
+            
+            if (teacherSchedules.length === 0) {
+                container.innerHTML = '<p class="no-results">هیچ خشتەیەک بۆ ئەم مامۆستایە نییە</p>';
+                return;
+            }
+            
+            teacherSchedules.forEach((schedule, index) => {
+                const card = document.createElement('div');
+                card.className = 'schedule-card';
+                card.innerHTML = `
+                    <div class="schedule-card-header">
+                        <span>📚 ${schedule.subject}</span>
+                        <span>📅 ${schedule.day}</span>
+                    </div>
+                    <div class="schedule-card-body">
+                        <div class="schedule-info-row">
+                            <span>پۆل:</span>
+                            <span>${schedule.classNum}</span>
+                        </div>
+                        <div class="schedule-info-row">
+                            <span>کات:</span>
+                            <span>🕐 ${schedule.time}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            
+            // Update printable schedule table
+            updateSchedulePrintTable(teacherSchedules);
+        }
+
+        // Update printable schedule table
+        function updateSchedulePrintTable(schedules) {
+            const tableBody = document.getElementById('scheduleTableBody');
+            tableBody.innerHTML = '';
+            
+            schedules.forEach((schedule, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${schedule.subject}</td>
+                    <td>${schedule.day}</td>
+                    <td>${schedule.classNum}</td>
+                    <td>${schedule.time}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            document.getElementById('schedulePrintDate').textContent = `بەروار: ${new Date().toLocaleDateString('ku')}`;
+        }
+
+        // Load Teacher's Courses
+        function loadTeacherCourses() {
+            if (!currentUser || currentUser.type !== 'teacher') return;
+            
+            // Get teacher's schedules from all schedules
+            const teacherSchedules = allSchedules.filter(s => s.teacherName === currentUser.name);
+            
+            // Extract unique courses from teacher's schedules
+            const teacherCourses = [...new Set(teacherSchedules.map(s => s.subject))];
+            
+            // Populate attendance class dropdown
+            const attendanceClass = document.getElementById('attendanceClass');
+            if (attendanceClass) {
+                attendanceClass.innerHTML = '<option value="">هەڵبژاردنی وانە...</option>';
+                teacherCourses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course;
+                    option.textContent = course;
+                    attendanceClass.appendChild(option);
+                });
+            }
+
+            // Populate grades class dropdown
+            const gradesClass = document.getElementById('gradesClass');
+            if (gradesClass) {
+                gradesClass.innerHTML = '<option value="">هەڵبژاردنی وانە...</option>';
+                teacherCourses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course;
+                    option.textContent = course;
+                    gradesClass.appendChild(option);
+                });
+            }
+        }
+
+        // Switch Teacher Sections
+        function switchTeacherSection(section) {
+            currentTeacherSection = section;
+            
+            document.getElementById('teacherScheduleSection').style.display = 'none';
+            document.getElementById('teacherAttendanceSection').style.display = 'none';
+            document.getElementById('teacherGradesSection').style.display = 'none';
+            document.getElementById('teacherNotificationsSection').style.display = 'none';
+            
+            if (section === 'schedule') {
+                document.getElementById('teacherScheduleSection').style.display = 'block';
+                loadTeacherSchedules();
+            } else if (section === 'attendance') {
+                document.getElementById('teacherAttendanceSection').style.display = 'block';
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('attendanceDate').value = today;
+            } else if (section === 'grades') {
+                document.getElementById('teacherGradesSection').style.display = 'block';
+                loadTeacherCourses();
+            } else if (section === 'notifications') {
+                document.getElementById('teacherNotificationsSection').style.display = 'block';
+                loadNotifications();
+            }
+        }
+
+        // Login Function
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorMsg = document.getElementById('errorMsg');
+
+            // Check for teacher in Firebase
+            database.ref('teachers/' + username).once('value', (snapshot) => {
+                const teacher = snapshot.val();
+                if (teacher && teacher.password === password) {
+                    currentUser = { username, ...teacher };
+                    showTeacherDashboard();
+                } else {
+                    errorMsg.style.display = 'block';
+                    setTimeout(() => {
+                        errorMsg.style.display = 'none';
+                    }, 3000);
+                }
+            });
+        }
+
+        // Show Teacher Dashboard
+        function showTeacherDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('teacherDashboard').style.display = 'block';
+            document.getElementById('teacherWelcome').textContent = 
+                `بەخێربێیت، ${currentUser.name}!`;
+            loadStudents();
+            loadSchedules();
+            switchTeacherSection('schedule');
+            
+            // بارکردنی ئاگادارکردنەوەکان کاتێک داشبۆرد دەردەکەوێت
+            updateTeacherNotificationBadge();
+        }
+
+        // Load Attendance Students
+        function loadAttendanceStudents() {
+            const level = document.getElementById('attendanceLevel').value;
+            const group = document.getElementById('attendanceGroup').value;
+            const course = document.getElementById('attendanceClass').value;
+            const time = document.getElementById('attendanceTime').value;
+            const date = document.getElementById('attendanceDate').value;
+            
+            if (!level || !group || !course || !time || !date) {
+                document.getElementById('saveAttendanceSection').style.display = 'none';
+                document.getElementById('attendanceStudentsList').innerHTML = 
+                    '<p style="text-align: center; color: var(--gray); padding: 40px;">تکایە هەموو خانەکان پڕ بکەرەوە</p>';
+                return;
+            }
+            
+            const container = document.getElementById('attendanceStudentsList');
+            container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">کەمێك چاوەڕێ بکە...</p>';
+            
+            // Load attendance data
+            const attendancePath = `attendance/${date}/${level}${group}/${course}/${time}/${currentUser.name}`;
+            database.ref(attendancePath).once('value', (snapshot) => {
+                const attendanceData = snapshot.val() || {};
+                
+                // Filter students for this level and group
+                currentStudentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
+                
+                container.innerHTML = '';
+                
+                if (currentStudentsInGroup.length === 0) {
+                    container.innerHTML = '<p class="no-results">هیچ خوێندکارێک بۆ ئەم گرووپە نییە</p>';
+                    document.getElementById('saveAttendanceSection').style.display = 'none';
+                    return;
+                }
+                
+                currentStudentsInGroup.forEach((student) => {
+                    // Default بۆ present
+                    const currentStatus = attendanceData[student.id] || 'present';
+                    
+                    const card = document.createElement('div');
+                    card.className = 'attendance-card';
+                    card.setAttribute('data-student-id', student.id);
+
+                    if (currentStatus === 'present') {
+                        card.classList.add('present');
+                    } else if (currentStatus === 'absent') {
+                        card.classList.add('absent');
+                    }
+                    
+                    card.innerHTML = `
+                        <div class="student-info-attendance">
+                            <span class="student-name-large">${student.name}</span>
+                            <span class="student-details">کۆد: ${student.code} | ${student.institute}</span>
+                        </div>
+                        <div class="attendance-checkbox">
+                            <div class="checkbox-item">
+                                <input type="radio" id="present_${student.id}" name="attendance_${student.id}" value="present" 
+                                    ${currentStatus === 'present' ? 'checked' : ''}>
+                                <label for="present_${student.id}" class="checkbox-label present-checkbox">
+                                    <i class="fas fa-check-circle"></i> ئامادە
+                                </label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" id="absent_${student.id}" name="attendance_${student.id}" value="absent" 
+                                    ${currentStatus === 'absent' ? 'checked' : ''}>
+                                <label for="absent_${student.id}" class="checkbox-label absent-checkbox">
+                                    <i class="fas fa-times-circle"></i> غیاب
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+                
+                document.getElementById('saveAttendanceSection').style.display = 'block';
+                
+                // Update printable attendance table
+                updateAttendancePrintTable(currentStudentsInGroup, attendanceData, level, group, course, time, date);
+                
+                // Event Listeners
+                container.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        const card = this.closest('.attendance-card');
+                        card.classList.remove('present', 'absent');
+                        
+                        if (this.value === 'present') {
+                            card.classList.add('present');
+                        } else if (this.value === 'absent') {
+                            card.classList.add('absent');
+                        }
+                    });
+                });
+            });
+        }
+
+        // Update printable attendance table
+        function updateAttendancePrintTable(students, attendanceData, level, group, course, time, date) {
+            const tableBody = document.getElementById('attendanceTableBody');
+            tableBody.innerHTML = '';
+            
+            students.forEach((student, index) => {
+                const status = attendanceData[student.id] || 'present';
+                const statusText = status === 'present' ? 'ئامادە' : 'غیاب';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${student.code}</td>
+                    <td>${student.name}</td>
+                    <td>${student.institute}</td>
+                    <td>${statusText}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            document.getElementById('attendancePrintDate').textContent = 
+                `مامۆستا: ${currentUser.name} | ئاست: ${level} - گرووپ: ${group} - وانە: ${course} - کات: ${time} - بەروار: ${date}`;
+        }
+
+        // Save All Attendance - چاکسازیکراو
+        function saveAllAttendance() {
+            const level = document.getElementById('attendanceLevel').value;
+            const group = document.getElementById('attendanceGroup').value;
+            const course = document.getElementById('attendanceClass').value;
+            const time = document.getElementById('attendanceTime').value;
+            const date = document.getElementById('attendanceDate').value;
+            
+            if (!level || !group || !course || !time || !date) {
+                alert('تکایە هەموو خانەکان پڕ بکەرەوە!');
+                return;
+            }
+            
+            // چێکەکی نوێ: دڵنیابوون لەوەی هەموو خوێندکاران دیاری کراون
+            const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
+            let allStudentsMarked = true;
+            const unmarkedStudents = [];
+
+            studentsInGroup.forEach(student => {
+                const radioButton = document.querySelector(`input[name="attendance_${student.id}"]:checked`);
+                if (!radioButton) {
+                    allStudentsMarked = false;
+                    unmarkedStudents.push(student.name);
+                }
+            });
+
+            if (!allStudentsMarked) {
+                alert(`تکایە هەموو خوێندکاران دیاری بکە! ئەم خوێندانە دیاری نەکراون: ${unmarkedStudents.join(', ')}`);
+                return;
+            }
+            
+            const attendanceData = {};
+            
+            // کۆکردنەوەی هەموو داتاکانی ئامادەبوون
+            document.querySelectorAll('.attendance-card').forEach(card => {
+                const studentId = card.getAttribute('data-student-id');
+                const status = card.querySelector('input[type="radio"]:checked');
+                
+                if (status) {
+                    attendanceData[studentId] = status.value;
+                }
+            });
+            
+            // ژماردنی ئامادە و غیاب
+            let presentCount = 0;
+            let absentCount = 0;
+            Object.values(attendanceData).forEach(status => {
+                if (status === 'present') presentCount++;
+                if (status === 'absent') absentCount++;
+            });
+            
+            // پاشەکەوتکردن بۆ Firebase
+            const attendancePath = `attendance/${date}/${level}${group}/${course}/${time}/${currentUser.name}`;
+            database.ref(attendancePath).set(attendanceData)
+                .then(() => {
+                    showTeacherSuccess('تۆماری ئامادەبوون بە سەرکەوتووی پاشەکەوتکرا! ✅');
+                    
+                    // زیادکردنی ئاگادارکردنەوە بۆ بەڕێوەبەر - چاکسازیکراو
+                    const notification = {
+                        message: `مامۆستایی ${currentUser.name} تۆماری ئامادەبوونی پاشەکەوت کرد بۆ ئاستی ${level} گروپی ${group} - وانە ${course} - کات ${time} - ${date} (ئامادە: ${presentCount}, غیاب: ${absentCount})`,
+                        type: 'success',
+                        timestamp: new Date().toISOString(),
+                        read: false,
+                        teacher: currentUser.name,
+                        details: {
+                            level: level,
+                            group: group,
+                            course: course,
+                            time: time,
+                            date: date,
+                            presentCount: presentCount,
+                            absentCount: absentCount,
+                            totalCount: presentCount + absentCount
+                        }
+                    };
+                    
+                    // پاشەکەوتکردنی ئاگادارکردنەوە لە فایەربەیس
+                    database.ref('notifications').push(notification)
+                        .then(() => {
+                            console.log('ئاگادارکردنەوە بۆ بەڕێوەبەر زیادکرا');
+                            // زیادکردنی ئاگادارکردنەوە بۆ مامۆستاش
+                            addTeacherNotification(notification);
+                        })
+                        .catch((error) => {
+                            console.error('هەڵە لە زیادکردنی ئاگادارکردنەوە:', error);
+                        });
+                })
+                .catch((error) => {
+                    alert('هەڵە لە پاشەکەوتکردن: ' + error.message);
+                });
+        }
+
+        // Teacher Success Message
+        function showTeacherSuccess(message) {
+            const successMsg = document.getElementById('teacherSuccessMsg');
+            successMsg.textContent = message;
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        // Load Grades Students
+        function loadGradesStudents() {
+            const level = document.getElementById('gradesLevel').value;
+            const group = document.getElementById('gradesGroup').value;
+            const course = document.getElementById('gradesClass').value;
+            const semester = document.getElementById('gradesSemester').value;
+            
+            if (!level || !group || !course || !semester) {
+                document.getElementById('viewGradesSection').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('currentLevelDisplay').textContent = level;
+            document.getElementById('currentGroupDisplay').textContent = group;
+            document.getElementById('viewGradesSection').style.display = 'block';
+            
+            const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
+            const container = document.getElementById('gradesStudentsList');
+            container.innerHTML = '';
+            
+            if (studentsInGroup.length === 0) {
+                container.innerHTML = '<p class="no-results">هیچ خوێندکارێک بۆ ئەم گرووپە نییە</p>';
+                return;
+            }
+            
+            const gradeKey = `${level}${group}_${course}_semester${semester}`;
+            
+            // بارکردنی نمرەکان لە فایەربەیس
+            database.ref('grades/' + gradeKey).once('value', (snapshot) => {
+                const gradesData = snapshot.val() || {};
+                
+                studentsInGroup.forEach((student) => {
+                    const studentGrades = gradesData[student.id];
+                    const card = document.createElement('div');
+                    card.className = 'grades-card';
+                    
+                    let gradesDisplay = '';
+                    let totalGrade = 0;
+                    
+                    if (studentGrades) {
+                        const daily = parseFloat(studentGrades.daily) || 0;
+                        const absence = parseFloat(studentGrades.absence) || 0;
+                        const practical = parseFloat(studentGrades.practical) || 0;
+                        const theory = parseFloat(studentGrades.theory) || 0;
+                        totalGrade = daily + absence + practical + theory;
+                        
+                        gradesDisplay = `
+                            <div class="grades-info-row">
+                                <span>نمرەی ڕۆژانە:</span>
+                                <span>${daily} / 3</span>
+                            </div>
+                            <div class="grades-info-row">
+                                <span>نمرەی غیابات:</span>
+                                <span>${absence} / 2</span>
+                            </div>
+                            <div class="grades-info-row">
+                                <span>نمرەی پراکتیک:</span>
+                                <span>${practical} / 8</span>
+                            </div>
+                            <div class="grades-info-row">
+                                <span>نمرەی تیۆری:</span>
+                                <span>${theory} / 15</span>
+                            </div>
+                            <div class="grades-info-row grades-total">
+                                <span>کۆی گشتی:</span>
+                                <span>${totalGrade.toFixed(1)} / 20</span>
+                            </div>
+                        `;
+                    } else {
+                        gradesDisplay = '<div class="grades-info-row"><span>هیچ نمرەیەک نییە</span></div>';
+                    }
+                    
+                    card.innerHTML = `
+                        <div class="grades-card-header">
+                            <span>${student.name}</span>
+                            <span>کۆد: ${student.code}</span>
+                        </div>
+                        <div class="grades-card-body">
+                            ${gradesDisplay}
+                        </div>
+                        <div class="teacher-actions">
+                            <button class="edit-btn" onclick="openGradesModal('${student.id}', '${student.name}', '${gradeKey}')">
+                                <i class="fas fa-edit"></i> دەستکاری
+                            </button>
+                            ${studentGrades ? `<button class="delete-btn" onclick="deleteGrades('${student.id}', '${gradeKey}')"><i class="fas fa-trash"></i> سڕینەوە</button>` : ''}
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+                
+                // Update printable grades table
+                updateGradesPrintTable(studentsInGroup, gradesData, level, group, course, semester);
+            });
+        }
+
+        // Update printable grades table
+        function updateGradesPrintTable(students, gradesData, level, group, course, semester) {
+            const tableBody = document.getElementById('gradesTableBody');
+            tableBody.innerHTML = '';
+            
+            students.forEach((student, index) => {
+                const studentGrades = gradesData[student.id] || {};
+                const daily = parseFloat(studentGrades.daily) || 0;
+                const absence = parseFloat(studentGrades.absence) || 0;
+                const practical = parseFloat(studentGrades.practical) || 0;
+                const theory = parseFloat(studentGrades.theory) || 0;
+                const total = daily + absence + practical + theory;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${student.code}</td>
+                    <td>${student.name}</td>
+                    <td>${daily}</td>
+                    <td>${absence}</td>
+                    <td>${practical}</td>
+                    <td>${theory}</td>
+                    <td>${total.toFixed(1)}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            document.getElementById('gradesPrintDate').textContent = 
+                `مامۆستا: ${currentUser.name} | ئاست: ${level} - گرووپ: ${group} - وانە: ${course} - وەرز: ${semester}`;
+        }
+
+        // Load Notifications
+        function loadNotifications() {
+            if (!currentUser) return;
+            
+            const container = document.getElementById('notificationsList');
+            container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">بارکردنی ئاگادارکردنەوەکان...</p>';
+            
+            // بارکردنی ئاگادارکردنەوەکان لە فایەربەیس
+            database.ref('notifications').orderByChild('timestamp').once('value', (snapshot) => {
+                const notifications = snapshot.val();
+                container.innerHTML = '';
+                
+                if (!notifications) {
+                    container.innerHTML = '<p class="no-results">هیچ ئاگادارکردنەوەیەک نییە</p>';
+                    return;
+                }
+                
+                const notificationsArray = [];
+                Object.keys(notifications).forEach((key) => {
+                    notificationsArray.push({ id: key, ...notifications[key] });
+                });
+                
+                // ڕیزکردنی ئاگادارکردنەوەکان بەپێی کاتی دروستکردن (نوێترین لەسەرەوە)
+                notificationsArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                // نیشاندانی تەنها ١٠ ئاگادارکردنەوەی سەرەکی
+                notificationsArray.slice(0, 10).forEach((notification) => {
+                    const notificationItem = document.createElement('div');
+                    notificationItem.className = `notification-item ${notification.type}`;
+                    
+                    const date = new Date(notification.timestamp);
+                    const formattedDate = date.toLocaleDateString('ku') + ' - ' + date.toLocaleTimeString('ku');
+                    
+                    notificationItem.innerHTML = `
+                        <div class="notification-header">
+                            <span>${notification.teacher || 'سیستەم'}</span>
+                            <span class="notification-date">${formattedDate}</span>
+                        </div>
+                        <div class="notification-message">
+                            ${notification.message}
+                        </div>
+                    `;
+                    
+                    container.appendChild(notificationItem);
+                });
+            });
+        }
+
+        // Open Grades Modal
+        function openGradesModal(studentId, studentName, gradeKey) {
+            document.getElementById('gradesModalTitle').innerHTML = '<i class="fas fa-star"></i> دەستکاری نمرە';
+            document.getElementById('gradesStudentName').value = studentName;
+            document.getElementById('editGradesStudentId').value = studentId;
+            document.getElementById('gradesStudentName').dataset.gradeKey = gradeKey;
+            
+            // بارکردنی نمرەکان لە فایەربەیس
+            database.ref('grades/' + gradeKey + '/' + studentId).once('value', (snapshot) => {
+                const grades = snapshot.val();
+                if (grades) {
+                    document.getElementById('dailyGrade').value = grades.daily || '';
+                    document.getElementById('absenceGrade').value = grades.absence || '';
+                    document.getElementById('practicalGrade').value = grades.practical || '';
+                    document.getElementById('theoryGrade').value = grades.theory || '';
+                } else {
+                    document.getElementById('dailyGrade').value = '';
+                    document.getElementById('absenceGrade').value = '';
+                    document.getElementById('practicalGrade').value = '';
+                    document.getElementById('theoryGrade').value = '';
+                }
+                calculateTotal();
+            });
+            
+            document.getElementById('gradesModal').style.display = 'flex';
+        }
+
+        // Calculate Total Grade
+        function calculateTotal() {
+            const daily = parseFloat(document.getElementById('dailyGrade').value) || 0;
+            const absence = parseFloat(document.getElementById('absenceGrade').value) || 0;
+            const practical = parseFloat(document.getElementById('practicalGrade').value) || 0;
+            const theory = parseFloat(document.getElementById('theoryGrade').value) || 0;
+            
+            const total = daily + absence + practical + theory;
+            document.getElementById('totalGradeDisplay').textContent = `${total.toFixed(1)} / ٢٠`;
+        }
+
+        // Save Grades
+        function saveGrades(event) {
+            event.preventDefault();
+            
+            const studentId = document.getElementById('editGradesStudentId').value;
+            const gradeKey = document.getElementById('gradesStudentName').dataset.gradeKey;
+            
+            const grades = {
+                daily: parseFloat(document.getElementById('dailyGrade').value) || 0,
+                absence: parseFloat(document.getElementById('absenceGrade').value) || 0,
+                practical: parseFloat(document.getElementById('practicalGrade').value) || 0,
+                theory: parseFloat(document.getElementById('theoryGrade').value) || 0,
+                timestamp: Date.now()
+            };
+            
+            // پاشەکەوتکردنی نمرەکان لە فایەربەیس
+            database.ref('grades/' + gradeKey + '/' + studentId).set(grades)
+                .then(() => {
+                    showGradesSuccess('نمرەکان بە سەرکەوتووی پاشەکەوتکران! ✅');
+                    closeGradesModal();
+                    loadGradesStudents();
+                })
+                .catch((error) => {
+                    alert('هەڵە: ' + error.message);
+                });
+        }
+
+        // Delete Grades
+        function deleteGrades(studentId, gradeKey) {
+            if (!confirm('دڵنیایت لە سڕینەوەی نمرەکانی ئەم خوێندکارە؟')) return;
+            
+            database.ref('grades/' + gradeKey + '/' + studentId).remove()
+                .then(() => {
+                    showGradesSuccess('نمرەکان سڕایەوە! ✅');
+                    loadGradesStudents();
+                })
+                .catch((error) => {
+                    alert('هەڵە: ' + error.message);
+                });
+        }
+
+        // Close Grades Modal
+        function closeGradesModal() {
+            document.getElementById('gradesModal').style.display = 'none';
+        }
+
+        // Show Grades Success Message
+        function showGradesSuccess(message) {
+            const successMsg = document.getElementById('gradesSuccessMsg');
+            successMsg.textContent = message;
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+        }
+
+        // نوێ: فەنکشنەکانی چاپ و پەڕگە - چاککراو (PDF سڕاوەتەوە)
+        function printSchedule() {
+            const printContent = document.getElementById('printScheduleTable');
+            const printWindow = window.open('', '_blank');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>چاپی خشتەی وانەکان</title>
+                    <style>
+                        body { 
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                            margin: 20px; 
+                            direction: rtl; 
+                            background: white;
+                        }
+                        .print-header { 
+                            text-align: center; 
+                            margin-bottom: 30px; 
+                            padding-bottom: 15px; 
+                            border-bottom: 3px solid #667eea; 
+                        }
+                        .print-header h2 { 
+                            color: #667eea; 
+                            margin-bottom: 10px; 
+                            font-size: 24px;
+                        }
+                        .print-table { 
+                            width: 100%; 
+                            border-collapse: collapse; 
+                            margin: 20px 0; 
+                            font-size: 14px; 
+                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                        }
+                        .print-table th { 
+                            background: #667eea; 
+                            color: white; 
+                            padding: 12px 15px; 
+                            text-align: center; 
+                            font-weight: 600; 
+                            border: 1px solid #5a6fd8;
+                        }
+                        .print-table td { 
+                            padding: 10px 15px; 
+                            border-bottom: 1px solid #e0e0e0; 
+                            text-align: center;
+                            border: 1px solid #e0e0e0;
+                        }
+                        .print-table tr:nth-child(even) { 
+                            background: #f8f9fa; 
+                        }
+                        @media print {
+                            body { margin: 0; }
+                            .print-table { box-shadow: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${printContent.innerHTML}
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            
+            // Wait for content to load then print
+            printWindow.onload = function() {
+                printWindow.print();
+                printWindow.onafterprint = function() {
+                    printWindow.close();
+                };
+            };
+        }
+
+        function exportScheduleToExcel() {
+            const table = document.getElementById('scheduleTable');
+            const ws = XLSX.utils.table_to_sheet(table);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "خشتەی وانەکان");
+            XLSX.writeFile(wb, "خشتەی_وانەکان.xlsx");
+        }
+
+        function printAttendance() {
+            const level = document.getElementById('attendanceLevel').value;
+            const group = document.getElementById('attendanceGroup').value;
+            const course = document.getElementById('attendanceClass').value;
+            const time = document.getElementById('attendanceTime').value;
+            const date = document.getElementById('attendanceDate').value;
+            
+            if (!level || !group || !course || !time || !date) {
+                alert('تکایە هەموو خانەکان پڕ بکەرەوە!');
+                return;
+            }
+            
+            // Load attendance data
+            const attendancePath = `attendance/${date}/${level}${group}/${course}/${time}/${currentUser.name}`;
+            database.ref(attendancePath).once('value', (snapshot) => {
+                const attendanceData = snapshot.val() || {};
+                
+                // Filter students for this level and group
+                const studentsInGroup = allStudents.filter(s => s.level === level && s.group === group);
+                
+                const presentCount = Object.values(attendanceData).filter(status => status === 'present').length;
+                const absentCount = studentsInGroup.length - presentCount;
+                
+                const title = `تۆماری غیابات - ${date}`;
+                const content = `
+                    <div style="padding: 20px; font-family: 'Segoe UI', Tahoma, sans-serif; direction: rtl;">
+                        <div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 15px;">
+                            <h1 style="font-size: 24px; margin-bottom: 10px; color: #667eea;">پەیمانگەی کۆمپیتەری سلێمانی</h1>
+                            <h2 style="font-size: 20px; margin-bottom: 15px;">${title}</h2>
+                            <div style="margin: 10px 0;">
+                                <strong>مامۆستا:</strong> ${currentUser.name} | 
+                                <strong>وانە:</strong> ${course} | 
+                                <strong>ئاست:</strong> ${level} | 
+                                <strong>گروپ:</strong> ${group}
+                            </div>
+                            <div style="margin: 10px 0;">
+                                <strong>کات:</strong> ${time} | 
+                                <strong>بەروار:</strong> ${date}
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-around; margin: 20px 0; text-align: center;">
+                            <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; border: 1px solid #4caf50; width: 30%;">
+                                <div style="font-size: 28px; font-weight: bold; color: #2e7d32;">${presentCount}</div>
+                                <div style="font-size: 14px;">ئامادە</div>
+                            </div>
+                            <div style="background: #ffebee; padding: 15px; border-radius: 8px; border: 1px solid #f44336; width: 30%;">
+                                <div style="font-size: 28px; font-weight: bold; color: #c62828;">${absentCount}</div>
+                                <div style="font-size: 14px;">غیاب</div>
+                            </div>
+                            <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #2196f3; width: 30%;">
+                                <div style="font-size: 28px; font-weight: bold; color: #1565c0;">${studentsInGroup.length}</div>
+                                <div style="font-size: 14px;">کۆی گشتی</div>
+                            </div>
+                        </div>
+                        
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px;">
+                            <thead>
+                                <tr style="background: #f5f5f5;">
+                                    <th style="border: 1px solid #000; padding: 10px; text-align: center;">ژمارە</th>
+                                    <th style="border: 1px solid #000; padding: 10px; text-align: center;">کۆد</th>
+                                    <th style="border: 1px solid #000; padding: 10px; text-align: center;">ناو</th>
+                                    <th style="border: 1px solid #000; padding: 10px; text-align: center;">پەیمانگە</th>
+                                    <th style="border: 1px solid #000; padding: 10px; text-align: center;">دۆخ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${studentsInGroup.map((student, index) => {
+                                    const status = attendanceData[student.id] || 'present';
+                                    const statusText = status === 'present' ? 'ئامادە' : 'غیاب';
+                                    const bgColor = status === 'present' ? '#e8f5e9' : '#ffebee';
+                                    
+                                    return `
+                                        <tr style="background: ${bgColor};">
+                                            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${index + 1}</td>
+                                            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${student.code}</td>
+                                            <td style="border: 1px solid #000; padding: 8px; text-align: right; font-weight: bold;">${student.name}</td>
+                                            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${student.institute}</td>
+                                            <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold; color: ${status === 'present' ? '#2e7d32' : '#c62828'};">${statusText}</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                        
+                        <div style="margin-top: 30px; text-align: left; font-size: 12px; color: #666;">
+                            <div>چاپکرا لە: ${new Date().toLocaleString('ku')}</div>
+                            <div>ئەم ڕاپۆرتە لەلایەن سیستەمی داشبۆردی مامۆستایان دروستکراوە</div>
+                        </div>
+                    </div>
+                `;
+                
+                // Open print window
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html dir="rtl">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>چاپی تۆماری ئامادەبوون</title>
+                        <style>
+                            @media print {
+                                body { margin: 0; padding: 20px; }
+                                @page { margin: 1cm; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${content}
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                                setTimeout(() => {
+                                    window.close();
+                                }, 500);
+                            };
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            });
+        }
+
+        function exportAttendanceToExcel() {
+            const table = document.getElementById('attendanceTable');
+            const ws = XLSX.utils.table_to_sheet(table);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "تۆماری ئامادەبوون");
+            XLSX.writeFile(wb, "تۆماری_ئامادەبوون.xlsx");
+        }
+
+        function printGrades() {
+            const printContent = document.getElementById('printGradesTable');
+            const printWindow = window.open('', '_blank');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>چاپی نمرەکانی خوێندکاران</title>
+                    <style>
+                        body { 
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                            margin: 20px; 
+                            direction: rtl; 
+                            background: white;
+                        }
+                        .print-header { 
+                            text-align: center; 
+                            margin-bottom: 30px; 
+                            padding-bottom: 15px; 
+                            border-bottom: 3px solid #ffc107; 
+                        }
+                        .print-header h2 { 
+                            color: #ffc107; 
+                            margin-bottom: 10px; 
+                            font-size: 24px;
+                        }
+                        .print-table { 
+                            width: 100%; 
+                            border-collapse: collapse; 
+                            margin: 20px 0; 
+                            font-size: 12px; 
+                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                        }
+                        .print-table th { 
+                            background: #ffc107; 
+                            color: #000; 
+                            padding: 10px 12px; 
+                            text-align: center; 
+                            font-weight: 600; 
+                            border: 1px solid #e0a800;
+                        }
+                        .print-table td { 
+                            padding: 8px 10px; 
+                            border-bottom: 1px solid #e0e0e0; 
+                            text-align: center;
+                            border: 1px solid #e0e0e0;
+                        }
+                        .print-table tr:nth-child(even) { 
+                            background: #f8f9fa; 
+                        }
+                        @media print {
+                            body { margin: 0; }
+                            .print-table { box-shadow: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${printContent.innerHTML}
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            
+            // Wait for content to load then print
+            printWindow.onload = function() {
+                printWindow.print();
+                printWindow.onafterprint = function() {
+                    printWindow.close();
+                };
+            };
+        }
+
+        function exportGradesToExcel() {
+            const table = document.getElementById('gradesTable');
+            const ws = XLSX.utils.table_to_sheet(table);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "نمرەکانی خوێندکاران");
+            XLSX.writeFile(wb, "نمرەکانی_خوێندکاران.xlsx");
+        }
+
+        // نوێ: فەنکشنەکانی بەڕێوەبردنی ئاگادارکردنەوەکان
+        function toggleTeacherNotifications() {
+            const panel = document.getElementById('teacherNotificationPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+            
+            if (panel.style.display === 'block') {
+                loadTeacherNotifications();
+            }
+        }
+
+        function loadTeacherNotifications() {
+            if (!currentUser) return;
+            
+            const container = document.getElementById('teacherNotifications');
+            container.innerHTML = '<div class="notification-panel-item">بارکردنی ئاگادارکردنەوەکان...</div>';
+            
+            // بارکردنی ئاگادارکردنەوەکانی ئەم مامۆستایە
+            database.ref('notifications').orderByChild('timestamp').once('value', (snapshot) => {
+                const notifications = snapshot.val();
+                container.innerHTML = '';
+                
+                if (!notifications) {
+                    container.innerHTML = '<div class="notification-panel-item">هیچ ئاگادارکردنەوەیەک نییە</div>';
+                    return;
+                }
+                
+                const notificationsArray = [];
+                Object.keys(notifications).forEach((key) => {
+                    if (notifications[key].teacher === currentUser.name) {
+                        notificationsArray.push({ id: key, ...notifications[key] });
+                    }
+                });
+                
+                // ڕیزکردنی ئاگادارکردنەوەکان بەپێی کاتی دروستکردن (نوێترین لەسەرەوە)
+                notificationsArray.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                if (notificationsArray.length === 0) {
+                    container.innerHTML = '<div class="notification-panel-item">هیچ ئاگادارکردنەوەیەک نییە</div>';
+                    return;
+                }
+                
+                notificationsArray.forEach((notification) => {
+                    const notificationItem = document.createElement('div');
+                    notificationItem.className = `notification-panel-item ${notification.read ? 'read' : 'unread'} ${notification.type}`;
+                    
+                    const date = new Date(notification.timestamp);
+                    const formattedDate = date.toLocaleDateString('ku') + ' - ' + date.toLocaleTimeString('ku');
+                    
+                    notificationItem.innerHTML = `
+                        <div class="notification-content">
+                            <div class="notification-panel-message">${notification.message}</div>
+                            <div class="notification-panel-time">${formattedDate}</div>
+                        </div>
+                        <div class="notification-panel-actions">
+                            ${!notification.read ? 
+                                `<button class="notification-panel-btn mark-read" onclick="markTeacherNotificationAsRead('${notification.id}')">
+                                    <i class="fas fa-check"></i>
+                                </button>` : ''
+                            }
+                            <button class="notification-panel-btn delete" onclick="deleteTeacherNotification('${notification.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    container.appendChild(notificationItem);
+                });
+                
+                updateTeacherNotificationBadge();
+            });
+        }
+
+        function addTeacherNotification(notification) {
+            // زیادکردنی ئاگادارکردنەوە بۆ لیستی مامۆستا
+            const container = document.getElementById('teacherNotifications');
+            const notificationItem = document.createElement('div');
+            notificationItem.className = `notification-panel-item unread ${notification.type}`;
+            
+            const date = new Date(notification.timestamp);
+            const formattedDate = date.toLocaleDateString('ku') + ' - ' + date.toLocaleTimeString('ku');
+            
+            notificationItem.innerHTML = `
+                <div class="notification-content">
+                    <div class="notification-panel-message">${notification.message}</div>
+                    <div class="notification-panel-time">${formattedDate}</div>
+                </div>
+                <div class="notification-panel-actions">
+                    <button class="notification-panel-btn mark-read" onclick="markTeacherNotificationAsRead('${notification.id}')">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button class="notification-panel-btn delete" onclick="deleteTeacherNotification('${notification.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            // زیادکردنی ئاگادارکردنەوەی نوێ لەسەرەوە
+            if (container.firstChild) {
+                container.insertBefore(notificationItem, container.firstChild);
+            } else {
+                container.appendChild(notificationItem);
+            }
+            
+            updateTeacherNotificationBadge();
+        }
+
+        function markTeacherNotificationAsRead(notificationId) {
+            database.ref('notifications/' + notificationId).update({ read: true })
+                .then(() => {
+                    loadTeacherNotifications();
+                })
+                .catch((error) => {
+                    console.error('هەڵە لە نیشانەکردنی ئاگادارکردنەوە وەک خوێندراو:', error);
+                });
+        }
+
+        function deleteTeacherNotification(notificationId) {
+            database.ref('notifications/' + notificationId).remove()
+                .then(() => {
+                    loadTeacherNotifications();
+                })
+                .catch((error) => {
+                    console.error('هەڵە لە سڕینەوەی ئاگادارکردنەوە:', error);
+                });
+        }
+
+        function markAllTeacherNotificationsAsRead() {
+            database.ref('notifications').once('value', (snapshot) => {
+                const notifications = snapshot.val();
+                if (notifications) {
+                    Object.keys(notifications).forEach((key) => {
+                        if (notifications[key].teacher === currentUser.name && !notifications[key].read) {
+                            database.ref('notifications/' + key).update({ read: true });
+                        }
+                    });
+                }
+                loadTeacherNotifications();
+            });
+        }
+
+        function clearAllTeacherNotifications() {
+            database.ref('notifications').once('value', (snapshot) => {
+                const notifications = snapshot.val();
+                if (notifications) {
+                    Object.keys(notifications).forEach((key) => {
+                        if (notifications[key].teacher === currentUser.name) {
+                            database.ref('notifications/' + key).remove();
+                        }
+                    });
+                }
+                loadTeacherNotifications();
+            });
+        }
+
+        function updateTeacherNotificationBadge() {
+            const badge = document.getElementById('teacherNotificationBadge');
+            
+            database.ref('notifications').once('value', (snapshot) => {
+                const notifications = snapshot.val();
+                let unreadCount = 0;
+                
+                if (notifications) {
+                    Object.keys(notifications).forEach((key) => {
+                        if (notifications[key].teacher === currentUser.name && !notifications[key].read) {
+                            unreadCount++;
+                        }
+                    });
+                }
+                
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginPage').style.display = 'block';
+            document.getElementById('teacherDashboard').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const gradesModal = document.getElementById('gradesModal');
+            if (event.target === gradesModal) {
+                closeGradesModal();
+            }
+            
+            // Close notification panel when clicking outside
+            const notificationPanel = document.getElementById('teacherNotificationPanel');
+            const notificationBell = document.getElementById('teacherNotificationBell');
+            if (notificationPanel && event.target !== notificationBell && !notificationBell.contains(event.target) && 
+                event.target !== notificationPanel && !notificationPanel.contains(event.target)) {
+                notificationPanel.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

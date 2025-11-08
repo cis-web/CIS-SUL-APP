@@ -1,0 +1,2054 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سیستەمی تویژینەوەی پەیمانگەی کۆمپیتەر</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    
+    <style>
+        /* هەموو ستایلەکان هەر وەک خۆیان ماون */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2a5298;
+            --primary-dark: #1e3c72;
+            --secondary-color: #f39c12;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --border-color: #ddd;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 15px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: var(--white);
+            padding: 20px 0;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .login-section {
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: var(--white);
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 16px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .dashboard {
+            display: none;
+            background-color: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-info {
+            background-color: #f0f7ff;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .user-info h2 {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            width: auto;
+            padding: 12px 20px;
+            background-color: var(--danger-color);
+            font-size: 0.95rem;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .tab {
+            padding: 14px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            font-size: 1rem;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            color: var(--text-light);
+        }
+
+        .tab:hover {
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f0f0f0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: #f5f9ff;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            display: none;
+            font-weight: 500;
+        }
+
+        .success {
+            background-color: #e8f6ef;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #fde8e8;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info {
+            background-color: #e1f5fe;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .edit-btn, .delete-btn, .view-btn {
+            width: auto;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+        }
+        
+        .edit-btn {
+            background-color: var(--secondary-color);
+        }
+        
+        .edit-btn:hover {
+            background-color: #e67e22;
+        }
+        
+        .delete-btn {
+            background-color: var(--danger-color);
+        }
+        
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .view-btn {
+            background-color: #3498db;
+        }
+        
+        .view-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .add-form {
+            background-color: #f5f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px dashed var(--primary-color);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+            min-width: 200px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+        
+        .loading:after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        .url-input {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 18px;
+            margin: 15px 0;
+        }
+
+        .url-input label {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .url-help {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 10px;
+            padding: 12px;
+            background: #fff9e6;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .research-item {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        
+        .research-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .research-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .research-meta {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        
+        .pdf-preview {
+            margin-top: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            display: none;
+            max-width: 90%;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .notification.success {
+            background-color: var(--success-color);
+        }
+        
+        .notification.error {
+            background-color: var(--danger-color);
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 14px 16px 14px 45px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .search-box:before {
+            content: "🔍";
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--text-light);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            padding: 15px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            direction: rtl;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .close-modal {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            background: none;
+            width: auto;
+            padding: 0;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--text-dark);
+        }
+
+        .link-display {
+            word-break: break-all;
+            padding: 10px;
+            background: #f0f7ff;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            border: 1px solid #e1e8f0;
+        }
+
+        .developer-info {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-top: 3px solid var(--primary-color);
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .developer-info strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .mobile-table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .grade-highlight {
+            background-color: #fff9e6;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .grade-zero {
+            color: #e74c3c;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            h1 { font-size: 1.7rem; }
+            .subtitle { font-size: 1rem; }
+            .login-section, .dashboard { padding: 20px; }
+            .user-info { flex-direction: column; align-items: flex-start; }
+            .user-info h2 { margin-bottom: 12px; font-size: 1.3rem; }
+            .logout-btn { width: 100%; margin-top: 10px; }
+            .tabs { justify-content: flex-start; }
+            .tab { padding: 12px 16px; font-size: 0.95rem; }
+            .card { padding: 18px; }
+            .card h3 { font-size: 1.2rem; }
+            th, td { padding: 12px 14px; font-size: 0.9rem; }
+            .form-row { flex-direction: column; gap: 12px; }
+            .form-row .form-group { min-width: 100%; }
+            .action-buttons { justify-content: center; }
+            .modal-content { margin: 10% auto; padding: 20px; }
+            .notification { right: 10px; left: 10px; max-width: calc(100% - 20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="globalNotification"></div>
+    
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>دەستکاریکردنی زانیاری</h2>
+                <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="editUserType">
+                <input type="hidden" id="editUserId">
+                
+                <div class="form-group">
+                    <label for="editFullName">ناو:</label>
+                    <input type="text" id="editFullName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editUsername">ناوی بەکارهێنەر:</label>
+                    <input type="text" id="editUsername" required disabled>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDepartment">بەش:</label>
+                    <select id="editDepartment" required>
+                        <option value="webdesign">وێب دیزاین</option>
+                        <option value="network">نێتوۆرک</option>
+                        <option value="program">پرۆگرام</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="editStudentFields" style="display:none;">
+                    <label for="editAcademicYear">ساڵی خوێندن:</label>
+                    <select id="editAcademicYear">
+                        <option value="2025">2025-2024</option>
+                        <option value="2026">2026-2025</option>
+                        <option value="2027">2027-2026</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="editStudentResearch" style="display:none;">
+                    <label for="editResearchTitle">ناونیشانی تویژینەوە:</label>
+                    <input type="text" id="editResearchTitle">
+                </div>
+                
+                <div class="form-group" id="editTeacherFields" style="display:none;">
+                    <label for="editRole">ڕۆڵی مامۆستا:</label>
+                    <select id="editRole">
+                        <option value="committee_head">سەرۆکی لیژنە</option>
+                        <option value="member_one">ئەندامی یەک</option>
+                        <option value="member_two">ئەندامی دوو</option>
+                        <option value="supervisor">سەرپەرشتیار</option>
+                        <option value="academic">ئەکادیمی</option>
+                    </select>
+                </div>
+                
+                <button type="submit">پاشەکەوتکردن</button>
+                <div id="editMessage" class="message"></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>سیستەمی تویژینەوەی پەیمانگەی کۆمپیتەر</h1>
+            <p class="subtitle">بەخێربێن بۆ سیستەمی تویژینەوەی پەیمانگەی کۆمپیتەر</p>
+        </header>
+
+        <section class="login-section">
+            <h2 class="login-title">چوونەژوورەوە</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="userType">جۆری بەکارهێنەر:</label>
+                    <select id="userType" required>
+                        <option value="">جۆری بەکارهێنەر هەڵبژێرە</option>
+                        <option value="manager">بەڕێوەبەر</option>
+                        <option value="teacher">مامۆستایانی لیژنەی تویژینەوە</option>
+                        <option value="student">خوێندکار</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="department">بەش:</label>
+                    <select id="department" required>
+                        <option value="">بەش هەڵبژێرە</option>
+                        <option value="webdesign">وێب دیزاین</option>
+                        <option value="network">نێتوۆرک</option>
+                        <option value="program">پرۆگرام</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">ناوی بەکارهێنەر:</label>
+                    <input type="text" id="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">وشەی نهێنی:</label>
+                    <input type="password" id="password" required>
+                </div>
+
+                <button type="submit">چوونەژوورەوە</button>
+            </form>
+            <div id="loginMessage" class="message"></div>
+            
+            <div class="developer-info">
+                <strong>ئەم ئەپە لەلایەن ماجدانور دروستکراوە/ 2025</strong>
+                <div>٠٧٧٠١٤٥٨٤٧٤</div>
+            </div>
+        </section>
+
+        <!-- داشبۆردی بەڕێوەبەر -->
+        <section id="managerDashboard" class="dashboard">
+            <div class="user-info">
+                <h2>بەڕێوەبەری سیستەم</h2>
+                <button class="logout-btn">چوونەدەرەوە</button>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="students">خوێندکاران</div>
+                <div class="tab" data-tab="teachers">مامۆستایان</div>
+                <div class="tab" data-tab="addUser">زیادکردن</div>
+                <div class="tab" data-tab="reports">ڕاپۆرت</div>
+            </div>
+
+            <div class="tab-content active" id="studentsTab">
+                <div class="search-box">
+                    <input type="text" id="searchStudents" placeholder="گەڕان بەناوی خوێندکار...">
+                </div>
+                <div class="loading" id="studentsLoading">خوێندکاران بار دەکرێن</div>
+                
+                <div class="card">
+                    <h3>خوێندکارانی بەشی وێب دیزاین</h3>
+                    <div class="mobile-table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ناو</th>
+                                    <th>ناوی بەکارهێنەر</th>
+                                    <th>ساڵ</th>
+                                    <th>ناونیشانی تویژینەوە</th>
+                                    <th>لینکی فایل</th>
+                                    <th>سەرۆک</th>
+                                    <th>ئەندام١</th>
+                                    <th>ئەندام٢</th>
+                                    <th>سەرپەرشت</th>
+                                    <th>ئەکادیمی</th>
+                                    <th>کۆی گشتی</th>
+                                    <th>پلە</th>
+                                    <th>کرداراکان</th>
+                                </tr>
+                            </thead>
+                            <tbody id="webStudentsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>خوێندکارانی بەشی نێتوۆرک</h3>
+                    <div class="mobile-table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ناو</th>
+                                    <th>ناوی بەکارهێنەر</th>
+                                    <th>ساڵ</th>
+                                    <th>ناونیشانی تویژینەوە</th>
+                                    <th>لینکی فایل</th>
+                                    <th>سەرۆک</th>
+                                    <th>ئەندام١</th>
+                                    <th>ئەندام٢</th>
+                                    <th>سەرپەرشت</th>
+                                    <th>ئەکادیمی</th>
+                                    <th>کۆی گشتی</th>
+                                    <th>پلە</th>
+                                    <th>کرداراکان</th>
+                                </tr>
+                            </thead>
+                            <tbody id="networkStudentsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>خوێندکارانی بەشی پرۆگرام</h3>
+                    <div class="mobile-table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ناو</th>
+                                    <th>ناوی بەکارهێنەر</th>
+                                    <th>ساڵ</th>
+                                    <th>ناونیشانی تویژینەوە</th>
+                                    <th>لینکی فایل</th>
+                                    <th>سەرۆک</th>
+                                    <th>ئەندام١</th>
+                                    <th>ئەندام٢</th>
+                                    <th>سەرپەرشت</th>
+                                    <th>ئەکادیمی</th>
+                                    <th>کۆی گشتی</th>
+                                    <th>پلە</th>
+                                    <th>کرداراکان</th>
+                                </tr>
+                            </thead>
+                            <tbody id="programStudentsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="teachersTab">
+                <div class="loading" id="teachersLoading">مامۆستایان بار دەکرێن</div>
+                <div class="card">
+                    <h3>مامۆستایانی سیستەم</h3>
+                    <div class="mobile-table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ناو</th>
+                                    <th>ناوی بەکارهێنەر</th>
+                                    <th>بەش</th>
+                                    <th>ڕۆڵ</th>
+                                    <th>کرداراکان</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teachersTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="addUserTab">
+                <div class="card">
+                    <h3>زیادکردنی بەکارهێنەری نوێ</h3>
+                    <div class="add-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUserType">جۆری بەکارهێنەر:</label>
+                                <select id="newUserType">
+                                    <option value="student">خوێندکار</option>
+                                    <option value="teacher">مامۆستا</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserDepartment">بەش:</label>
+                                <select id="newUserDepartment">
+                                    <option value="webdesign">وێب دیزاین</option>
+                                    <option value="network">نێتوۆرک</option>
+                                    <option value="program">پرۆگرام</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="newUserName">ناوی تەواو:</label>
+                            <input type="text" id="newUserName">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUserUsername">ناوی بەکارهێنەر:</label>
+                                <input type="text" id="newUserUsername">
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserPassword">وشەی نهێنی:</label>
+                                <input type="password" id="newUserPassword">
+                            </div>
+                        </div>
+                        <div id="newStudentFields">
+                            <div class="form-group">
+                                <label for="newStudentYear">ساڵی خوێندن:</label>
+                                <select id="newStudentYear">
+                                    <option value="2025">2025-2024</option>
+                                    <option value="2026">2026-2025</option>
+                                    <option value="2027">2027-2026</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group" id="newTeacherRole" style="display:none;">
+                            <label for="newTeacherRoleSelect">ڕۆڵی مامۆستا:</label>
+                            <select id="newTeacherRoleSelect">
+                                <option value="committee_head">سەرۆکی لیژنە</option>
+                                <option value="member_one">ئەندامی یەک</option>
+                                <option value="member_two">ئەندامی دوو</option>
+                                <option value="supervisor">سەرپەرشتیار</option>
+                                <option value="academic">ئەکادیمی</option>
+                            </select>
+                        </div>
+                        <button type="button" id="addUserBtn">زیادکردن</button>
+                        <div id="addUserMessage" class="message"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="reportsTab">
+                <div class="card">
+                    <h3>ڕاپۆرتی گشتی</h3>
+                    <div class="mobile-table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>بەش</th>
+                                    <th>ژمارەی خوێندکاران</th>
+                                    <th>نمرەی تێکڕا</th>
+                                    <th>ڕێژەی سەرکەوتن</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- داشبۆردی مامۆستا -->
+        <section id="teacherDashboard" class="dashboard">
+            <div class="user-info">
+                <h2 id="teacherWelcome">مامۆستا</h2>
+                <button class="logout-btn">چوونەدەرەوە</button>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="grading">نمرەدان</div>
+                <div class="tab" data-tab="myStudents">خوێندکارەکانم</div>
+                <div class="tab" data-tab="researchPapers">تویژینەوەکان</div>
+            </div>
+
+            <div class="tab-content active" id="gradingTab">
+                <div class="card">
+                    <h3>نمرەدانی خوێندکاران</h3>
+                    <form id="gradingForm">
+                        <div class="form-group">
+                            <label for="studentSelect">خوێندکار:</label>
+                            <select id="studentSelect" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="grade">نمرە (لە ١٠٠):</label>
+                            <input type="number" id="grade" min="0" max="100" required>
+                        </div>
+                        <button type="submit">تۆمارکردن</button>
+                    </form>
+                    <div id="gradeMessage" class="message"></div>
+                </div>
+                
+                <div class="card" style="margin-top:20px;">
+                    <h3>نمرەکانی تۆمارکراو</h3>
+                    <div id="myGradesLoading" class="loading">نمرەکان بار دەکرێن</div>
+                    <div class="mobile-table-container" id="myGradesContainer" style="display:none;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>خوێندکار</th>
+                                    <th>نمرە</th>
+                                    <th>کردار</th>
+                                </tr>
+                            </thead>
+                            <tbody id="myGradesTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="myStudentsTab">
+                <div class="loading" id="teacherStudentsLoading">خوێندکاران بار دەکرێن</div>
+                <div class="card">
+                    <h3 id="teacherStudentsTitle">خوێندکارەکان</h3>
+                    <div class="mobile-table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ناو</th>
+                                    <th>ناونیشانی تویژینەوە</th>
+                                    <th>لینکی فایل</th>
+                                    <th id="gradeHeaderCol">نمرەکان</th>
+                                    <th>کۆی گشتی</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacherStudentsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="researchPapersTab">
+                <div class="loading" id="researchPapersLoading">تویژینەوەکان بار دەکرێن</div>
+                <div class="card">
+                    <h3 id="researchPapersTitle">تویژینەوەکان</h3>
+                    <div id="researchPapersList"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- داشبۆردی خوێندکار -->
+        <section id="studentDashboard" class="dashboard">
+            <div class="user-info">
+                <h2>خوێندکار</h2>
+                <button class="logout-btn">چوونەدەرەوە</button>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="info">زانیاری کەسی</div>
+                <div class="tab" data-tab="research">تویژینەوە</div>
+                <div class="tab" data-tab="grades">نمرەکان</div>
+            </div>
+
+            <div class="tab-content active" id="infoTab">
+                <div class="loading" id="studentInfoLoading">زانیاری بار دەکرێت</div>
+                <div class="card" id="studentInfoCard" style="display:none;">
+                    <h3>زانیاری کەسی</h3>
+                    <table>
+                        <tr><th>ناو:</th><td id="studentFullName">-</td></tr>
+                        <tr><th>ناوی بەکارهێنەر:</th><td id="studentUsername">-</td></tr>
+                        <tr><th>بەش:</th><td id="studentDepartment">-</td></tr>
+                        <tr><th>ساڵی خوێندن:</th><td id="studentYear">-</td></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-content" id="researchTab">
+                <div class="loading" id="studentResearchLoading">تویژینەوە بار دەکرێت</div>
+                <div class="card" id="studentResearchCard" style="display:none;">
+                    <h3>تویژینەوەکەم</h3>
+                    
+                    <div class="message info" style="display:block;">
+                        <strong>تێبینی:</strong> تکایە لینکی دەرەکی فایلەکەت بنووسە (وەک Google Drive, Dropbox, یان OneDrive)
+                    </div>
+
+                    <div class="form-group">
+                        <label for="researchTitle">ناونیشانی تویژینەوە:</label>
+                        <input type="text" id="researchTitle" placeholder="ناونیشانی تویژینەوە">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="researchAbstract">پوختەی تویژینەوە:</label>
+                        <textarea id="researchAbstract" placeholder="پوختەی کورتی تویژینەوەکەت"></textarea>
+                    </div>
+                    
+                    <div class="url-input">
+                        <label for="researchFileURL">لینکی فایلی تویژینەوە (PDF):</label>
+                        <input type="url" id="researchFileURL" placeholder="https://drive.google.com/file/d/...">
+                        <div class="url-help">
+                            <strong>چۆنیەتی دروستکردنی لینک:</strong><br>
+                            📁 <strong>Google Drive:</strong> فایل بارکە → Share → Copy link<br>
+                            📁 <strong>Dropbox:</strong> فایل بارکە → Share → Create link<br>
+                            📁 <strong>OneDrive:</strong> فایل بارکە → Share → Copy link
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="saveResearchBtn">پاشەکەوتکردن</button>
+                    <div id="researchMessage" class="message"></div>
+                    
+                    <div id="currentResearch" style="margin-top:20px;display:none;">
+                        <h4>تویژینەوەی ئێستا:</h4>
+                        <div class="research-item">
+                            <div class="research-title" id="currentResearchTitle">-</div>
+                            <div class="research-meta" id="currentResearchMeta">-</div>
+                            <div id="pdfPreviewContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="gradesTab">
+                <div class="loading" id="studentGradesLoading">نمرەکان بار دەکرێن</div>
+                <div class="card" id="studentGradesCard" style="display:none;">
+                    <h3>نمرەکانی تویژینەوە</h3>
+                    <div class="mobile-table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>سەرۆکی لیژنە</th>
+                                    <th>ئەندامی یەک</th>
+                                    <th>ئەندامی دوو</th>
+                                    <th>سەرپەرشتیار</th>
+                                    <th>ئەکادیمی</th>
+                                    <th>کۆی گشتی</th>
+                                    <th>پلە</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentGradesTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxQVR7gH8X4K9Xe2J3LpZ5wK7MnE1rFqA",
+            authDomain: "cis-research-mark.firebaseapp.com",
+            databaseURL: "https://cis-research-mark-default-rtdb.firebaseio.com",
+            projectId: "cis-research-mark",
+            storageBucket: "cis-research-mark.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abc123def456"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDefaultData();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            document.querySelectorAll('.logout-btn').forEach(btn => {
+                btn.addEventListener('click', handleLogout);
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', handleTabClick);
+            });
+            
+            const newUserType = document.getElementById('newUserType');
+            if (newUserType) {
+                newUserType.addEventListener('change', function() {
+                    if (this.value === 'teacher') {
+                        document.getElementById('newTeacherRole').style.display = 'block';
+                        document.getElementById('newStudentFields').style.display = 'none';
+                    } else {
+                        document.getElementById('newTeacherRole').style.display = 'none';
+                        document.getElementById('newStudentFields').style.display = 'block';
+                    }
+                });
+            }
+
+            const addUserBtn = document.getElementById('addUserBtn');
+            if (addUserBtn) addUserBtn.addEventListener('click', handleAddUser);
+
+            const gradingForm = document.getElementById('gradingForm');
+            if (gradingForm) gradingForm.addEventListener('submit', handleGrading);
+
+            const saveResearchBtn = document.getElementById('saveResearchBtn');
+            if (saveResearchBtn) saveResearchBtn.addEventListener('click', handleSaveResearch);
+
+            const editForm = document.getElementById('editForm');
+            if (editForm) editForm.addEventListener('submit', handleEditSubmit);
+
+            const searchStudents = document.getElementById('searchStudents');
+            if (searchStudents) {
+                searchStudents.addEventListener('input', function() {
+                    filterTable(this.value, 'webStudentsTable');
+                    filterTable(this.value, 'networkStudentsTable');
+                    filterTable(this.value, 'programStudentsTable');
+                });
+            }
+        }
+
+        function initializeDefaultData() {
+            database.ref('managers/admin1112').once('value').then(snapshot => {
+                if (!snapshot.exists()) {
+                    database.ref('managers/admin1112').set({
+                        username: 'admin1112',
+                        password: 'admin1112',
+                        fullName: 'بەڕێوەبەر',
+                        department: 'all'
+                    });
+                }
+            });
+
+            const teachers = [
+                { id: 'Majid', username: 'Majid', password: 'Majid2006', fullName: 'Majid Anwar Hama Rahim', department: 'webdesign', role: 'committee_head' },
+                { id: 'Arkan', username: 'Arkan', password: 'Arkan2001', fullName: 'Arkan Ahmad Mahmood', department: 'webdesign', role: 'member_one' },
+                { id: 'Naz', username: 'Naz', password: 'Naz2005', fullName: 'Naz Najib Abdullah', department: 'webdesign', role: 'member_two' },
+                { id: 'Dilshad', username: 'Dilshad', password: 'Dilshad2007', fullName: 'Dilshad Hamza Hama Salih', department: 'webdesign', role: 'supervisor' },
+                { id: 'Avin', username: 'Avin', password: 'Avin2004', fullName: 'Avin Jabbar Abdulhussein', department: 'webdesign', role: 'academic' }
+            ];
+
+            teachers.forEach(teacher => {
+                database.ref(`teachers/${teacher.id}`).once('value').then(snapshot => {
+                    if (!snapshot.exists()) {
+                        database.ref(`teachers/${teacher.id}`).set(teacher);
+                    }
+                });
+            });
+
+            database.ref('students/hanar').once('value').then(snapshot => {
+                if (!snapshot.exists()) {
+                    database.ref('students/hanar').set({
+                        username: 'hanar',
+                        password: 'hanar2025',
+                        fullName: 'Hanar',
+                        department: 'webdesign',
+                        academicYear: '2025',
+                        researchTitle: 'سیستەمی بەڕێوەبردنی تویژینەوە',
+                        researchAbstract: 'تویژینەوە لەسەر سیستەمی بەڕێوەبردن',
+                        researchFileURL: '',
+                        grades: { committee_head: 0, member_one: 0, member_two: 0, supervisor: 0, academic: 0 }
+                    });
+                }
+            });
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const userType = document.getElementById('userType').value;
+            const department = document.getElementById('department').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!userType || !department || !username || !password) {
+                showMessage('loginMessage', 'تکایە هەموو خانەکان پڕ بکەرەوە!', 'error');
+                return;
+            }
+            
+            showMessage('loginMessage', 'چوونەژوورەوە...', 'success');
+            
+            let userRef;
+            if (userType === 'manager') userRef = database.ref('managers');
+            else if (userType === 'teacher') userRef = database.ref('teachers');
+            else if (userType === 'student') userRef = database.ref('students');
+            
+            userRef.once('value').then(snapshot => {
+                const users = snapshot.val();
+                let authenticated = false;
+                let userData = null;
+                
+                if (users) {
+                    Object.keys(users).forEach(key => {
+                        const user = users[key];
+                        if (user.username === username && user.password === password) {
+                            if (userType === 'manager' || user.department === department) {
+                                authenticated = true;
+                                userData = { ...user, id: key, type: userType };
+                                
+                                // چاکسازی: گۆڕینی ڕۆڵە کۆنەکان بۆ شێوازی نوێ
+                                if (user.role === 'member1') userData.role = 'member_one';
+                                if (user.role === 'member2') userData.role = 'member_two';
+                            }
+                        }
+                    });
+                }
+                
+                if (authenticated && userData) {
+                    currentUser = userData;
+                    document.getElementById('loginForm').reset();
+                    document.querySelector('.login-section').style.display = 'none';
+                    document.getElementById('loginMessage').style.display = 'none';
+                    
+                    if (userType === 'manager') {
+                        document.getElementById('managerDashboard').style.display = 'block';
+                        loadManagerData();
+                    } else if (userType === 'teacher') {
+                        document.getElementById('teacherDashboard').style.display = 'block';
+                        document.getElementById('teacherWelcome').textContent = 
+                            `${getRoleText(currentUser.role)} - ${getDepartmentText(currentUser.department)}`;
+                        loadTeacherData();
+                    } else if (userType === 'student') {
+                        document.getElementById('studentDashboard').style.display = 'block';
+                        loadStudentData();
+                    }
+                    
+                    showGlobalNotification(`بەخێربێیت ${userData.fullName}!`, 'success');
+                } else {
+                    showMessage('loginMessage', 'زانیاری هەڵەیە!', 'error');
+                }
+            }).catch(error => {
+                console.error('Login error:', error);
+                showMessage('loginMessage', 'هەڵە ڕوویدا!', 'error');
+            });
+        }
+
+        function handleLogout() {
+            document.getElementById('managerDashboard').style.display = 'none';
+            document.getElementById('teacherDashboard').style.display = 'none';
+            document.getElementById('studentDashboard').style.display = 'none';
+            document.querySelector('.login-section').style.display = 'block';
+            currentUser = null;
+            showGlobalNotification('بە سەرکەوتوویی چوتە دەرەوە!', 'success');
+        }
+
+        function handleTabClick() {
+            const tabId = this.getAttribute('data-tab');
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            this.classList.add('active');
+            document.getElementById(tabId + 'Tab').classList.add('active');
+            
+            if (tabId === 'reports') loadReports();
+            else if (tabId === 'researchPapers') loadResearchPapers();
+        }
+
+        function handleSaveResearch() {
+            const researchTitle = document.getElementById('researchTitle').value;
+            const researchAbstract = document.getElementById('researchAbstract').value;
+            const researchFileURL = document.getElementById('researchFileURL').value;
+            
+            if (!researchTitle) {
+                showMessage('researchMessage', 'تکایە ناونیشان بنووسە!', 'error');
+                return;
+            }
+
+            if (!researchFileURL) {
+                showMessage('researchMessage', 'تکایە لینکی فایل بنووسە!', 'error');
+                return;
+            }
+            
+            showMessage('researchMessage', 'تویژینەوە پاشەکەوت دەکرێت...', 'success');
+            
+            database.ref(`students/${currentUser.id}`).update({
+                researchTitle: researchTitle,
+                researchAbstract: researchAbstract,
+                researchFileURL: researchFileURL
+            }).then(() => {
+                currentUser.researchTitle = researchTitle;
+                currentUser.researchAbstract = researchAbstract;
+                currentUser.researchFileURL = researchFileURL;
+                
+                showMessage('researchMessage', 'تویژینەوە پاشەکەوت کرا!', 'success');
+                loadStudentResearch();
+                showGlobalNotification('تویژینەوە پاشەکەوت کرا!', 'success');
+            }).catch(error => {
+                console.error('Update error:', error);
+                showMessage('researchMessage', 'هەڵە ڕوویدا!', 'error');
+            });
+        }
+
+        function handleGrading(e) {
+            e.preventDefault();
+            const studentUsername = document.getElementById('studentSelect').value;
+            const grade = parseInt(document.getElementById('grade').value);
+            
+            if (studentUsername && grade >= 0) {
+                // چاکسازی: لێکدانەوەی هەردوو شێوازی ڕۆڵەکان
+                const roleKey = getGradeKey(currentUser.role);
+                
+                database.ref(`students/${studentUsername}/grades/${roleKey}`).set(grade)
+                    .then(() => {
+                        showMessage('gradeMessage', 'نمرەکە تۆمار کرا!', 'success');
+                        document.getElementById('gradingForm').reset();
+                        loadTeacherStudents();
+                        loadMyGrades();
+                        showGlobalNotification('نمرە تۆمار کرا!', 'success');
+                    })
+                    .catch(error => {
+                        console.error('Grading error:', error);
+                        showMessage('gradeMessage', 'هەڵە ڕوویدا!', 'error');
+                    });
+            }
+        }
+
+        function editMyGrade(studentUsername) {
+            database.ref(`students/${studentUsername}`).once('value').then(snapshot => {
+                const student = snapshot.val();
+                if (student && student.grades) {
+                    // چاکسازی: لێکدانەوەی هەردوو شێوازی ڕۆڵەکان
+                    const roleKey = getGradeKey(currentUser.role);
+                    const currentGrade = student.grades[roleKey] || 0;
+                    
+                    const newGrade = prompt(`دەستکاریکردنی نمرە بۆ ${student.fullName}\n\nنمرەی ئێستا: ${currentGrade}\n\nنمرەی نوێ (0-100):`, currentGrade);
+                    
+                    if (newGrade !== null && newGrade !== '') {
+                        const gradeNum = parseInt(newGrade);
+                        if (gradeNum >= 0 && gradeNum <= 100) {
+                            database.ref(`students/${studentUsername}/grades/${roleKey}`).set(gradeNum)
+                                .then(() => {
+                                    showGlobalNotification('نمرە نوێکرایەوە!', 'success');
+                                    loadMyGrades();
+                                    loadTeacherStudents();
+                                })
+                                .catch(error => {
+                                    console.error('Edit grade error:', error);
+                                    showGlobalNotification('هەڵە ڕوویدا!', 'error');
+                                });
+                        } else {
+                            alert('نمرە دەبێت لە نێوان 0 و 100 بێت!');
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadMyGrades() {
+            database.ref('students').once('value').then(snapshot => {
+                const students = snapshot.val();
+                const table = document.getElementById('myGradesTable');
+                if (table) {
+                    table.innerHTML = '';
+                    
+                    if (students) {
+                        let hasGrades = false;
+                        Object.keys(students).forEach(username => {
+                            const student = students[username];
+                            if (student.department === currentUser.department && student.grades) {
+                                // چاکسازی: لێکدانەوەی هەردوو شێوازی ڕۆڵەکان
+                                const roleKey = getGradeKey(currentUser.role);
+                                const myGrade = student.grades[roleKey] || 0;
+                                
+                                if (myGrade > 0) {
+                                    hasGrades = true;
+                                    const row = document.createElement('tr');
+                                    row.innerHTML = `
+                                        <td>${student.fullName}</td>
+                                        <td class="grade-highlight" style="font-size:1.1rem;font-weight:600;">${myGrade}</td>
+                                        <td>
+                                            <button class="edit-btn" onclick="editMyGrade('${username}')">دەستکاری</button>
+                                        </td>
+                                    `;
+                                    table.appendChild(row);
+                                }
+                            }
+                        });
+                        
+                        if (hasGrades) {
+                            document.getElementById('myGradesContainer').style.display = 'block';
+                        } else {
+                            table.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#999;">هێشتا هیچ نمرەیەکت نەداوە</td></tr>';
+                            document.getElementById('myGradesContainer').style.display = 'block';
+                        }
+                    }
+                }
+                document.getElementById('myGradesLoading').style.display = 'none';
+            });
+        }
+
+        function handleAddUser() {
+            const userType = document.getElementById('newUserType').value;
+            const department = document.getElementById('newUserDepartment').value;
+            const fullName = document.getElementById('newUserName').value;
+            const username = document.getElementById('newUserUsername').value;
+            const password = document.getElementById('newUserPassword').value;
+            const role = document.getElementById('newTeacherRoleSelect').value;
+            const academicYear = document.getElementById('newStudentYear').value;
+            
+            if (!fullName || !username || !password) {
+                showMessage('addUserMessage', 'تکایە هەموو خانەکان پڕ بکەرەوە!', 'error');
+                return;
+            }
+            
+            let userData = {
+                username: username,
+                password: password,
+                fullName: fullName,
+                department: department
+            };
+            
+            if (userType === 'teacher') {
+                userData.role = role;
+            } else if (userType === 'student') {
+                userData.academicYear = academicYear;
+                userData.researchTitle = '';
+                userData.researchAbstract = '';
+                userData.researchFileURL = '';
+                userData.grades = { committee_head: 0, member_one: 0, member_two: 0, supervisor: 0, academic: 0 };
+            }
+            
+            const userRef = database.ref(`${userType}s/${username}`);
+            userRef.once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                    showMessage('addUserMessage', 'ناوی بەکارهێنەر هەیە!', 'error');
+                    return;
+                }
+                
+                userRef.set(userData).then(() => {
+                    showMessage('addUserMessage', 'بەکارهێنەر زیاد کرا!', 'success');
+                    document.getElementById('newUserName').value = '';
+                    document.getElementById('newUserUsername').value = '';
+                    document.getElementById('newUserPassword').value = '';
+                    
+                    if (userType === 'student') loadStudents();
+                    else if (userType === 'teacher') loadTeachers();
+                    
+                    showGlobalNotification('بەکارهێنەر زیاد کرا!', 'success');
+                }).catch(error => {
+                    console.error('Add user error:', error);
+                    showMessage('addUserMessage', 'هەڵە ڕوویدا!', 'error');
+                });
+            });
+        }
+
+        function editUser(type, username) {
+            const userRef = database.ref(`${type}s/${username}`);
+            userRef.once('value').then(snapshot => {
+                const user = snapshot.val();
+                if (user) {
+                    document.getElementById('editUserType').value = type;
+                    document.getElementById('editUserId').value = username;
+                    document.getElementById('editFullName').value = user.fullName;
+                    document.getElementById('editUsername').value = username;
+                    document.getElementById('editDepartment').value = user.department;
+                    
+                    if (type === 'student') {
+                        document.getElementById('editStudentFields').style.display = 'block';
+                        document.getElementById('editStudentResearch').style.display = 'block';
+                        document.getElementById('editTeacherFields').style.display = 'none';
+                        document.getElementById('editAcademicYear').value = user.academicYear || '2025';
+                        document.getElementById('editResearchTitle').value = user.researchTitle || '';
+                    } else if (type === 'teacher') {
+                        document.getElementById('editStudentFields').style.display = 'none';
+                        document.getElementById('editStudentResearch').style.display = 'none';
+                        document.getElementById('editTeacherFields').style.display = 'block';
+                        
+                        // چاکسازی: لێکدانەوەی هەردوو شێوازی ڕۆڵەکان
+                        let roleValue = user.role;
+                        if (user.role === 'member1') roleValue = 'member_one';
+                        if (user.role === 'member2') roleValue = 'member_two';
+                        
+                        document.getElementById('editRole').value = roleValue;
+                    }
+                    
+                    document.getElementById('editModal').style.display = 'block';
+                }
+            });
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('editMessage').style.display = 'none';
+        }
+
+        function handleEditSubmit(e) {
+            e.preventDefault();
+            const userType = document.getElementById('editUserType').value;
+            const userId = document.getElementById('editUserId').value;
+            const fullName = document.getElementById('editFullName').value;
+            const department = document.getElementById('editDepartment').value;
+            
+            let updateData = { fullName: fullName, department: department };
+            
+            if (userType === 'student') {
+                updateData.academicYear = document.getElementById('editAcademicYear').value;
+                updateData.researchTitle = document.getElementById('editResearchTitle').value;
+            } else if (userType === 'teacher') {
+                let roleValue = document.getElementById('editRole').value;
+                
+                // چاکسازی: گۆڕینی ڕۆڵە نوێکان بۆ شێوازی کۆن بۆ هاوڕێیەتی لەگەڵ داتاکە
+                if (roleValue === 'member_one') roleValue = 'member1';
+                if (roleValue === 'member_two') roleValue = 'member2';
+                
+                updateData.role = roleValue;
+            }
+            
+            database.ref(`${userType}s/${userId}`).update(updateData)
+                .then(() => {
+                    showMessage('editMessage', 'زانیاری نوێ کرایەوە!', 'success');
+                    setTimeout(() => {
+                        closeEditModal();
+                        if (userType === 'student') loadStudents();
+                        else if (userType === 'teacher') loadTeachers();
+                        showGlobalNotification('زانیاری نوێ کرایەوە!', 'success');
+                    }, 1500);
+                })
+                .catch(error => {
+                    console.error('Edit error:', error);
+                    showMessage('editMessage', 'هەڵە ڕوویدا!', 'error');
+                });
+        }
+
+        function deleteUser(type, username) {
+            if (confirm(`دڵنیایی لە سڕینەوەی ${username}؟`)) {
+                database.ref(`${type}s/${username}`).remove()
+                    .then(() => {
+                        showGlobalNotification('بەکارهێنەر سڕایەوە!', 'success');
+                        if (type === 'student') loadStudents();
+                        else if (type === 'teacher') loadTeachers();
+                    })
+                    .catch(error => {
+                        console.error('Delete error:', error);
+                        showGlobalNotification('هەڵە ڕوویدا!', 'error');
+                    });
+            }
+        }
+
+        function viewResearchPDF(pdfUrl, studentName) {
+            if (!pdfUrl || pdfUrl === '') {
+                alert('هیچ لینکێک نییە!');
+                return;
+            }
+            window.open(pdfUrl, '_blank');
+        }
+
+        function loadManagerData() {
+            loadStudents();
+            loadTeachers();
+        }
+
+        function loadStudents() {
+            database.ref('students').once('value').then(snapshot => {
+                const students = snapshot.val();
+                ['web', 'network', 'program'].forEach(dept => {
+                    const tableId = dept + 'StudentsTable';
+                    const table = document.getElementById(tableId);
+                    if (table) {
+                        table.innerHTML = '';
+                        
+                        if (students) {
+                            const deptMap = { web: 'webdesign', network: 'network', program: 'program' };
+                            Object.keys(students).forEach(username => {
+                                const student = students[username];
+                                if (student.department === deptMap[dept]) {
+                                    const totalGrade = calculateTotalGrade(student);
+                                    const gradeLetter = calculateGradeLetter(totalGrade);
+                                    
+                                    const row = document.createElement('tr');
+                                    row.innerHTML = `
+                                        <td>${student.fullName}</td>
+                                        <td>${username}</td>
+                                        <td>${student.academicYear || '-'}</td>
+                                        <td>${student.researchTitle || 'هیچ'}</td>
+                                        <td>
+                                            ${student.researchFileURL ? 
+                                                `<button class="view-btn" onclick="viewResearchPDF('${student.researchFileURL}', '${student.fullName}')">کردنەوە</button>` : 
+                                                '<span style="color:#e74c3c;">-</span>'}
+                                        </td>
+                                        <td class="${getStudentGrade(student, 'committee_head') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(student, 'committee_head') || '-'}</td>
+                                        <td class="${getStudentGrade(student, 'member_one') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(student, 'member_one') || '-'}</td>
+                                        <td class="${getStudentGrade(student, 'member_two') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(student, 'member_two') || '-'}</td>
+                                        <td class="${getStudentGrade(student, 'supervisor') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(student, 'supervisor') || '-'}</td>
+                                        <td class="${getStudentGrade(student, 'academic') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(student, 'academic') || '-'}</td>
+                                        <td style="font-weight:700;color:#2ecc71;font-size:1.1rem;">${totalGrade > 0 ? totalGrade.toFixed(1) : '-'}</td>
+                                        <td style="font-weight:600;color:var(--primary-color);">${totalGrade > 0 ? gradeLetter : '-'}</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="edit-btn" onclick="editUser('student', '${username}')">دەستکاری</button>
+                                                <button class="delete-btn" onclick="deleteUser('student', '${username}')">سڕینەوە</button>
+                                            </div>
+                                        </td>
+                                    `;
+                                    table.appendChild(row);
+                                }
+                            });
+                        }
+                    }
+                });
+                document.getElementById('studentsLoading').style.display = 'none';
+            });
+        }
+
+        function loadTeachers() {
+            database.ref('teachers').once('value').then(snapshot => {
+                const teachers = snapshot.val();
+                const table = document.getElementById('teachersTable');
+                if (table) {
+                    table.innerHTML = '';
+                    
+                    if (teachers) {
+                        Object.keys(teachers).forEach(username => {
+                            const teacher = teachers[username];
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${teacher.fullName}</td>
+                                <td>${teacher.username}</td>
+                                <td>${getDepartmentText(teacher.department)}</td>
+                                <td>${getRoleText(teacher.role)}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="edit-btn" onclick="editUser('teacher', '${username}')">دەستکاری</button>
+                                        <button class="delete-btn" onclick="deleteUser('teacher', '${username}')">سڕینەوە</button>
+                                    </div>
+                                </td>
+                            `;
+                            table.appendChild(row);
+                        });
+                    }
+                }
+                document.getElementById('teachersLoading').style.display = 'none';
+            });
+        }
+
+        function loadTeacherData() {
+            database.ref('students').once('value').then(snapshot => {
+                const students = snapshot.val();
+                const studentSelect = document.getElementById('studentSelect');
+                if (studentSelect) {
+                    studentSelect.innerHTML = '<option value="">خوێندکار هەڵبژێرە</option>';
+                    
+                    if (students) {
+                        Object.keys(students).forEach(username => {
+                            const student = students[username];
+                            if (student.department === currentUser.department) {
+                                const option = document.createElement('option');
+                                option.value = username;
+                                option.textContent = `${student.fullName} (${username})`;
+                                studentSelect.appendChild(option);
+                            }
+                        });
+                    }
+                }
+            });
+            
+            // چاکسازی: تەنها سەرۆکی لیژنە و بەڕێوەبەر دەتوانن هەموو نمرەکان ببینن
+            const gradeHeaderCol = document.getElementById('gradeHeaderCol');
+            if (gradeHeaderCol && (currentUser.role === 'committee_head' || currentUser.type === 'manager')) {
+                gradeHeaderCol.textContent = 'هەموو نمرەکان';
+            } else if (gradeHeaderCol) {
+                gradeHeaderCol.textContent = 'نمرەم';
+            }
+            
+            loadTeacherStudents();
+            loadMyGrades();
+        }
+
+        function loadTeacherStudents() {
+            database.ref('students').once('value').then(snapshot => {
+                const students = snapshot.val();
+                const table = document.getElementById('teacherStudentsTable');
+                if (table) {
+                    table.innerHTML = '';
+                    
+                    if (students) {
+                        Object.keys(students).forEach(username => {
+                            const student = students[username];
+                            if (student.department === currentUser.department) {
+                                const totalGrade = calculateTotalGrade(student);
+                                const row = document.createElement('tr');
+                                
+                                let gradeDisplay = '';
+                                
+                                // چاکسازی: تەنها سەرۆکی لیژنە و بەڕێوەبەر دەتوانن هەموو نمرەکان ببینن
+                                if (currentUser.role === 'committee_head' || currentUser.type === 'manager') {
+                                    gradeDisplay = `
+                                        <td>
+                                            <table style="width:100%;font-size:0.9rem;border:none;">
+                                                <tr><td style="border:none;padding:4px;">سەرۆک:</td><td style="border:none;padding:4px;font-weight:600;" class="${getStudentGrade(student, 'committee_head') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(student, 'committee_head') || '-'}</td></tr>
+                                                <tr><td style="border:none;padding:4px;">ئەندام١:</td><td style="border:none;padding:4px;font-weight:600;" class="${getStudentGrade(student, 'member_one') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(student, 'member_one') || '-'}</td></tr>
+                                                <tr><td style="border:none;padding:4px;">ئەندام٢:</td><td style="border:none;padding:4px;font-weight:600;" class="${getStudentGrade(student, 'member_two') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(student, 'member_two') || '-'}</td></tr>
+                                                <tr><td style="border:none;padding:4px;">سەرپەرشت:</td><td style="border:none;padding:4px;font-weight:600;" class="${getStudentGrade(student, 'supervisor') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(student, 'supervisor') || '-'}</td></tr>
+                                                <tr><td style="border:none;padding:4px;">ئەکادیمی:</td><td style="border:none;padding:4px;font-weight:600;" class="${getStudentGrade(student, 'academic') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(student, 'academic') || '-'}</td></tr>
+                                            </table>
+                                        </td>
+                                    `;
+                                } else {
+                                    // هەمووانی تر تەنیا نمرەی خۆیان ببینن
+                                    const roleKey = getGradeKey(currentUser.role);
+                                    const myGrade = student.grades ? student.grades[roleKey] || 0 : 0;
+                                    gradeDisplay = `<td style="font-size:1.1rem;font-weight:600;color:var(--primary-color);" class="${myGrade > 0 ? 'grade-highlight' : 'grade-zero'}">${myGrade || '-'}</td>`;
+                                }
+                                
+                                row.innerHTML = `
+                                    <td>${student.fullName}</td>
+                                    <td>${student.researchTitle || 'هیچ'}</td>
+                                    <td>
+                                        ${student.researchFileURL ? 
+                                            `<button class="view-btn" onclick="viewResearchPDF('${student.researchFileURL}', '${student.fullName}')">کردنەوە</button>` : 
+                                            '<span style="color:#e74c3c;">-</span>'}
+                                    </td>
+                                    ${gradeDisplay}
+                                    <td style="font-size:1.1rem;font-weight:700;color:#2ecc71;">${totalGrade > 0 ? totalGrade.toFixed(1) : '-'}</td>
+                                `;
+                                table.appendChild(row);
+                            }
+                        });
+                    }
+                }
+                document.getElementById('teacherStudentsLoading').style.display = 'none';
+            });
+        }
+
+        function loadResearchPapers() {
+            database.ref('students').once('value').then(snapshot => {
+                const students = snapshot.val();
+                const list = document.getElementById('researchPapersList');
+                if (list) {
+                    list.innerHTML = '';
+                    
+                    if (students) {
+                        Object.keys(students).forEach(username => {
+                            const student = students[username];
+                            if (student.department === currentUser.department) {
+                                const item = document.createElement('div');
+                                item.className = 'research-item';
+                                item.innerHTML = `
+                                    <div class="research-title">${student.researchTitle || 'هیچ تویژینەوەیەک نییە'}</div>
+                                    <div class="research-meta">
+                                        <strong>خوێندکار:</strong> ${student.fullName} |
+                                        <strong>ساڵ:</strong> ${student.academicYear || '-'}
+                                    </div>
+                                    ${student.researchAbstract ? `<div style="margin:10px 0;">${student.researchAbstract}</div>` : ''}
+                                    ${student.researchFileURL ? 
+                                        `<div class="pdf-preview">
+                                            <button class="view-btn" onclick="viewResearchPDF('${student.researchFileURL}', '${student.fullName}')">کردنەوەی لینک</button>
+                                            <div class="link-display">${student.researchFileURL}</div>
+                                        </div>` : 
+                                        '<div style="color:#e74c3c;margin-top:10px;">هیچ لینکێک نییە</div>'}
+                                `;
+                                list.appendChild(item);
+                            }
+                        });
+                        
+                        if (list.children.length === 0) {
+                            list.innerHTML = '<p>هیچ تویژینەوەیەک نییە لەم بەشەدا.</p>';
+                        }
+                    }
+                }
+                document.getElementById('researchPapersLoading').style.display = 'none';
+            });
+        }
+
+        function loadStudentData() {
+            loadStudentInfo();
+            loadStudentResearch();
+            loadStudentGrades();
+        }
+
+        function loadStudentInfo() {
+            document.getElementById('studentFullName').textContent = currentUser.fullName;
+            document.getElementById('studentUsername').textContent = currentUser.username;
+            document.getElementById('studentDepartment').textContent = getDepartmentText(currentUser.department);
+            document.getElementById('studentYear').textContent = currentUser.academicYear ? 
+                `${currentUser.academicYear}-${parseInt(currentUser.academicYear)-1}` : '-';
+            
+            document.getElementById('studentInfoLoading').style.display = 'none';
+            document.getElementById('studentInfoCard').style.display = 'block';
+        }
+
+        function loadStudentResearch() {
+            document.getElementById('researchTitle').value = currentUser.researchTitle || '';
+            document.getElementById('researchAbstract').value = currentUser.researchAbstract || '';
+            document.getElementById('researchFileURL').value = currentUser.researchFileURL || '';
+            
+            const pdfContainer = document.getElementById('pdfPreviewContainer');
+            if (pdfContainer) {
+                pdfContainer.innerHTML = '';
+                
+                if (currentUser.researchTitle) {
+                    document.getElementById('currentResearchTitle').textContent = currentUser.researchTitle;
+                    document.getElementById('currentResearchMeta').textContent = 
+                        `پاشەکەوت کراوە لە: ${new Date().toLocaleDateString('ku')}`;
+                    
+                    if (currentUser.researchFileURL) {
+                        pdfContainer.innerHTML = `
+                            <div class="pdf-preview">
+                                <button class="view-btn" onclick="viewResearchPDF('${currentUser.researchFileURL}', '${currentUser.fullName}')">کردنەوەی لینک</button>
+                                <div class="link-display">${currentUser.researchFileURL}</div>
+                            </div>
+                        `;
+                    } else {
+                        pdfContainer.innerHTML = '<div style="color:#e74c3c;margin-top:10px;">هیچ لینکێک نییە</div>';
+                    }
+                    
+                    document.getElementById('currentResearch').style.display = 'block';
+                } else {
+                    document.getElementById('currentResearch').style.display = 'none';
+                }
+            }
+            
+            document.getElementById('studentResearchLoading').style.display = 'none';
+            document.getElementById('studentResearchCard').style.display = 'block';
+        }
+
+        function loadStudentGrades() {
+            const table = document.getElementById('studentGradesTable');
+            if (table) {
+                table.innerHTML = '';
+                
+                const totalGrade = calculateTotalGrade(currentUser);
+                const gradeLetter = calculateGradeLetter(totalGrade);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="${getStudentGrade(currentUser, 'committee_head') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(currentUser, 'committee_head') || '-'}</td>
+                    <td class="${getStudentGrade(currentUser, 'member_one') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(currentUser, 'member_one') || '-'}</td>
+                    <td class="${getStudentGrade(currentUser, 'member_two') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(currentUser, 'member_two') || '-'}</td>
+                    <td class="${getStudentGrade(currentUser, 'supervisor') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(currentUser, 'supervisor') || '-'}</td>
+                    <td class="${getStudentGrade(currentUser, 'academic') > 0 ? 'grade-highlight' : 'grade-zero'}">${getStudentGrade(currentUser, 'academic') || '-'}</td>
+                    <td style="font-weight:700;color:#2ecc71;">${totalGrade > 0 ? totalGrade.toFixed(1) : '-'}</td>
+                    <td style="font-weight:600;color:var(--primary-color);">${totalGrade > 0 ? gradeLetter : '-'}</td>
+                `;
+                table.appendChild(row);
+            }
+            
+            document.getElementById('studentGradesLoading').style.display = 'none';
+            document.getElementById('studentGradesCard').style.display = 'block';
+        }
+
+        function loadReports() {
+            database.ref('students').once('value').then(snapshot => {
+                const students = snapshot.val();
+                const table = document.getElementById('reportsTable');
+                if (table) {
+                    table.innerHTML = '';
+                    
+                    if (students) {
+                        const departments = ['webdesign', 'network', 'program'];
+                        departments.forEach(dept => {
+                            const deptStudents = Object.values(students).filter(s => s.department === dept);
+                            if (deptStudents.length > 0) {
+                                const totalGrades = deptStudents.map(s => calculateTotalGrade(s)).filter(g => g > 0);
+                                const avgGrade = totalGrades.length > 0 ? 
+                                    totalGrades.reduce((a, b) => a + b, 0) / totalGrades.length : 0;
+                                const successRate = totalGrades.length > 0 ? 
+                                    (totalGrades.filter(g => g >= 60).length / totalGrades.length) * 100 : 0;
+                                
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${getDepartmentText(dept)}</td>
+                                    <td>${deptStudents.length}</td>
+                                    <td>${avgGrade > 0 ? avgGrade.toFixed(1) : '-'}</td>
+                                    <td>${successRate > 0 ? successRate.toFixed(1) + '%' : '-'}</td>
+                                `;
+                                table.appendChild(row);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        // چاکسازی: فەنکشنی نوێ بۆ لێکدانەوەی هەردوو شێوازی ڕۆڵەکان
+        function getGradeKey(role) {
+            if (role === 'member_one') return 'member1';
+            if (role === 'member_two') return 'member2';
+            return role;
+        }
+
+        // چاکسازی: فەنکشنی نوێ بۆ بینینی نمرەی خوێندکار بە پێی ڕۆڵ
+        function getStudentGrade(student, role) {
+            if (!student.grades) return 0;
+            
+            let gradeKey = role;
+            if (role === 'member_one') gradeKey = 'member1';
+            if (role === 'member_two') gradeKey = 'member2';
+            
+            return student.grades[gradeKey] || 0;
+        }
+
+        function calculateTotalGrade(student) {
+            if (!student.grades) return 0;
+            
+            const committeeHead = getStudentGrade(student, 'committee_head');
+            const memberOne = getStudentGrade(student, 'member_one');
+            const memberTwo = getStudentGrade(student, 'member_two');
+            const supervisor = getStudentGrade(student, 'supervisor');
+            const academic = getStudentGrade(student, 'academic');
+            
+            if (committeeHead === 0 || memberOne === 0 || memberTwo === 0 || supervisor === 0 || academic === 0) {
+                return 0;
+            }
+            
+            return committeeHead + memberOne + memberTwo + supervisor + academic;
+        }
+
+        function calculateGradeLetter(grade) {
+            if (grade >= 90) return 'A+';
+            if (grade >= 85) return 'A';
+            if (grade >= 80) return 'B+';
+            if (grade >= 75) return 'B';
+            if (grade >= 70) return 'C+';
+            if (grade >= 65) return 'C';
+            if (grade >= 60) return 'D';
+            return 'F';
+        }
+
+        function getDepartmentText(department) {
+            switch(department) {
+                case 'webdesign': return 'وێب دیزاین';
+                case 'network': return 'نێتوۆرک';
+                case 'program': return 'پرۆگرام';
+                default: return department;
+            }
+        }
+
+        function getRoleText(role) {
+            // چاکسازی: لێکدانەوەی هەردوو شێوازی ڕۆڵەکان
+            let displayRole = role;
+            if (role === 'member1') displayRole = 'member_one';
+            if (role === 'member2') displayRole = 'member_two';
+            
+            switch(displayRole) {
+                case 'committee_head': return 'سەرۆکی لیژنە';
+                case 'member_one': return 'ئەندامی یەک';
+                case 'member_two': return 'ئەندامی دوو';
+                case 'supervisor': return 'سەرپەرشتیار';
+                case 'academic': return 'ئەکادیمی';
+                default: return role;
+            }
+        }
+
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = message;
+                element.className = `message ${type}`;
+                element.style.display = 'block';
+                
+                if (type === 'success') {
+                    setTimeout(() => {
+                        element.style.display = 'none';
+                    }, 3000);
+                }
+            }
+        }
+
+        function showGlobalNotification(message, type) {
+            const notification = document.getElementById('globalNotification');
+            if (notification) {
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.style.display = 'block';
+                
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        function filterTable(searchTerm, tableId) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            
+            const rows = table.getElementsByTagName('tr');
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+                
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j];
+                    if (cell.textContent.toLowerCase().includes(searchTerm.toLowerCase())) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                row.style.display = found ? '' : 'none';
+            }
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+    </script>
+</body>
+</html>
