@@ -120,7 +120,7 @@
             line-height: 1.5;
         }
         
-        /* سیستم گرید بۆ داشبۆردە بچووکەکان */
+        /* سیستەم گرید بۆ داشبۆردە بووکەکان */
         .compact-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -145,6 +145,8 @@
             flex-direction: column;
             height: 180px;
             justify-content: space-between;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
         
         .compact-card::before {
@@ -161,6 +163,10 @@
             transform: translateY(-5px);
             box-shadow: 0 12px 35px rgba(0,0,0,0.15);
             border-color: var(--primary);
+        }
+        
+        .compact-card:active {
+            transform: translateY(-2px);
         }
         
         .compact-icon {
@@ -208,11 +214,18 @@
             text-decoration: none;
             width: 100%;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         
         .compact-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .compact-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
         }
         
         .footer {
@@ -252,6 +265,8 @@
             font-size: 20px;
             color: var(--primary);
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            padding: 8px;
         }
         
         .mobile-title {
@@ -284,6 +299,23 @@
         .compact-card:nth-child(4) { animation: cardSlide 0.7s ease; }
         
         /* Responsive adjustments */
+        @media (max-width: 479px) {
+            .compact-card {
+                height: 200px;
+                padding: 18px 14px;
+            }
+            
+            .compact-btn {
+                padding: 12px 18px;
+                font-size: 15px;
+                min-height: 44px;
+            }
+            
+            .compact-icon {
+                font-size: 40px;
+            }
+        }
+        
         @media (min-width: 480px) {
             .container {
                 padding: 25px;
@@ -470,6 +502,8 @@
             cursor: pointer;
             font-size: 14px;
             transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         
         .toggle-btn.active {
@@ -611,7 +645,7 @@
             
             console.log('پشکنینی لۆگۆ دەستپێدەکات...');
             
-            // ئەگەر وێنە بارنەبوو، لۆگۆی CSS پیشان بده
+            // ئەگەر وێنە بارنەبوو، لۆگۆی CSS پیشان بدە
             logoImg.addEventListener('error', function() {
                 console.log('لۆگۆ بارنەبوو، لۆگۆی CSS پیشان دەدرێت');
                 this.style.display = 'none';
