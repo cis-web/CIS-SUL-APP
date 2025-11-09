@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سیستەمی  تۆماری غیابات - پەیمانگای کۆمپیوتەری سلێمانی</title>
+    <title>سیستەمی تۆماری غیابات و مۆڵەت - پەیمانگای کۆمپیوتەری سلێمانی</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -30,7 +30,6 @@
         }
         @keyframes slideIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* ستایلی تایبەت بۆ لۆگۆی گەورەتر */
         .logo-container {
             text-align: center; margin-bottom: 25px; padding: 15px;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -86,11 +85,13 @@
         }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; color: var(--dark); font-weight: 600; margin-bottom: 8px; font-size: 14px; }
-        .form-group input {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 10px;
             font-size: 16px; transition: var(--transition); background: var(--white);
         }
-        .form-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
+            outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); 
+        }
         .login-btn {
             width: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: var(--white); padding: 16px; border: none; border-radius: 10px; font-size: 16px;
@@ -195,7 +196,6 @@
         }
         .no-print { display: table-cell; }
         
-        /* زیادکراوە بۆ شیکاری کات */
         .time-breakdown {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -255,7 +255,6 @@
             .no-print { display: none !important; }
         }
         
-        /* وەڵامدانەوە بۆ ئەوەندە بچووکەکان */
         @media (max-width: 900px) {
             .institute-logo, .logo-placeholder {
                 width: 100%; max-width: 600px; height: 90px;
@@ -328,7 +327,7 @@
 <body>
     <div id="notification" class="notification">
         <div class="notification-header">
-            <span class="notification-title" id="notificationTitle">ئاگادارکردنەوە</span>
+            <span class="notification-title" id="notificationTitle">ئاگاداریکردنەوە</span>
             <button class="notification-close" onclick="closeNotification()">&times;</button>
         </div>
         <div class="notification-body" id="notificationBody"></div>
@@ -336,17 +335,14 @@
 
     <div id="loginPage" class="container">
         <div class="header">
-            <!-- لۆگۆ لەسەر شاشەی لۆگین -->
           <div class="logo-container">
     <div id="loginLogoContainer">
-        <!-- لۆگۆی سەرەکی لە GitHub -->
         <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
              alt="لۆگۆی پەیمانگای کۆمپیوتەری سلێمانی" 
              class="institute-logo" 
              id="loginLogo"
              onerror="this.style.display='none'; document.getElementById('loginLogoPlaceholder').style.display='flex';">
         
-        <!-- لۆگۆی CSS (پاشەکەوت) -->
         <div id="loginLogoPlaceholder" class="logo-placeholder" style="display: none;">
             <i class="fas fa-graduation-cap"></i>
             <span>پەیمانگای کۆمپیوتەری سلێمانی</span>
@@ -355,8 +351,8 @@
     <div class="institute-name">پەیمانگای کۆمپیوتەری سلێمانی</div>
     <div class="institute-subtitle">Slemani Computer Institute</div>
 </div>
-            <h1>🎓 سیستەمی داشبۆردی تۆماری غیابات</h1>
-            <p>تکایە بڕۆ ژوورەوە بۆ سیستەمی بەڕێوەبردنی غیابات</p>
+            <h1>🎓 سیستەمی داشبۆردی تۆماری غیابات و مۆڵەت</h1>
+            <p>تکایە بە ژوورەوە بە سیستەمی بەڕێوەبردنی غیابات</p>
         </div>
         <div class="error-msg" id="errorMsg">ناوی بەکارهێنەر یان وشەی نهێنی هەڵەیە!</div>
         <form onsubmit="handleLogin(event)">
@@ -373,10 +369,9 @@
     </div>
 
     <div id="staffDashboard" class="container dashboard">
-        <!-- لۆگۆ لەسەر داشبۆرد -->
         <div class="logo-container">
             <div id="dashboardLogoContainer">
-                <img src="https://sanishtech.com/i/690c4fb91619a-1762414521.png" alt="لۆگۆی پەیمانگای کۆمپیوتەری سلێمانی" class="institute-logo" id="dashboardLogo">
+                <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" alt="لۆگۆی پەیمانگای کۆمپیوتەری سلێمانی" class="institute-logo" id="dashboardLogo">
             </div>
             <div class="institute-name">پەیمانگای کۆمپیوتەری سلێمانی</div>
             <div class="institute-subtitle">Slemani Computer Institute</div>
@@ -399,6 +394,10 @@
                 <button class="action-btn" onclick="viewTodayAttendance()">📅 غیاباتی ئەمڕۆ</button>
                 <button class="action-btn" onclick="viewTeachersAttendance()" style="background: var(--info);">👨‍🏫 مامۆستایانی ئەمڕۆ</button>
                 <button class="action-btn" onclick="viewTimeAnalysis()" style="background: var(--warning); color: var(--dark);">⏰ شیکاری کاتی غیابات</button>
+            </div>
+            <div class="buttons-row">
+                <button class="action-btn" onclick="openLeaveModal()" style="background: var(--success);">🏖️ زیادکردنی مۆڵەت</button>
+                <button class="action-btn" onclick="viewLeaveRecords()" style="background: var(--secondary);">📋 بینینی مۆڵەتەکان</button>
             </div>
             <div class="buttons-row">
                 <button class="details-btn" onclick="viewTotalStudentAbsence()">📊 کۆی گشتی غیابات</button>
@@ -596,8 +595,125 @@
                 <div class="detail-stat-card detail-stat-absent"><div class="detail-stat-number" id="peakAbsenceTime">-</div><div>کاتی زۆرترین غیاب</div></div>
             </div>
             
-            <div id="timeBreakdownContainer" class="time-breakdown">
-                <!-- داتاکانی کاتەکان لێرە دێن -->
+            <div id="timeBreakdownContainer" class="time-breakdown"></div>
+        </div>
+    </div>
+
+    <!-- مۆدالی زیادکردنی مۆڵەت -->
+    <div id="leaveModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeLeaveModal()">&times;</button>
+            <h2 style="clear: both; margin-bottom: 20px;">🏖️ زیادکردنی مۆڵەتی خوێندکار</h2>
+            
+            <form onsubmit="submitLeave(event)" style="max-width: 600px; margin: 0 auto;">
+                <div class="form-group">
+                    <label>ناوی خوێندکار</label>
+                    <select id="leaveStudentId" class="filter-select" required style="width: 100%; padding: 14px;">
+                        <option value="">خوێندکارێک هەڵبژێرە</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label>بەرواری دەستپێک</label>
+                        <input type="date" id="leaveStartDate" required>
+                    </div>
+                    <div>
+                        <label>بەرواری کۆتایی</label>
+                        <input type="date" id="leaveEndDate" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>هۆکاری مۆڵەت</label>
+                    <select id="leaveReason" class="filter-select" required style="width: 100%; padding: 14px;">
+                        <option value="">هۆکارێک هەڵبژێرە</option>
+                        <option value="نەخۆشی">نەخۆشی</option>
+                        <option value="کێشەی تایبەت">کێشەی تایبەت</option>
+                        <option value="گەشتی خێزانی">گەشتی خێزانی</option>
+                        <option value="مۆڵەتی فەرمی">مۆڵەتی فەرمی</option>
+                        <option value="هۆکاری دیکە">هۆکاری دیکە</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>تێبینی (ئەگەر هەبێت)</label>
+                    <textarea id="leaveNotes" rows="3" style="width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-family: inherit; resize: vertical;"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>کارمەندی تۆماردار</label>
+                    <input type="text" id="leaveRecordedBy" value="" required>
+                </div>
+                
+                <div class="buttons-row">
+                    <button type="submit" class="action-btn" style="background: var(--success);">✅ تۆمارکردن</button>
+                    <button type="button" class="action-btn" onclick="closeLeaveModal()" style="background: var(--gray);">❌ پاشگەزبوونەوە</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- مۆدالی بینینی مۆڵەتەکان -->
+    <div id="leavesViewModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeLeavesViewModal()">&times;</button>
+            <h2 style="clear: both; margin-bottom: 20px;">📋 تۆمارەکانی مۆڵەت</h2>
+            
+            <div class="filter-container">
+                <input type="date" id="leaveFilterStartDate" class="filter-select">
+                <input type="date" id="leaveFilterEndDate" class="filter-select">
+                <select id="leaveFilterLevel" class="filter-select">
+                    <option value="">هەموو ئاستەکان</option>
+                    <option value="1">ئاستی 1</option>
+                    <option value="2">ئاستی 2</option>
+                    <option value="3">ئاستی 3</option>
+                    <option value="4">ئاستی 4</option>
+                    <option value="5">ئاستی 5</option>
+                </select>
+                <select id="leaveFilterGroup" class="filter-select">
+                    <option value="">هەموو گرووپەکان</option>
+                    <option value="A">گرووپی A</option>
+                    <option value="B">گرووپی B</option>
+                    <option value="C">گرووپی C</option>
+                    <option value="D">گرووپی D</option>
+                    <option value="E">گرووپی E</option>
+                    <option value="WEB">گرووپی WEB</option>
+                    <option value="NET">گرووپی NET</option>
+                    <option value="PRO">گرووپی PRO</option>
+                </select>
+                <button class="action-btn" onclick="loadLeaveRecords()">🔍 گەڕان</button>
+                <button class="export-btn" onclick="exportLeaves()">📥 Excel</button>
+                <button class="print-btn" onclick="printLeaves()">🖨️ چاپ</button>
+            </div>
+            
+            <div class="attendance-details-stats">
+                <div class="detail-stat-card detail-stat-total"><div class="detail-stat-number" id="totalLeaves">0</div><div>کۆی مۆڵەتەکان</div></div>
+                <div class="detail-stat-card detail-stat-present"><div class="detail-stat-number" id="activeLeaves">0</div><div>مۆڵەتی چالاک</div></div>
+                <div class="detail-stat-card detail-stat-absent"><div class="detail-stat-number" id="totalLeaveDays">0</div><div>کۆی ڕۆژەکان</div></div>
+            </div>
+            
+            <div class="table-container">
+                <table id="leavesTable">
+                    <thead>
+                        <tr>
+                            <th>ناوی خوێندکار</th>
+                            <th>پەیمانگە</th>
+                            <th>ئاست</th>
+                            <th>گروپ</th>
+                            <th>بەرواری دەستپێک</th>
+                            <th>بەرواری کۆتایی</th>
+                            <th>ژمارەی ڕۆژەکان</th>
+                            <th>هۆکار</th>
+                            <th>تێبینی</th>
+                            <th>کارمەند</th>
+                            <th class="no-print">کردارەکان</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leavesTableBody">
+                        <tr><td colspan="11" style="padding: 40px;">تکایە فلتەرەکان هەڵبژێرە</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -617,13 +733,323 @@
         const database = firebase.database();
         let currentUser = null;
         let allStudents = [];
+        let allLeaves = [];
+
+        // فەنکشنەکانی مۆڵەت
+        function openLeaveModal() {
+            const modal = document.getElementById('leaveModal');
+            const select = document.getElementById('leaveStudentId');
+            
+            select.innerHTML = '<option value="">خوێندکارێک هەڵبژێرە</option>';
+            allStudents.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = `${student.name} - ئاستی ${student.level} گروپ ${student.group}`;
+                select.appendChild(option);
+            });
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('leaveStartDate').value = today;
+            document.getElementById('leaveEndDate').value = today;
+            document.getElementById('leaveRecordedBy').value = currentUser?.username || 'کارمەند';
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeLeaveModal() {
+            document.getElementById('leaveModal').style.display = 'none';
+        }
+        
+        function submitLeave(event) {
+            event.preventDefault();
+            
+            const studentId = document.getElementById('leaveStudentId').value;
+            const startDate = document.getElementById('leaveStartDate').value;
+            const endDate = document.getElementById('leaveEndDate').value;
+            const reason = document.getElementById('leaveReason').value;
+            const notes = document.getElementById('leaveNotes').value;
+            const recordedBy = document.getElementById('leaveRecordedBy').value;
+            
+            if (!studentId || !startDate || !endDate || !reason) {
+                showNotification('هەڵە', 'تکایە هەموو خانەکانی پێویست پڕبکەوە!', 'error');
+                return;
+            }
+            
+            if (new Date(endDate) < new Date(startDate)) {
+                showNotification('هەڵە', 'بەرواری کۆتایی نابێت پێش بەرواری دەستپێک بێت!', 'error');
+                return;
+            }
+            
+            const student = allStudents.find(s => s.id === studentId);
+            if (!student) {
+                showNotification('هەڵە', 'خوێندکار نەدۆزرایەوە!', 'error');
+                return;
+            }
+            
+            const days = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)) + 1;
+            
+            const leaveData = {
+                studentId: studentId,
+                studentName: student.name,
+                studentCode: student.code,
+                institute: student.institute,
+                level: student.level,
+                group: student.group,
+                startDate: startDate,
+                endDate: endDate,
+                days: days,
+                reason: reason,
+                notes: notes || '',
+                recordedBy: recordedBy,
+                recordedAt: new Date().toISOString(),
+                status: 'active'
+            };
+            
+            const leaveRef = database.ref('leaves').push();
+            leaveRef.set(leaveData).then(() => {
+                showNotification('سەرکەوتوو', `مۆڵەتی ${student.name} بە سەرکەوتوویی تۆمارکرا بۆ ${days} ڕۆژ! 🎉`, 'success');
+                closeLeaveModal();
+                document.getElementById('leaveModal').querySelector('form').reset();
+            }).catch(error => {
+                showNotification('هەڵە', 'هەڵە لە تۆمارکردنی مۆڵەت: ' + error.message, 'error');
+                console.error(error);
+            });
+        }
+        
+        function viewLeaveRecords() {
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            document.getElementById('leaveFilterStartDate').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('leaveFilterEndDate').value = today.toISOString().split('T')[0];
+            document.getElementById('leavesViewModal').style.display = 'flex';
+            loadLeaveRecords();
+        }
+        
+        function closeLeavesViewModal() {
+            document.getElementById('leavesViewModal').style.display = 'none';
+        }
+        
+        function loadLeaveRecords() {
+            const startDate = document.getElementById('leaveFilterStartDate').value;
+            const endDate = document.getElementById('leaveFilterEndDate').value;
+            const level = document.getElementById('leaveFilterLevel').value;
+            const group = document.getElementById('leaveFilterGroup').value;
+            
+            const tbody = document.getElementById('leavesTableBody');
+            tbody.innerHTML = '<tr><td colspan="11">کەمێک چاوەڕێ بکە...</td></tr>';
+            
+            database.ref('leaves').once('value', (snapshot) => {
+                const data = snapshot.val();
+                allLeaves = [];
+                
+                if (data) {
+                    Object.keys(data).forEach(key => {
+                        const leave = { id: key, ...data[key] };
+                        
+                        let include = true;
+                        
+                        if (startDate && leave.startDate < startDate) include = false;
+                        if (endDate && leave.startDate > endDate) include = false;
+                        if (level && leave.level !== level) include = false;
+                        if (group && leave.group !== group) include = false;
+                        
+                        if (include) {
+                            allLeaves.push(leave);
+                        }
+                    });
+                }
+                
+                displayLeaveRecords(allLeaves);
+                
+                if (allLeaves.length > 0) {
+                    showNotification('سەرکەوتوو', `${allLeaves.length} تۆماری مۆڵەت دۆزرایەوە`, 'success');
+                } else {
+                    showNotification('ئاگاداری', 'هیچ تۆمارێک نەدۆزرایەوە', 'info');
+                }
+            }).catch(error => {
+                showNotification('هەڵە', 'هەڵە لە بارکردنی داتاکان', 'error');
+                console.error(error);
+            });
+        }
+        
+        function displayLeaveRecords(leaves) {
+            const tbody = document.getElementById('leavesTableBody');
+            const totalLeaves = document.getElementById('totalLeaves');
+            const activeLeaves = document.getElementById('activeLeaves');
+            const totalLeaveDays = document.getElementById('totalLeaveDays');
+            
+            tbody.innerHTML = '';
+            
+            if (leaves.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" style="padding: 40px;">هیچ تۆمارێک نەدۆزرایەوە</td></tr>';
+                totalLeaves.textContent = '0';
+                activeLeaves.textContent = '0';
+                totalLeaveDays.textContent = '0';
+                return;
+            }
+            
+            const today = new Date().toISOString().split('T')[0];
+            let active = 0;
+            let totalDays = 0;
+            
+            leaves.forEach(leave => {
+                const isActive = leave.endDate >= today && leave.startDate <= today;
+                if (isActive) active++;
+                totalDays += leave.days || 0;
+                
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${leave.studentName}</td>
+                    <td>${leave.institute}</td>
+                    <td>ئاستی ${leave.level}</td>
+                    <td>گروپ ${leave.group}</td>
+                    <td>${leave.startDate}</td>
+                    <td>${leave.endDate}</td>
+                    <td><strong style="color: var(--primary);">${leave.days}</strong></td>
+                    <td>${leave.reason}</td>
+                    <td>${leave.notes || '-'}</td>
+                    <td>${leave.recordedBy}</td>
+                    <td class="no-print">
+                        <button class="action-btn" style="padding: 6px 12px; font-size: 12px; background: var(--danger);" 
+                                onclick="deleteLeave('${leave.id}')">
+                            🗑️ سڕینەوە
+                        </button>
+                    </td>
+                `;
+                
+                if (isActive) {
+                    row.style.backgroundColor = 'rgba(40, 167, 69, 0.05)';
+                }
+            });
+            
+            totalLeaves.textContent = leaves.length;
+            activeLeaves.textContent = active;
+            totalLeaveDays.textContent = totalDays;
+        }
+        
+        function deleteLeave(leaveId) {
+            if (!confirm('دڵنیایت لە سڕینەوەی ئەم تۆمارە؟')) {
+                return;
+            }
+            
+            database.ref('leaves/' + leaveId).remove().then(() => {
+                showNotification('سەرکەوتوو', 'تۆمارەکە بە سەرکەوتوویی سڕایەوە', 'success');
+                loadLeaveRecords();
+            }).catch(error => {
+                showNotification('هەڵە', 'هەڵە لە سڕینەوەی تۆمارەکە', 'error');
+                console.error(error);
+            });
+        }
+        
+        function exportLeaves() {
+            const tbody = document.getElementById('leavesTableBody');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            if (rows.length === 1 && rows[0].cells.length === 1) {
+                showNotification('هەڵە', 'هیچ داتایەک نیە بۆ هەناردەکردن!', 'error');
+                return;
+            }
+            
+            const data = [];
+            for (let row of rows) {
+                if (row.cells.length > 1) {
+                    data.push({
+                        'ناوی خوێندکار': row.cells[0].textContent,
+                        'پەیمانگە': row.cells[1].textContent,
+                        'ئاست': row.cells[2].textContent,
+                        'گروپ': row.cells[3].textContent,
+                        'بەرواری دەستپێک': row.cells[4].textContent,
+                        'بەرواری کۆتایی': row.cells[5].textContent,
+                        'ژمارەی ڕۆژەکان': row.cells[6].textContent,
+                        'هۆکار': row.cells[7].textContent,
+                        'تێبینی': row.cells[8].textContent,
+                        'کارمەند': row.cells[9].textContent
+                    });
+                }
+            }
+            
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'مۆڵەتەکان');
+            XLSX.writeFile(wb, `تۆماری_مۆڵەتەکان_${new Date().toISOString().split('T')[0]}.xlsx`);
+            
+            showNotification('سەرکەوتوو', 'فایلەکە بە سەرکەوتوویی هەناردەکرا! 📥', 'success');
+        }
+        
+        function printLeaves() {
+            const tbody = document.getElementById('leavesTableBody');
+            const rows = tbody.getElementsByTagName('tr');
+            
+            if (rows.length === 1 && rows[0].cells.length === 1) {
+                showNotification('هەڵە', 'هیچ داتایەک نیە بۆ چاپکردن!', 'error');
+                return;
+            }
+            
+            const startDate = document.getElementById('leaveFilterStartDate').value || 'نادیار';
+            const endDate = document.getElementById('leaveFilterEndDate').value || 'نادیار';
+            const totalLeaves = document.getElementById('totalLeaves').textContent;
+            const activeLeaves = document.getElementById('activeLeaves').textContent;
+            const totalLeaveDays = document.getElementById('totalLeaveDays').textContent;
+            
+            let tableHTML = `
+                <div class="attendance-details-stats" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div class="detail-stat-card" style="text-align: center; padding: 15px; border-radius: 8px; border: 2px solid #17a2b8;">
+                        <div class="detail-stat-number" style="font-size: 28px; font-weight: bold; color: #17a2b8;">${totalLeaves}</div>
+                        <div>کۆی مۆڵەتەکان</div>
+                    </div>
+                    <div class="detail-stat-card" style="text-align: center; padding: 15px; border-radius: 8px; border: 2px solid #28a745;">
+                        <div class="detail-stat-number" style="font-size: 28px; font-weight: bold; color: #28a745;">${activeLeaves}</div>
+                        <div>مۆڵەتی چالاک</div>
+                    </div>
+                    <div class="detail-stat-card" style="text-align: center; padding: 15px; border-radius: 8px; border: 2px solid #667eea;">
+                        <div class="detail-stat-number" style="font-size: 28px; font-weight: bold; color: #667eea;">${totalLeaveDays}</div>
+                        <div>کۆی ڕۆژەکان</div>
+                    </div>
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <thead><tr style="background: #667eea; color: white;">
+                    <th style="border: 1px solid #ddd; padding: 10px;">ناوی خوێندکار</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">پەیمانگە</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">ئاست</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">گروپ</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">بەرواری دەستپێک</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">بەرواری کۆتایی</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">ژمارەی ڕۆژەکان</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">هۆکار</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">تێبینی</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">کارمەند</th>
+                </tr></thead><tbody>`;
+            
+            for (let row of rows) {
+                if (row.cells.length > 1) {
+                    tableHTML += '<tr>';
+                    for (let i = 0; i < 10; i++) {
+                        tableHTML += `<td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${row.cells[i].textContent}</td>`;
+                    }
+                    tableHTML += '</tr>';
+                }
+            }
+            
+            tableHTML += '</tbody></table>';
+            
+            const printContent = `
+                <div class="print-header">
+                    <div class="print-title">تۆماری مۆڵەتی خوێندکاران</div>
+                    <div class="print-date">لە ${startDate} تا ${endDate}</div>
+                    <div class="print-date">کاتی چاپ: ${new Date().toLocaleString('en-GB')}</div>
+                </div>
+                ${tableHTML}
+            `;
+            
+            improvedPrint(printContent, "تۆماری مۆڵەتەکان");
+        }
 
         // فەنکشنی چاپی باشتر بۆ هەموو ئامێرەکان
         function improvedPrint(content, title = "پەڕەی چاپ") {
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             if (isMobile) {
-                // ڕێگای مۆبایل - داگرتنی فایل
                 showMobilePrintHelp();
                 const blob = new Blob([`
                     <!DOCTYPE html>
@@ -673,7 +1099,6 @@
                 URL.revokeObjectURL(url);
                 
             } else {
-                // ڕێگای کۆمپیوتەر - چاپی ڕاستەوخۆ
                 const printWindow = window.open('', '_blank');
                 printWindow.document.write(`
                     <!DOCTYPE html>
@@ -766,23 +1191,19 @@
             });
         }
 
-        // فەنکشنی بارکردنی لۆگۆ
         function loadInstituteLogo() {
             const logos = document.querySelectorAll('.institute-logo');
             
             logos.forEach(logo => {
-                // چارەسەری هەڵە بۆ لۆگۆ
                 logo.onerror = function() {
                     console.log("لۆگۆکە نەتوانرا باربکرێت");
                     this.style.display = 'none';
-                    // دروستکردنی پلەیس هۆڵدەر لە کاتی هەڵە
                     const placeholder = document.createElement('div');
                     placeholder.className = 'logo-placeholder';
-                    placeholder.innerHTML = '<i class="fas fa-graduation-cap"></i>پەیمانگای کۆمپیوتەری سلێمانی';
+                    placeholder.innerHTML = '<i class="fas fa-graduation-cap"></i><span>پەیمانگای کۆمپیوتەری سلێمانی</span>';
                     this.parentElement.appendChild(placeholder);
                 };
                 
-                // تاقیکردنەوەی بارکردنی وێنە
                 const testImg = new Image();
                 testImg.onload = function() {
                     console.log('لۆگۆکە بە سەرکەوتوویی بارکرا');
@@ -792,7 +1213,7 @@
                     logo.style.display = 'none';
                     const placeholder = document.createElement('div');
                     placeholder.className = 'logo-placeholder';
-                    placeholder.innerHTML = '<i class="fas fa-graduation-cap"></i>پەیمانگای کۆمپیوتەری سلێمانی';
+                    placeholder.innerHTML = '<i class="fas fa-graduation-cap"></i><span>پەیمانگای کۆمپیوتەری سلێمانی</span>';
                     logo.parentElement.appendChild(placeholder);
                 };
                 testImg.src = logo.src;
@@ -805,7 +1226,7 @@
             const password = document.getElementById('password').value.trim();
             
             if (username === 'attendance1113' && password === 'attendance1113') {
-                currentUser = { username: '', type: 'staff' };
+                currentUser = { username:username , type: 'staff' };
                 showStaffDashboard();
                 showNotification('سەرکەوتوو', 'بە سەرکەوتوویی چوویتە ژوورەوە! 🎉', 'success');
                 return;
@@ -821,7 +1242,7 @@
         function showStaffDashboard() {
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('staffDashboard').style.display = 'block';
-            document.getElementById('staffWelcome').textContent = 'بەخێربێیت ' + (currentUser?.username || 'کارمەند');
+            document.getElementById('staffWelcome').textContent = 'بەخێربێیت ' ;
             loadStudents();
             
             const today = new Date().toISOString().split('T')[0];
@@ -835,7 +1256,7 @@
             const group = document.getElementById('filterGroup').value;
             
             if (!date) {
-                showNotification('ئاگادارکردنەوە', 'تکایە بەروار هەڵبژێرە!', 'warning');
+                showNotification('ئاگاداریکردنەوە', 'تکایە بەروار هەڵبژێرە!', 'warning');
                 return;
             }
             
@@ -901,7 +1322,7 @@
                 if (records.length > 0) {
                     showNotification('سەرکەوتوو', `${records.length} تۆمار دۆزرایەوە`, 'success');
                 } else {
-                    showNotification('ئاگادارکردنەوە', 'هیچ تۆمارێک نەدۆزرایەوە', 'info');
+                    showNotification('ئاگاداریکردنەوە', 'هیچ تۆمارێک نەدۆزرایەوە', 'info');
                 }
             }).catch(error => {
                 showNotification('هەڵە', 'هەڵە لە بارکردنی داتاکان', 'error');
@@ -1036,7 +1457,7 @@
             document.getElementById('filterLevel').value = '';
             document.getElementById('filterGroup').value = '';
             loadAttendanceData();
-            showNotification('ئاگادارکردنەوە', 'غیاباتی ئەمڕۆ پیشاندرا', 'info');
+            showNotification('ئاگاداریکردنەوە', 'غیاباتی ئەمڕۆ پیشاندرا', 'info');
         }
 
         function viewTeachersAttendance() {
@@ -1123,7 +1544,7 @@
             teachersListContainer.innerHTML = '';
             
             if (Object.keys(teachersMap).length === 0) {
-                teachersListContainer.innerHTML = '<p style="text-align: center; padding: 40px;">هیچ مامۆستایەک تۆماری غیاباتینی نەناردوە ئەمڕۆ</p>';
+                teachersListContainer.innerHTML = '<p style="text-align: center; padding: 40px;">هیچ مامۆستایەک تۆماری غیاباتینی نەناردووە ئەمڕۆ</p>';
                 return;
             }
             
@@ -1161,7 +1582,7 @@
             
             showNotification(
                 'مامۆستایانی ئەمڕۆ', 
-                `${Object.keys(teachersMap).length} مامۆستا تۆماری غیاباتینی ناردوە ئەمڕۆ`, 
+                `${Object.keys(teachersMap).length} مامۆستا تۆماری غیاباتینی ناردووە ئەمڕۆ`, 
                 'info'
             );
         }
@@ -1378,8 +1799,8 @@
                 return;
             }
             
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
+            const startDate = document.getElementById('startDate').value || 'نادیار';
+            const endDate = document.getElementById('endDate').value || 'نادیار';
             
             let tableHTML = '<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">';
             tableHTML += '<thead><tr style="background: #667eea; color: white;">';
@@ -1568,8 +1989,8 @@
                 return;
             }
             
-            const startDate = document.getElementById('detailedStartDate').value;
-            const endDate = document.getElementById('detailedEndDate').value;
+            const startDate = document.getElementById('detailedStartDate').value || 'نادیار';
+            const endDate = document.getElementById('detailedEndDate').value || 'نادیار';
             
             let tableHTML = '<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">';
             tableHTML += '<thead><tr style="background: #667eea; color: white;">';
@@ -1577,7 +1998,7 @@
             tableHTML += '<th style="border: 1px solid #ddd; padding: 10px;">کۆد</th>';
             tableHTML += '<th style="border: 1px solid #ddd; padding: 10px;">پەیمانگە</th>';
             tableHTML += '<th style="border: 1px solid #ddd; padding: 10px;">ئاست</th>';
-            tableHTML += '<th style="border: 1px solid #ddd; padding: 10px;">گروپ</th>';
+            tableHTML += '<th style="border: 1px solid #ddd; padding: 10px;">گرووپ</th>';
             tableHTML += '<th style="border: 1px solid #ddd; padding: 10px;">بەروار</th>';
             tableHTML += '<th style="border: 1px solid #ddd; padding: 10px;">وانە</th>';
             tableHTML += '<th style="border: 1px solid #ddd; padding: 10px;">مامۆستا</th>';
@@ -1687,7 +2108,6 @@
                         });
                     });
                     
-                    // دۆزینەوەی کاتی زۆرترین غیاب
                     Object.keys(timeSlots).forEach(time => {
                         if (timeSlots[time].absentStudents.length > maxAbsences) {
                             maxAbsences = timeSlots[time].absentStudents.length;
@@ -1701,7 +2121,7 @@
                 if (Object.keys(timeSlots).length > 0) {
                     showNotification('سەرکەوتوو', `${totalAbsences} غیابات لە ${Object.keys(timeSlots).length} کاتدا دۆزرایەوە`, 'success');
                 } else {
-                    showNotification('ئاگادارکردنەوە', 'هیچ داتایەک نەدۆزرایەوە', 'info');
+                    showNotification('ئاگاداریکردنەوە', 'هیچ داتایەک نەدۆزرایەوە', 'info');
                 }
             }).catch(error => {
                 showNotification('هەڵە', 'هەڵە لە بارکردنی داتاکان', 'error');
@@ -1726,7 +2146,6 @@
                 return;
             }
             
-            // ڕیزکردنی کاتەکان بەپێی کات
             const sortedTimes = Object.keys(timeSlots).sort();
             
             sortedTimes.forEach(time => {
@@ -2003,7 +2422,7 @@
         }
 
         window.onclick = function(event) {
-            const modals = ['totalAbsenceModal', 'detailsModal', 'teachersModal', 'detailedAbsenceModal', 'timeAnalysisModal'];
+            const modals = ['totalAbsenceModal', 'detailsModal', 'teachersModal', 'detailedAbsenceModal', 'timeAnalysisModal', 'leaveModal', 'leavesViewModal'];
             modals.forEach(modalId => {
                 const modal = document.getElementById(modalId);
                 if (event.target === modal) {
@@ -2012,7 +2431,6 @@
             });
         }
 
-        // بارکردنی لۆگۆ کاتێک پەڕەکە بارکرا
         document.addEventListener('DOMContentLoaded', function() {
             loadInstituteLogo();
             loadStudents();
