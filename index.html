@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستەمی پەیمانگەی کۆمپیتەری سلێمانی</title>
+    
+    <!-- Favicon & Mobile Icons بە لینکی GitHub -->
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png">
+    <link rel="icon" sizes="192x192" href="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png">
+    <link rel="icon" sizes="512x512" href="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png">
+    
+    <!-- PWA Settings -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="پەیمانگەی CIS">
+    <meta name="application-name" content="پەیمانگەی کۆمپیتەری سلێمانی">
+    <meta name="description" content="سیستەمی بەڕێوەبردنی پەیمانگەی کۆمپیتەری سلێمانی">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -553,7 +568,7 @@
         <div class="header">
             <div class="logo-container">
                 <div class="logo-row">
-                    <!-- لینکی ڕاستەقینەی لۆگۆ لە GitHub -->
+                    <!-- لۆگۆ لە GitHub بە لینکی ڕاستەوخۆ -->
                     <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
                          alt="پەیمانگەی کۆمپیتەری سلێمانی" 
                          class="institute-logo"
@@ -650,19 +665,41 @@
             const cssLogo = document.getElementById('css-logo');
             
             console.log('پشکنینی لۆگۆ دەستپێدەکات...');
+            console.log('لینکی لۆگۆ: https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png');
             
-            // ئەگەر وێنە بارنەبوو، لۆگۆی CSS پیشان بدە
-            logoImg.addEventListener('error', function() {
-                console.log('لۆگۆ بارنەبوو، لۆگۆی CSS پیشان دەدرێت');
-                this.style.display = 'none';
-                cssLogo.style.display = 'flex';
-            });
+            // پشکنین بۆ ئەوەی لۆگۆکە بار دەبێت یان نا
+            function checkLogo() {
+                fetch('https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png')
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('لۆگۆ بەردەستە ✓');
+                            // ئەگەر لۆگۆکە بەردەستە، پشکنین بکە کە بار دەبێت یان نا
+                            logoImg.addEventListener('load', function() {
+                                console.log('لۆگۆ بە سەرکەوتوویی بارکرا ✓');
+                                cssLogo.style.display = 'none';
+                            });
+                            
+                            logoImg.addEventListener('error', function() {
+                                console.log('لۆگۆ بارنەبوو، لۆگۆی CSS پیشان دەدرێت');
+                                this.style.display = 'none';
+                                cssLogo.style.display = 'flex';
+                            });
+                        } else {
+                            console.log('لۆگۆ بەردەست نیە، لۆگۆی CSS پیشان دەدرێت');
+                            logoImg.style.display = 'none';
+                            cssLogo.style.display = 'flex';
+                        }
+                    })
+                    .catch(error => {
+                        console.log('هەڵە لە پشکنینی لۆگۆ: ', error);
+                        console.log('لۆگۆی CSS پیشان دەدرێت');
+                        logoImg.style.display = 'none';
+                        cssLogo.style.display = 'flex';
+                    });
+            }
             
-            // ئەگەر وێنە باربوو، لۆگۆی CSS بشارەوە
-            logoImg.addEventListener('load', function() {
-                console.log('لۆگۆ بە سەرکەوتوویی بارکرا');
-                cssLogo.style.display = 'none';
-            });
+            // پشکنینی لۆگۆ
+            checkLogo();
             
             // Mobile menu functionality
             const menuBtn = document.querySelector('.mobile-menu-btn');
