@@ -248,6 +248,91 @@
             color: var(--gray);
         }
 
+        /* زیادکردنی ستایلی نوێ بۆ گەڕان */
+        .search-container {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .search-title {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-filters {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .search-results {
+            margin-top: 20px;
+        }
+        
+        .student-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .student-card:hover {
+            background: #e9ecef;
+            transform: translateX(-5px);
+        }
+        
+        .student-info h4 {
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .student-details {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .student-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn-small {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .view-btn {
+            background: var(--info);
+            color: white;
+        }
+        
+        .leave-btn {
+            background: var(--success);
+            color: white;
+        }
+        
+        .now-btn {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
         @media print {
             body * { visibility: hidden; }
             .modal-content, .modal-content * { visibility: visible; }
@@ -270,6 +355,9 @@
             }
             .logo-placeholder {
                 font-size: 20px;
+            }
+            .search-filters {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -301,6 +389,9 @@
             table { font-size: 14px; }
             table th, table td { padding: 10px 8px; }
             .time-breakdown { grid-template-columns: 1fr; }
+            .search-filters {
+                grid-template-columns: 1fr;
+            }
         }
         
         @media (max-width: 480px) {
@@ -320,6 +411,9 @@
             }
             .logo-placeholder i {
                 font-size: 30px;
+            }
+            .student-actions {
+                flex-direction: column;
             }
         }
     </style>
@@ -390,19 +484,30 @@
         
         <div class="action-section">
             <h3>کردارەکان</h3>
+            
+            <!-- ڕیزکردنی دوگمەکان بە شێوازێکی ڕێکوپێک -->
             <div class="buttons-row">
                 <button class="action-btn" onclick="viewTodayAttendance()">📅 غیاباتی ئەمڕۆ</button>
                 <button class="action-btn" onclick="viewTeachersAttendance()" style="background: var(--info);">👨‍🏫 مامۆستایانی ئەمڕۆ</button>
                 <button class="action-btn" onclick="viewTimeAnalysis()" style="background: var(--warning); color: var(--dark);">⏰ شیکاری کاتی غیابات</button>
             </div>
+            
+            <!-- جیاکردنەوەی دوگمەی مۆڵەت و ئێستا -->
             <div class="buttons-row">
                 <button class="action-btn" onclick="openLeaveModal()" style="background: var(--success);">🏖️ زیادکردنی مۆڵەت</button>
-                <button class="action-btn" onclick="viewLeaveRecords()" style="background: var(--secondary);">📋 بینینی مۆڵەتەکان</button>
+                <button class="action-btn" onclick="openNowAttendanceModal()" style="background: #e44d26;">⏱️ تۆماری ئێستا</button>
             </div>
+            
+            <div class="buttons-row">
+                <button class="action-btn" onclick="viewLeaveRecords()" style="background: var(--secondary);">📋 بینینی مۆڵەتەکان</button>
+                <button class="action-btn" onclick="openStudentSearch()" style="background: #6f42c1;">🔍 گەڕانی خوێندکار</button>
+            </div>
+            
             <div class="buttons-row">
                 <button class="details-btn" onclick="viewTotalStudentAbsence()">📊 کۆی گشتی غیابات</button>
                 <button class="export-btn" onclick="viewDetailedAbsence()" style="background: var(--secondary);">📋 وردەکاری غیاباتەکان</button>
             </div>
+            
             <div class="buttons-row">
                 <button class="details-btn" onclick="refreshData()" style="background: var(--warning); color: var(--dark);">🔄 نوێکردنەوە</button>
             </div>
@@ -607,9 +712,16 @@
             
             <form onsubmit="submitLeave(event)" style="max-width: 600px; margin: 0 auto;">
                 <div class="form-group">
+                    <label>ئاست و گروپ</label>
+                    <select id="leaveLevelGroup" class="filter-select" required style="width: 100%; padding: 14px;" onchange="filterStudentsByLevelGroup()">
+                        <option value="">ئاست و گروپێک هەڵبژێرە</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
                     <label>ناوی خوێندکار</label>
                     <select id="leaveStudentId" class="filter-select" required style="width: 100%; padding: 14px;">
-                        <option value="">خوێندکارێک هەڵبژێرە</option>
+                        <option value="">یەکەم ئاست و گروپ هەڵبژێرە</option>
                     </select>
                 </div>
                 
@@ -718,6 +830,102 @@
         </div>
     </div>
 
+    <!-- مۆدالی گەڕانی خوێندکار -->
+    <div id="studentSearchModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeStudentSearchModal()">&times;</button>
+            <h2 style="clear: both; margin-bottom: 20px;">🔍 گەڕانی خوێندکار</h2>
+            
+            <div class="search-container">
+                <div class="search-title">
+                    <i class="fas fa-search"></i>
+                    گەڕان بەپێی ناو و ئاست و گروپ
+                </div>
+                
+                <div class="search-filters">
+                    <input type="text" id="studentNameSearch" placeholder="ناوی خوێندکار..." class="filter-select">
+                    <select id="studentLevelSearch" class="filter-select">
+                        <option value="">هەموو ئاستەکان</option>
+                        <option value="1">ئاستی 1</option>
+                        <option value="2">ئاستی 2</option>
+                        <option value="3">ئاستی 3</option>
+                        <option value="4">ئاستی 4</option>
+                        <option value="5">ئاستی 5</option>
+                    </select>
+                    <select id="studentGroupSearch" class="filter-select">
+                        <option value="">هەموو گرووپەکان</option>
+                        <option value="A">گرووپی A</option>
+                        <option value="B">گرووپی B</option>
+                        <option value="C">گرووپی C</option>
+                        <option value="D">گرووپی D</option>
+                        <option value="E">گرووپی E</option>
+                        <option value="WEB">گرووپی WEB</option>
+                        <option value="NET">گرووپی NET</option>
+                        <option value="PRO">گرووپی PRO</option>
+                    </select>
+                    <button class="action-btn" onclick="searchStudents()" style="padding: 10px 20px;">گەڕان</button>
+                </div>
+                
+                <div class="search-results" id="studentSearchResults">
+                    <p style="text-align: center; padding: 20px; color: var(--gray);">
+                        🔍 گەڕانەکەت دەستپێبکە بۆ بینینی ئەنجامەکان
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- مۆدالی تۆماری ئێستا -->
+    <div id="nowAttendanceModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeNowAttendanceModal()">&times;</button>
+            <h2 style="clear: both; margin-bottom: 20px;">⏱️ تۆماری غیابات بۆ ئێستا</h2>
+            
+            <div class="filter-container">
+                <select id="nowLevel" class="filter-select" onchange="loadNowAttendanceData()">
+                    <option value="">هەموو ئاستەکان</option>
+                    <option value="1">ئاستی 1</option>
+                    <option value="2">ئاستی 2</option>
+                    <option value="3">ئاستی 3</option>
+                    <option value="4">ئاستی 4</option>
+                    <option value="5">ئاستی 5</option>
+                </select>
+                <select id="nowGroup" class="filter-select" onchange="loadNowAttendanceData()">
+                    <option value="">هەموو گرووپەکان</option>
+                    <option value="A">گرووپی A</option>
+                    <option value="B">گرووپی B</option>
+                    <option value="C">گرووپی C</option>
+                    <option value="D">گرووپی D</option>
+                    <option value="E">گرووپی E</option>
+                    <option value="WEB">گرووپی WEB</option>
+                    <option value="NET">گرووپی NET</option>
+                    <option value="PRO">گرووپی PRO</option>
+                </select>
+                <button class="export-btn" onclick="exportNowAttendance()">📥 هەناردە</button>
+                <button class="print-btn" onclick="printNowAttendance()">🖨️ چاپ</button>
+            </div>
+            
+            <div class="table-container">
+                <table id="nowAttendanceTable">
+                    <thead>
+                        <tr>
+                            <th>ناوی خوێندکار</th>
+                            <th>کۆد</th>
+                            <th>پەیمانگە</th>
+                            <th>ئاست</th>
+                            <th>گرووپ</th>
+                            <th>کۆی غیابات</th>
+                            <th>کردارەکان</th>
+                        </tr>
+                    </thead>
+                    <tbody id="nowAttendanceTableBody">
+                        <tr><td colspan="7" style="padding: 40px;">تکایە ئاست و گروپ هەڵبژێرە</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDummy-Key",
@@ -735,17 +943,228 @@
         let allStudents = [];
         let allLeaves = [];
 
+        // فەنکشنی نوێ بۆ فلتەرکردنی خوێندکارەکان بەپێی ئاست و گروپ
+        function filterStudentsByLevelGroup() {
+            const levelGroupValue = document.getElementById('leaveLevelGroup').value;
+            const studentSelect = document.getElementById('leaveStudentId');
+            
+            studentSelect.innerHTML = '<option value="">خوێندکارێک هەڵبژێرە</option>';
+            
+            if (!levelGroupValue) return;
+            
+            const [level, group] = levelGroupValue.split('-');
+            const filteredStudents = allStudents.filter(student => 
+                student.level === level && student.group === group
+            );
+            
+            filteredStudents.forEach(student => {
+                const option = document.createElement('option');
+                option.value = student.id;
+                option.textContent = student.name; // تەنها ناوەکە پیشان دەدرێت
+                studentSelect.appendChild(option);
+            });
+        }
+
+        // فەنکشنی نوێ بۆ گەڕانی خوێندکار
+        function openStudentSearch() {
+            document.getElementById('studentSearchModal').style.display = 'flex';
+            // پاککردنەوەی پێشووی گەڕان
+            document.getElementById('studentNameSearch').value = '';
+            document.getElementById('studentLevelSearch').value = '';
+            document.getElementById('studentGroupSearch').value = '';
+            document.getElementById('studentSearchResults').innerHTML = 
+                '<p style="text-align: center; padding: 20px; color: var(--gray);">🔍 گەڕانەکەت دەستپێبکە بۆ بینینی ئەنجامەکان</p>';
+        }
+        
+        function closeStudentSearchModal() {
+            document.getElementById('studentSearchModal').style.display = 'none';
+        }
+        
+        function searchStudents() {
+            const nameQuery = document.getElementById('studentNameSearch').value.toLowerCase();
+            const levelQuery = document.getElementById('studentLevelSearch').value;
+            const groupQuery = document.getElementById('studentGroupSearch').value;
+            
+            const resultsContainer = document.getElementById('studentSearchResults');
+            resultsContainer.innerHTML = '<p style="text-align: center; padding: 20px;">کەمێک چاوەڕێ بکە...</p>';
+            
+            // گەڕان لە ناوەڕۆکی خوێندکارەکان
+            const filteredStudents = allStudents.filter(student => {
+                const nameMatch = student.name.toLowerCase().includes(nameQuery);
+                const levelMatch = levelQuery ? student.level === levelQuery : true;
+                const groupMatch = groupQuery ? student.group === groupQuery : true;
+                
+                return nameMatch && levelMatch && groupMatch;
+            });
+            
+            displaySearchResults(filteredStudents);
+        }
+        
+        function displaySearchResults(students) {
+            const resultsContainer = document.getElementById('studentSearchResults');
+            
+            if (students.length === 0) {
+                resultsContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--gray);">هیچ خوێندکارێک نەدۆزرایەوە</p>';
+                return;
+            }
+            
+            let resultsHTML = '';
+            
+            students.forEach(student => {
+                resultsHTML += `
+                    <div class="student-card">
+                        <div class="student-info">
+                            <h4>${student.name}</h4>
+                            <div class="student-details">
+                                کۆد: ${student.code} | پەیمانگە: ${student.institute} | ئاست: ${student.level} | گروپ: ${student.group}
+                            </div>
+                        </div>
+                        <div class="student-actions">
+                            <button class="action-btn-small view-btn" onclick="viewStudentDetails('${student.id}')">
+                                <i class="fas fa-eye"></i> بینین
+                            </button>
+                            <button class="action-btn-small leave-btn" onclick="quickAddLeave('${student.id}')">
+                                <i class="fas fa-umbrella-beach"></i> مۆڵەت
+                            </button>
+                            <button class="action-btn-small now-btn" onclick="quickNowAttendance('${student.id}')">
+                                <i class="fas fa-clock"></i> ئێستا
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsContainer.innerHTML = resultsHTML;
+            
+            // نیشاندانی ئامار
+            showNotification('گەڕان', `${students.length} خوێندکار دۆزرایەوە`, 'success');
+        }
+        
+        function viewStudentDetails(studentId) {
+            const student = allStudents.find(s => s.id === studentId);
+            if (student) {
+                alert(`وردەکاری خوێندکار:\nناو: ${student.name}\nکۆد: ${student.code}\nپەیمانگە: ${student.institute}\nئاست: ${student.level}\nگروپ: ${student.group}`);
+            }
+        }
+        
+        function quickAddLeave(studentId) {
+            const student = allStudents.find(s => s.id === studentId);
+            if (student) {
+                // زیادکردنی خێرایی مۆڵەت
+                document.getElementById('leaveStudentId').value = studentId;
+                document.getElementById('leaveModal').style.display = 'flex';
+                closeStudentSearchModal();
+            }
+        }
+        
+        function quickNowAttendance(studentId) {
+            // نیشاندانی تۆماری ئێستا بۆ خوێندکارێکی دیاریکراو
+            openNowAttendanceModal();
+            // دەتوانیت فلتەرەکان دانابنێیت بۆ ئەو خوێندکارە
+            const student = allStudents.find(s => s.id === studentId);
+            if (student) {
+                document.getElementById('nowLevel').value = student.level;
+                document.getElementById('nowGroup').value = student.group;
+                loadNowAttendanceData();
+            }
+        }
+        
+        // فەنکشنی نوێ بۆ تۆماری ئێستا
+        function openNowAttendanceModal() {
+            document.getElementById('nowAttendanceModal').style.display = 'flex';
+            loadNowAttendanceData();
+        }
+        
+        function closeNowAttendanceModal() {
+            document.getElementById('nowAttendanceModal').style.display = 'none';
+        }
+        
+        function loadNowAttendanceData() {
+            const level = document.getElementById('nowLevel').value;
+            const group = document.getElementById('nowGroup').value;
+            
+            const tbody = document.getElementById('nowAttendanceTableBody');
+            tbody.innerHTML = '<tr><td colspan="7">کەمێک چاوەڕێ بکە...</td></tr>';
+            
+            // فلتەرکردنی خوێندکارەکان بەپێی ئاست و گروپ
+            const filteredStudents = allStudents.filter(student => {
+                const levelMatch = level ? student.level === level : true;
+                const groupMatch = group ? student.group === group : true;
+                return levelMatch && groupMatch;
+            });
+            
+            displayNowAttendanceData(filteredStudents);
+        }
+        
+        function displayNowAttendanceData(students) {
+            const tbody = document.getElementById('nowAttendanceTableBody');
+            tbody.innerHTML = '';
+            
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="padding: 40px;">هیچ خوێندکارێک نەدۆزرایەوە</td></tr>';
+                return;
+            }
+            
+            students.forEach(student => {
+                const row = tbody.insertRow();
+                
+                // لێرە دەتوانیت غیاباتەکانی خوێندکار زیادبکەیت
+                const absenceCount = 0; // ئەمە پێویستە لە داتابەیسەوە وەربگیرێت
+                
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.code}</td>
+                    <td>${student.institute}</td>
+                    <td>ئاستی ${student.level}</td>
+                    <td>گروپی ${student.group}</td>
+                    <td><span style="color: var(--danger); font-weight: bold;">${absenceCount}</span></td>
+                    <td>
+                        <button class="action-btn-small view-btn" onclick="viewStudentDetails('${student.id}')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn-small leave-btn" onclick="quickAddLeave('${student.id}')">
+                            <i class="fas fa-umbrella-beach"></i>
+                        </button>
+                    </td>
+                `;
+            });
+            
+            showNotification('تۆماری ئێستا', `${students.length} خوێندکار دۆزرایەوە`, 'info');
+        }
+        
+        function exportNowAttendance() {
+            // کۆدی هەناردەکردن
+            showNotification('هەناردە', 'کۆدی هەناردەکردن لە کاردایە', 'info');
+        }
+        
+        function printNowAttendance() {
+            // کۆدی چاپکردن
+            showNotification('چاپ', 'کۆدی چاپکردن لە کاردایە', 'info');
+        }
+
         // فەنکشنەکانی مۆڵەت
         function openLeaveModal() {
             const modal = document.getElementById('leaveModal');
-            const select = document.getElementById('leaveStudentId');
+            const levelGroupSelect = document.getElementById('leaveLevelGroup');
+            const studentSelect = document.getElementById('leaveStudentId');
             
-            select.innerHTML = '<option value="">خوێندکارێک هەڵبژێرە</option>';
+            // پاککردنەوەی پێشووی هەڵبژاردنەکان
+            levelGroupSelect.innerHTML = '<option value="">ئاست و گروپێک هەڵبژێرە</option>';
+            studentSelect.innerHTML = '<option value="">یەکەم ئاست و گروپ هەڵبژێرە</option>';
+            
+            // دروستکردنی لیستی ئاست و گروپەکان
+            const levelGroups = new Set();
             allStudents.forEach(student => {
+                levelGroups.add(`${student.level}-${student.group}`);
+            });
+            
+            // زیادکردنی ئاست و گروپەکان بۆ هەڵبژاردن
+            levelGroups.forEach(levelGroup => {
+                const [level, group] = levelGroup.split('-');
                 const option = document.createElement('option');
-                option.value = student.id;
-                option.textContent = `${student.name} - ئاستی ${student.level} گروپ ${student.group}`;
-                select.appendChild(option);
+                option.value = levelGroup;
+                option.textContent = `ئاستی ${level} - گروپی ${group}`;
+                levelGroupSelect.appendChild(option);
             });
             
             const today = new Date().toISOString().split('T')[0];
@@ -2422,7 +2841,10 @@
         }
 
         window.onclick = function(event) {
-            const modals = ['totalAbsenceModal', 'detailsModal', 'teachersModal', 'detailedAbsenceModal', 'timeAnalysisModal', 'leaveModal', 'leavesViewModal'];
+            const modals = [
+                'totalAbsenceModal', 'detailsModal', 'teachersModal', 'detailedAbsenceModal', 
+                'timeAnalysisModal', 'leaveModal', 'leavesViewModal', 'studentSearchModal', 'nowAttendanceModal'
+            ];
             modals.forEach(modalId => {
                 const modal = document.getElementById(modalId);
                 if (event.target === modal) {
