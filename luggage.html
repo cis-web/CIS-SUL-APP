@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تۆماری کەل و پەلی پەیمانگە</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --primary: #1e88e5;
+            --secondary: #1565c0;
+            --success: #43a047;
+            --warning: #fb8c00;
+            --danger: #e53935;
+            --light: #f5f5f5;
+            --dark: #263238;
+            --card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* چوونەژوورەوە */
+        #loginPage {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .login-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .login-subtitle {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .institute-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .logo-text {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--secondary);
+            line-height: 1.3;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .user-info {
+            background: var(--light);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: var(--dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-full {
+            width: 100%;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            color: white;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* ستایلەکانی خشتە */
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        
+        .assets-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .assets-table th,
+        .assets-table td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .assets-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .assets-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .assets-table tr:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .status-available {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .status-used {
+            color: var(--warning);
+            font-weight: bold;
+        }
+        
+        .status-repair {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        
+        .status-lost {
+            color: var(--danger);
+            font-weight: bold;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .filter-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-section .form-control {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+.tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #1a237e;
+    background: #0d47a1;
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+}
+
+.tab {
+    padding: 15px 25px;
+    cursor: pointer;
+    background: #1976d2;
+    border: none;
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    transition: all 0.3s;
+    flex: 1;
+    text-align: center;
+    border-right: 1px solid #1565c0;
+}
+
+.tab:last-child {
+    border-right: none;
+}
+
+.tab:hover {
+    background: #1565c0;
+}
+
+.tab.active {
+    background: #0d47a1;
+    color: white;
+    box-shadow: inset 0 -3px 0 #ffd600;
+}
+    </style>
+</head>
+<body>
+    <!-- چوونەژوورەوە -->
+    <div id="loginPage">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png?v=2" 
+                     alt="پەیمانگەی کۆمپیوتەری سلێمانی" 
+                     class="login-logo"
+                     onerror="this.style.display='none';">
+                <div class="login-title">تۆماری کەل و پەلی پەیمانگە</div>
+                <div class="login-subtitle">پەیمانگەی کۆمپیوتەری سلێمانی</div>
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                ناو یان وشەی نهێنی هەڵەیە!
+            </div>
+
+            <div class="loading-spinner" id="loginSpinner">
+                <div class="spinner"></div>
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">چاوەڕێ بکە...</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">ناوی بەکارهێنەر</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="admin" required autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">وشەی نهێنی</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="admin123" required autocomplete="current-password">
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-full" id="loginBtn">چوونەژوورەوە</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- پەڕەی سەرەکی -->
+    <div class="container" id="dashboardPage" style="display: none;">
+        <header>
+            <div class="logo-container">
+                <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png?v=2" 
+                     alt="پەیمانگەی کۆمپیوتەری سلێمانی" 
+                     class="institute-logo"
+                     onerror="this.style.display='none';">
+                <div class="logo-text">تۆماری کەل و پەلی پەیمانگە</div>
+                <div class="subtitle">پەیمانگەی کۆمپیوتەری سلێمانی</div>
+            </div>
+            <div class="user-info">
+                <span>بەخێربێیت، <strong id="displayUsername">Admin</strong></span>
+                <button class="logout-btn" id="logoutBtn">دەرچوون</button>
+            </div>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="addAsset">زیادکردنی کەل و پەل</button>
+            <button class="tab" data-tab="viewAssets">بینینی کەل و پەلەکان</button>
+        </div>
+        
+        <!-- پەڕەی زیادکردنی کەل و پەل -->
+        <div class="tab-content active" id="addAsset">
+            <div class="main-card">
+                <h2 class="card-title">زیادکردنی کەل و پەل</h2>
+                
+                <div class="success-message" id="successMessage">
+                    کەل و پەلەکە بە سەرکەوتوویی تۆمارکرا!
+                </div>
+
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 10px; font-size: 14px; color: #666;">چاوەڕێ بکە...</p>
+                </div>
+
+                <form id="assetForm">
+                    <!-- ١. هەڵبژاردنی شوێن -->
+                    <div class="form-group">
+                        <label for="locationName">١. ناوی شوێن</label>
+                        <select class="form-control" id="locationName" required>
+                            <option value="">هەڵبژێرە</option>
+                            <!-- پۆلەکان -->
+                            <optgroup label="پۆلەکان">
+                                <option value="پۆلی ١">پۆلی ١</option>
+                                <option value="پۆلی ٢">پۆلی ٢</option>
+                                <option value="پۆلی ٣">پۆلی ٣</option>
+                                <option value="پۆلی ٤">پۆلی ٤</option>
+                                <option value="پۆلی ٥">پۆلی ٥</option>
+                                <option value="پۆلی ٦">پۆلی ٦</option>
+                                <option value="پۆلی ٧">پۆلی ٧</option>
+                                <option value="پۆلی ٨">پۆلی ٨</option>
+                                <option value="پۆلی ٩">پۆلی ٩</option>
+                                <option value="پۆلی ١٠">پۆلی ١٠</option>
+                                <option value="پۆلی ١١">پۆلی ١١</option>
+                                <option value="پۆلی ١٢">پۆلی ١٢</option>
+                                <option value="پۆلی ١٣">پۆلی ١٣</option>
+                                <option value="پۆلی ١٤">پۆلی ١٤</option>
+                                <option value="پۆلی ١٥">پۆلی ١٥</option>
+                                <option value="پۆلی ١٦">پۆلی ١٦</option>
+                                <option value="پۆلی ١٧">پۆلی ١٧</option>
+                                <option value="پۆلی ١٨">پۆلی ١٨</option>
+                                <option value="پۆلی ١٩">پۆلی ١٩</option>
+                                <option value="پۆلی ٢٠">پۆلی ٢٠</option>
+                                <option value="پۆلی ٢١">پۆلی ٢١</option>
+                                <option value="پۆلی ٢٢">پۆلی ٢٢</option>
+                                <option value="پۆلی ٢٣">پۆلی ٢٣</option>
+                                <option value="پۆلی ٢٤">پۆلی ٢٤</option>
+                                <option value="پۆلی ٢٥">پۆلی ٢٥</option>
+                            </optgroup>
+                            <!-- هۆڵەکان -->
+                            <optgroup label="هۆڵەکان">
+                                <option value="هۆڵی A">هۆڵی A</option>
+                                <option value="هۆڵی B">هۆڵی B</option>
+                                <option value="هۆڵی C">هۆڵی C</option>
+                                <option value="هۆڵی D">هۆڵی D</option>
+                                <option value="هۆڵی کۆبونەوە">هۆڵی کۆبونەوە</option>
+                                <option value="هۆڵی بۆنە">هۆڵی بۆنە</option>
+                                <option value="هۆڵ نوێ">هۆڵ نوێ</option>
+                            </optgroup>
+                            <!-- شوێنەکانی تر -->
+                            <optgroup label="شوێنەکانی تر">
+                                <option value="کتێبخانەی سەرەکی">کتێبخانەی سەرەکی</option>
+                                <option value="کۆگای A">کۆگای A</option>
+                                <option value="کۆگای B">کۆگای B</option>
+                                <option value="مامۆستایان">مامۆستایان</option>
+                                <option value="بەڕێوەبەر">بەڕێوەبەر</option>
+                                <option value="یاریدەر-کارگێری">یاریدەر-کارگێری</option>
+                                <option value="یاریدەر-تاقیردنەوەکان">یاریدەر-تاقیکردنەوەکان</option>
+                                <option value="یاریدەر-خویندکاران">یاریدەر-خویندکاران</option>
+                                <option value="پاسەوان">پاسەوان</option>
+                                <option value="کارگوزار">کارگوزار</option>
+                                <option value="پرسگە">پرسگە</option>
+                                <option value="نوسراوەکان">نوسراوەکان</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    
+                    <!-- ٢. جۆری کەل و پەل -->
+                    <div class="form-group">
+                        <label for="assetType">٢. جۆری کەل و پەل</label>
+                        <input type="text" class="form-control" id="assetType" placeholder="کۆمپیوتەر، مێز، کورسی، پڕۆجێکتەر..." required>
+                    </div>
+                    
+                    <!-- ٣. ژمارەی کەل و پەل -->
+                    <div class="form-group">
+                        <label for="assetQuantity">٣. ژمارەی کەل و پەل</label>
+                        <input type="number" class="form-control" id="assetQuantity" placeholder="ژمارەی کەل و پەلەکان" min="1" required>
+                    </div>
+                    
+                    <!-- ٤. بەرواری وەرگرتن -->
+                    <div class="form-group">
+                        <label for="acquisitionDate">٤. بەرواری وەرگرتن</label>
+                        <input type="date" class="form-control" id="acquisitionDate" required>
+                    </div>
+                    
+                    <!-- ٥. بەسەرچوون -->
+                    <div class="form-group">
+                        <label for="status">٥. بەسەرچوون</label>
+                        <select class="form-control" id="status" required>
+                            <option value="بەردەستە">بەردەستە</option>
+                            <option value="بەکارهێنراوە">بەکارهێنراوە</option>
+                            <option value="چاککردن">چاککردن</option>
+                            <option value="لەناوچوو">لەناوچوو</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success btn-full" id="submitBtn">زیادکردنی کەل و پەل</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- پەڕەی بینینی کەل و پەلەکان -->
+        <div class="tab-content" id="viewAssets">
+            <div class="main-card">
+                <h2 class="card-title">بینینی کەل و پەلەکان</h2>
+                
+                <div class="filter-section">
+                    <input type="text" class="form-control" id="searchInput" placeholder="گەڕان بە ناو، جۆر، یان شوێن...">
+                    <select class="form-control" id="locationFilter">
+                        <option value="">هەموو شوێنەکان</option>
+                        <optgroup label="پۆلەکان">
+                            <option value="پۆلی ١">پۆلی ١</option>
+                            <option value="پۆلی ٢">پۆلی ٢</option>
+                            <option value="پۆلی ٣">پۆلی ٣</option>
+                            <option value="پۆلی ٤">پۆلی ٤</option>
+                            <option value="پۆلی ٥">پۆلی ٥</option>
+                            <option value="پۆلی ٦">پۆلی ٦</option>
+                            <option value="پۆلی ٧">پۆلی ٧</option>
+                            <option value="پۆلی ٨">پۆلی ٨</option>
+                            <option value="پۆلی ٩">پۆلی ٩</option>
+                            <option value="پۆلی ١٠">پۆلی ١٠</option>
+                            <option value="پۆلی ١١">پۆلی ١١</option>
+                            <option value="پۆلی ١٢">پۆلی ١٢</option>
+                            <option value="پۆلی ١٣">پۆلی ١٣</option>
+                            <option value="پۆلی ١٤">پۆلی ١٤</option>
+                            <option value="پۆلی ١٥">پۆلی ١٥</option>
+                            <option value="پۆلی ١٦">پۆلی ١٦</option>
+                            <option value="پۆلی ١٧">پۆلی ١٧</option>
+                            <option value="پۆلی ١٨">پۆلی ١٨</option>
+                            <option value="پۆلی ١٩">پۆلی ١٩</option>
+                            <option value="پۆلی ٢٠">پۆلی ٢٠</option>
+                            <option value="پۆلی ٢١">پۆلی ٢١</option>
+                            <option value="پۆلی ٢٢">پۆلی ٢٢</option>
+                            <option value="پۆلی ٢٣">پۆلی ٢٣</option>
+                            <option value="پۆلی ٢٤">پۆلی ٢٤</option>
+                            <option value="پۆلی ٢٥">پۆلی ٢٥</option>
+                        </optgroup>
+                        <optgroup label="هۆڵەکان">
+                            <option value="هۆڵی A">هۆڵی A</option>
+                            <option value="هۆڵی B">هۆڵی B</option>
+                            <option value="هۆڵی C">هۆڵی C</option>
+                            <option value="هۆڵی D">هۆڵی D</option>
+                            <option value="هۆڵی کۆبونەوە">هۆڵی کۆبونەوە</option>
+                            <option value="هۆڵی بۆنە">هۆڵی بۆنە</option>
+                            <option value="هۆڵ نوێ">هۆڵ نوێ</option>
+                        </optgroup>
+                        <optgroup label="شوێنەکانی تر">
+                            <option value="کتێبخانەی سەرەکی">کتێبخانەی سەرەکی</option>
+                            <option value="کۆگای A">کۆگای A</option>
+                            <option value="کۆگای B">کۆگای B</option>
+                            <option value="مامۆستایان">مامۆستایان</option>
+                            <option value="بەڕێوەبەر">بەڕێوەبەر</option>
+                            <option value="یاریدەر-کارگێری">یاریدەر-کارگێری</option>
+                            <option value="یاریدەر-تاقیردنەوەکان">یاریدەر-تاقیکردنەوەکان</option>
+                            <option value="یاریدەر-خویندکاران">یاریدەر-خویندکاران</option>
+                            <option value="پاسەوان">پاسەوان</option>
+                            <option value="کارگوزار">کارگوزار</option>
+                            <option value="پرسگە">پرسگە</option>
+                            <option value="نوسراوەکان">نوسراوەکان</option>
+                        </optgroup>
+                    </select>
+                    <select class="form-control" id="statusFilter">
+                        <option value="">هەموو بەسەرچوونەکان</option>
+                        <option value="بەردەستە">بەردەستە</option>
+                        <option value="بەکارهێنراوە">بەکارهێنراوە</option>
+                        <option value="چاککردن">چاککردن</option>
+                        <option value="لەناوچوو">لەناوچوو</option>
+                    </select>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-info" id="printBtn">چاپی کەل و پەلەکان</button>
+                    <button class="btn btn-success" id="exportExcelBtn">دانەی Excel</button>
+                </div>
+                
+                <div class="table-container">
+                    <table class="assets-table" id="assetsTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>ناوی شوێن</th>
+                                <th>جۆری کەل و پەل</th>
+                                <th>ژمارە</th>
+                                <th>بەرواری وەرگرتن</th>
+                                <th>بەسەرچوون</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assetsTableBody">
+                            <!-- داتاکان لێرە زیاد دەکرێن -->
+                        </tbody>
+                    </table>
+                    <div class="no-data" id="noDataMessage" style="display: none;">
+                        هیچ کەل و پەلێک نەدۆزرایەوە!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>ئەم ئەپە لەلایەم ماجد انور دروست کراوە/٠٧٧٠١٤٥٨٤٧٤</p>
+            <p>پەیمانگەی کۆمپیوتەری سلێمانی &copy; ٢٠٢٥</p>
+        </footer>
+    </div>
+
+    <script>
+        // ڕێکخستنی فایەربەیسی ڕیڵتایم داتابەیس
+        const firebaseConfig = {
+            databaseURL: "https://cis-luggage-default-rtdb.firebaseio.com/"
+        };
+        
+        // دەستپێکردنی فایەربەیس
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // زانیاریەکانی چوونەژوورەوە
+        const CREDENTIALS = {
+            username: 'admin',
+            password: 'admin123'
+        };
+
+        // گەڕاوەکان
+        const loginPage = document.getElementById('loginPage');
+        const dashboardPage = document.getElementById('dashboardPage');
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const loginSpinner = document.getElementById('loginSpinner');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const displayUsername = document.getElementById('displayUsername');
+        
+        const assetForm = document.getElementById('assetForm');
+        const successMessage = document.getElementById('successMessage');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // گەڕاوەکانی پەڕەی بینینی کەل و پەلەکان
+        const searchInput = document.getElementById('searchInput');
+        const locationFilter = document.getElementById('locationFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const assetsTableBody = document.getElementById('assetsTableBody');
+        const noDataMessage = document.getElementById('noDataMessage');
+        const printBtn = document.getElementById('printBtn');
+        const exportExcelBtn = document.getElementById('exportExcelBtn');
+        
+        // گۆڕینی پەڕەکان
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // زانیاریەکانی کەل و پەلەکان
+        let allAssets = [];
+        let filteredAssets = [];
+
+        // پشکنینی چوونەژوورەوە کاتێک پەڕە بار دەکرێت
+        window.addEventListener('DOMContentLoaded', () => {
+            // پاککردنەوەی هەموو زانیاریەکانی پێشووی چوونەژوورەوە
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            
+            // هەمیشە پەڕەی چوونەژوورەوە پیشان بدە
+            showLogin();
+        });
+
+        // فەرمی چوونەژوورەوە
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            // شاردنەوەی پەیامەکان
+            errorMessage.style.display = 'none';
+            
+            // ناچالاککردنی دوگمە و پیشاندانی لۆدینگ
+            loginBtn.disabled = true;
+            loginSpinner.style.display = 'block';
+            
+            // پشکنینی زانیاریەکان
+            setTimeout(() => {
+                if (username === CREDENTIALS.username && password === CREDENTIALS.password) {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('username', username);
+                    showDashboard();
+                } else {
+                    errorMessage.style.display = 'block';
+                    loginBtn.disabled = false;
+                    loginSpinner.style.display = 'none';
+                }
+            }, 500);
+        });
+
+        // دەرچوون
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            showLogin();
+        });
+
+        // نیشاندانی داشبۆرد
+        function showDashboard() {
+            loginPage.style.display = 'none';
+            dashboardPage.style.display = 'block';
+            const username = localStorage.getItem('username') || 'Admin';
+            displayUsername.textContent = username;
+            
+            // دانانی بەرواری ئەمڕۆ وەک بەرواری پێشگریمان
+            document.getElementById('acquisitionDate').valueAsDate = new Date();
+            
+            // چالاککردنەوەی دوگمەی چوونەژوورەوە
+            loginBtn.disabled = false;
+            loginSpinner.style.display = 'none';
+            
+            // بارکردنی کەل و پەلەکان
+            loadAssets();
+        }
+
+        // نیشاندانی پەڕەی چوونەژوورەوە
+        function showLogin() {
+            loginPage.style.display = 'flex';
+            dashboardPage.style.display = 'none';
+            loginForm.reset();
+            errorMessage.style.display = 'none';
+            loginSpinner.style.display = 'none';
+            loginBtn.disabled = false;
+        }
+
+        // فەرمی کەل و پەل
+        assetForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const locationName = document.getElementById('locationName').value;
+            const assetType = document.getElementById('assetType').value;
+            const assetQuantity = document.getElementById('assetQuantity').value;
+            const acquisitionDate = document.getElementById('acquisitionDate').value;
+            const status = document.getElementById('status').value;
+            
+            // پشکنینی زانیاریەکان
+            if (!locationName || !assetType || !assetQuantity || !acquisitionDate || !status) {
+                alert('تکایە هەموو خانەکان پڕ بکەرەوە!');
+                return;
+            }
+            
+            // پشکنینی ژمارە
+            if (assetQuantity <= 0) {
+                alert('ژمارەی کەل و پەل پێویستە زیاتر لە سفەر بێت!');
+                return;
+            }
+            
+            // ناچالاککردنی دوگمە و پیشاندانی لۆدینگ
+            submitBtn.disabled = true;
+            loadingSpinner.style.display = 'block';
+            successMessage.style.display = 'none';
+            
+            const assetData = {
+                locationName: locationName,
+                assetType: assetType,
+                assetQuantity: parseInt(assetQuantity),
+                acquisitionDate: acquisitionDate,
+                status: status,
+                timestamp: new Date().toISOString()
+            };
+            
+            // زیادکردنی کەل و پەل بۆ فایەربەیسی ڕیڵتایم داتابەیس
+            const newAssetRef = database.ref('assets').push();
+            newAssetRef.set(assetData)
+                .then(() => {
+                    console.log('کەل و پەل زیادکرا');
+                    
+                    // پێشاندانی پەیامی سەرکەوتوویی
+                    loadingSpinner.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                    // پاککردنەوەی فۆڕم
+                    assetForm.reset();
+                    
+                    // دانانی بەرواری ئەمڕۆ وەک بەرواری پێشگریمان
+                    document.getElementById('acquisitionDate').valueAsDate = new Date();
+                    
+                    // چالاککردنەوەی دوگمە دوای چەند چرکەیەک
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                    }, 2000);
+                    
+                    // شاردنەوەی پەیامی سەرکەوتوویی دوای 5 چرکە
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 5000);
+                    
+                    // نوێکردنەوەی لیستی کەل و پەلەکان
+                    loadAssets();
+                })
+                .catch(error => {
+                    console.error('هەڵە لە زیادکردنی کەل و پەل: ', error);
+                    alert('هەڵە لە زیادکردنی کەل و پەل!');
+                    loadingSpinner.style.display = 'none';
+                    submitBtn.disabled = false;
+                });
+        });
+
+        // بارکردنی کەل و پەلەکان لە فایەربەیس
+        function loadAssets() {
+            database.ref('assets').on('value', (snapshot) => {
+                allAssets = [];
+                snapshot.forEach((childSnapshot) => {
+                    const asset = childSnapshot.val();
+                    asset.id = childSnapshot.key;
+                    allAssets.push(asset);
+                });
+                
+                // ڕیزکردنی کەل و پەلەکان بەپێی کاتی زیادکردن
+                allAssets.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                // نیشاندانی کەل و پەلەکان
+                filterAssets();
+            });
+        }
+
+        // فلتەرکردنی کەل و پەلەکان
+        function filterAssets() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedLocation = locationFilter.value;
+            const selectedStatus = statusFilter.value;
+            
+            filteredAssets = allAssets.filter(asset => {
+                const matchesSearch = !searchTerm || 
+                    asset.locationName.toLowerCase().includes(searchTerm) ||
+                    asset.assetType.toLowerCase().includes(searchTerm);
+                
+                const matchesLocation = !selectedLocation || asset.locationName === selectedLocation;
+                const matchesStatus = !selectedStatus || asset.status === selectedStatus;
+                
+                return matchesSearch && matchesLocation && matchesStatus;
+            });
+            
+            displayAssets();
+        }
+
+        // نیشاندانی کەل و پەلەکان لە خشتەدا
+        function displayAssets() {
+            assetsTableBody.innerHTML = '';
+            
+            if (filteredAssets.length === 0) {
+                noDataMessage.style.display = 'block';
+                return;
+            }
+            
+            noDataMessage.style.display = 'none';
+            
+            filteredAssets.forEach((asset, index) => {
+                const row = document.createElement('tr');
+                
+                // دروستکردنی کلاسی بەسەرچوون
+                let statusClass = '';
+                switch(asset.status) {
+                    case 'بەردەستە':
+                        statusClass = 'status-available';
+                        break;
+                    case 'بەکارهێنراوە':
+                        statusClass = 'status-used';
+                        break;
+                    case 'چاککردن':
+                        statusClass = 'status-repair';
+                        break;
+                    case 'لەناوچوو':
+                        statusClass = 'status-lost';
+                        break;
+                }
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${asset.locationName}</td>
+                    <td>${asset.assetType}</td>
+                    <td>${asset.assetQuantity}</td>
+                    <td>${formatDate(asset.acquisitionDate)}</td>
+                    <td class="${statusClass}">${asset.status}</td>
+                `;
+                
+                assetsTableBody.appendChild(row);
+            });
+        }
+
+        // ڕێکخستنی بەروار
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ku-Arab');
+        }
+
+        // چاپکردنی کەل و پەلەکان
+        printBtn.addEventListener('click', () => {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html dir="rtl">
+                <head>
+                    <title>چاپی کەل و پەلەکان - پەیمانگەی کۆمپیوتەری سلێمانی</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { text-align: center; color: #1565c0; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th, td { padding: 10px; border: 1px solid #ddd; text-align: right; }
+                        th { background-color: #1565c0; color: white; }
+                        tr:nth-child(even) { background-color: #f2f2f2; }
+                        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
+                    </style>
+                </head>
+                <body>
+                    <h1>کەل و پەلەکانی پەیمانگەی کۆمپیوتەری سلێمانی</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>ناوی شوێن</th>
+                                <th>جۆری کەل و پەل</th>
+                                <th>ژمارە</th>
+                                <th>بەرواری وەرگرتن</th>
+                                <th>بەسەرچوون</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filteredAssets.map((asset, index) => `
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${asset.locationName}</td>
+                                    <td>${asset.assetType}</td>
+                                    <td>${asset.assetQuantity}</td>
+                                    <td>${formatDate(asset.acquisitionDate)}</td>
+                                    <td>${asset.status}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <div class="footer">
+                        <p>پەیمانگەی کۆمپیوتەری سلێمانی</p>
+                        <p>بەرواری چاپ: ${new Date().toLocaleDateString('ku-Arab')}</p>
+                    </div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        });
+
+        // دانانی Excel
+        exportExcelBtn.addEventListener('click', () => {
+            // دروستکردنی داتا بۆ Excel
+            const excelData = filteredAssets.map((asset, index) => ({
+                'ژمارە': index + 1,
+                'ناوی شوێن': asset.locationName,
+                'جۆری کەل و پەل': asset.assetType,
+                'ژمارە': asset.assetQuantity,
+                'بەرواری وەرگرتن': formatDate(asset.acquisitionDate),
+                'بەسەرچوون': asset.status
+            }));
+            
+            // دروستکردنی وەرکێک
+            const worksheet = XLSX.utils.json_to_sheet(excelData);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'کەل و پەلەکان');
+            
+            // دانانی فایلی Excel
+            XLSX.writeFile(workbook, `کەل_و_پەلەکانی_پەیمانگە_${new Date().toISOString().split('T')[0]}.xlsx`);
+        });
+
+        // گۆڕینی پەڕەکان
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // لابردنی چالاکی لە هەموو پەڕە و تابەکان
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => tc.classList.remove('active'));
+                
+                // زیادکردنی چالاکی بۆ تاب و پەڕەی هەڵبژێردراو
+                tab.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+                
+                // ئەگەر پەڕەی بینینی کەل و پەلەکان هەڵبژێردراوە، نوێی بکەرەوە
+                if (tabId === 'viewAssets') {
+                    filterAssets();
+                }
+            });
+        });
+
+        // فلتەرکردنی کەل و پەلەکان کاتێک گۆڕانکاری ڕوودەدات
+        searchInput.addEventListener('input', filterAssets);
+        locationFilter.addEventListener('change', filterAssets);
+        statusFilter.addEventListener('change', filterAssets);
+    </script>
+</body>
+</html>
