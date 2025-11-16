@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
     <style>
+        /* هەمان ستایلەکان وەک پێشتر */
         * {
             margin: 0;
             padding: 0;
@@ -951,6 +952,40 @@
             border-left: 4px solid var(--danger);
         }
 
+        /* نوی: ستایل بۆ بەشی بینینی غیابات */
+        .absence-card {
+            background: var(--white);
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border-right: 5px solid var(--danger);
+        }
+        
+        .absence-card:hover {
+            border-color: var(--danger);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.1);
+        }
+        
+        .student-info-absence {
+            flex: 1;
+        }
+        
+        .absence-details {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .absence-date {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -991,6 +1026,12 @@
             
             .notification-panel {
                 width: 300px;
+            }
+            
+            .absence-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
             }
         }
     </style>
@@ -1112,6 +1153,9 @@
             </button>
             <button class="action-btn" onclick="switchTeacherSection('attendance')" style="background: var(--success);">
                 <i class="fas fa-clipboard-check"></i> غیابات
+            </button>
+            <button class="action-btn" onclick="switchTeacherSection('viewAbsences')" style="background: var(--danger);">
+                <i class="fas fa-user-times"></i> بینینی غیابات
             </button>
             <button class="action-btn" onclick="switchTeacherSection('grades')" style="background: var(--warning); color: var(--dark);">
                 <i class="fas fa-star"></i> نمرەکان
@@ -1251,6 +1295,53 @@
                 <button class="submit-btn" onclick="saveAllAttendance()" style="margin-top: 10px;">
                     <i class="fas fa-save"></i> پاشەکەوتکردنی هەموو ئامادەبوونەکان
                 </button>
+            </div>
+        </div>
+        
+        <!-- Teacher View Absences Section -->
+        <div class="action-section" id="teacherViewAbsencesSection" style="display: none;">
+            <h3>
+                <i class="fas fa-user-times"></i> بینینی غیابات
+                <div class="print-actions">
+                    <button class="print-btn" onclick="printAbsences()">
+                        <i class="fas fa-print"></i> چاپ
+                    </button>
+                    <button class="excel-btn" onclick="exportAbsencesToExcel()">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                </div>
+            </h3>
+            
+            <div class="filter-container">
+                <input type="date" id="absencesDate" onchange="loadAbsenceStudents()" class="filter-select">
+            </div>
+            
+            <div id="absenceStudentsList">
+                <p style="text-align: center; color: var(--gray); padding: 40px;">تکایە بەروارێک هەڵبژێرە بۆ بینینی غیابات</p>
+            </div>
+            
+            <!-- Hidden printable absences table -->
+            <div id="printAbsencesTable" style="display: none;">
+                <div class="print-header">
+                    <h2>پەیمانگەی کۆمپیتەری سلێمانی</h2>
+                    <p>ڕاپۆرتی غیابات</p>
+                    <p id="absencesPrintDate"></p>
+                </div>
+                <table class="print-table" id="absencesTable">
+                    <thead>
+                        <tr>
+                            <th>ژمارە</th>
+                            <th>کۆدی خوێندکار</th>
+                            <th>ناوی خوێندکار</th>
+                            <th>ئاست</th>
+                            <th>گرووپ</th>
+                            <th>وانە</th>
+                            <th>کات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="absencesTableBody">
+                    </tbody>
+                </table>
             </div>
         </div>
         
@@ -1625,6 +1716,7 @@
             
             document.getElementById('teacherScheduleSection').style.display = 'none';
             document.getElementById('teacherAttendanceSection').style.display = 'none';
+            document.getElementById('teacherViewAbsencesSection').style.display = 'none';
             document.getElementById('teacherGradesSection').style.display = 'none';
             document.getElementById('teacherNotificationsSection').style.display = 'none';
             
@@ -1635,6 +1727,11 @@
                 document.getElementById('teacherAttendanceSection').style.display = 'block';
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('attendanceDate').value = today;
+            } else if (section === 'viewAbsences') {
+                document.getElementById('teacherViewAbsencesSection').style.display = 'block';
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('absencesDate').value = today;
+                loadAbsenceStudents();
             } else if (section === 'grades') {
                 document.getElementById('teacherGradesSection').style.display = 'block';
                 loadTeacherCourses();
@@ -1870,6 +1967,192 @@
                 .catch((error) => {
                     alert('هەڵە لە پاشەکەوتکردن: ' + error.message);
                 });
+        }
+
+        // Load Absence Students
+        function loadAbsenceStudents() {
+            const date = document.getElementById('absencesDate').value;
+            
+            if (!date) {
+                document.getElementById('absenceStudentsList').innerHTML = 
+                    '<p style="text-align: center; color: var(--gray); padding: 40px;">تکایە بەروارێک هەڵبژێرە</p>';
+                return;
+            }
+            
+            const container = document.getElementById('absenceStudentsList');
+            container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">کەمێك چاوەڕێ بکە...</p>';
+            
+            // Get all attendance records for the selected date
+            database.ref('attendance/' + date).once('value', (snapshot) => {
+                const dateData = snapshot.val();
+                container.innerHTML = '';
+                
+                if (!dateData) {
+                    container.innerHTML = '<p class="no-results">هیچ تۆمارێکی غیابات نییە بۆ ئەم بەروارە</p>';
+                    updateAbsencesPrintTable([], date);
+                    return;
+                }
+                
+                const absences = [];
+                
+                // Iterate through all level groups, courses, times, and teachers
+                Object.keys(dateData).forEach(levelGroup => {
+                    const levelGroupData = dateData[levelGroup];
+                    Object.keys(levelGroupData).forEach(course => {
+                        const courseData = levelGroupData[course];
+                        Object.keys(courseData).forEach(time => {
+                            const timeData = courseData[time];
+                            Object.keys(timeData).forEach(teacherName => {
+                                // Check if this is the current teacher's record
+                                if (teacherName === currentUser.name) {
+                                    const attendanceData = timeData[teacherName];
+                                    // Find absent students
+                                    Object.keys(attendanceData).forEach(studentId => {
+                                        if (attendanceData[studentId] === 'absent') {
+                                            const student = allStudents.find(s => s.id === studentId);
+                                            if (student) {
+                                                absences.push({
+                                                    studentName: student.name,
+                                                    studentCode: student.code,
+                                                    level: student.level,
+                                                    group: student.group,
+                                                    course: course,
+                                                    time: time
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    });
+                });
+                
+                if (absences.length === 0) {
+                    container.innerHTML = '<p class="no-results">هیچ تۆمارێکی غیابات نییە بۆ ئەم بەروارە</p>';
+                } else {
+                    absences.forEach((absence, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'absence-card';
+                        card.innerHTML = `
+                            <div class="student-info-absence">
+                                <span class="student-name-large">${absence.studentName}</span>
+                                <div class="absence-details">
+                                    <span>کۆد: ${absence.studentCode} | ئاست: ${absence.level} | گرووپ: ${absence.group}</span>
+                                    <br>
+                                    <span>وانە: ${absence.course} | کات: ${absence.time}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="absence-date">${date}</span>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                }
+                
+                updateAbsencesPrintTable(absences, date);
+            });
+        }
+
+        // Update printable absences table
+        function updateAbsencesPrintTable(absences, date) {
+            const tableBody = document.getElementById('absencesTableBody');
+            tableBody.innerHTML = '';
+            
+            absences.forEach((absence, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${absence.studentCode}</td>
+                    <td>${absence.studentName}</td>
+                    <td>${absence.level}</td>
+                    <td>${absence.group}</td>
+                    <td>${absence.course}</td>
+                    <td>${absence.time}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            document.getElementById('absencesPrintDate').textContent = `بەروار: ${date} | مامۆستا: ${currentUser.name}`;
+        }
+
+        // Print Absences
+        function printAbsences() {
+            const printContent = document.getElementById('printAbsencesTable');
+            const printWindow = window.open('', '_blank');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>چاپی غیابات</title>
+                    <style>
+                        body { 
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                            margin: 20px; 
+                            direction: rtl; 
+                            background: white;
+                        }
+                        .print-header { 
+                            text-align: center; 
+                            margin-bottom: 30px; 
+                            padding-bottom: 15px; 
+                            border-bottom: 3px solid #dc3545; 
+                        }
+                        .print-header h2 { 
+                            color: #dc3545; 
+                            margin-bottom: 10px; 
+                            font-size: 24px;
+                        }
+                        .print-table { 
+                            width: 100%; 
+                            border-collapse: collapse; 
+                            margin: 20px 0; 
+                            font-size: 14px; 
+                            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                        }
+                        .print-table th { 
+                            background: #dc3545; 
+                            color: white; 
+                            padding: 12px 15px; 
+                            text-align: center; 
+                            font-weight: 600; 
+                            border: 1px solid #c82333;
+                        }
+                        .print-table td { 
+                            padding: 10px 15px; 
+                            border-bottom: 1px solid #e0e0e0; 
+                            text-align: center;
+                            border: 1px solid #e0e0e0;
+                        }
+                        .print-table tr:nth-child(even) { 
+                            background: #f8f9fa; 
+                        }
+                        @media print {
+                            body { margin: 0; }
+                            .print-table { box-shadow: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${printContent.innerHTML}
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Export Absences to Excel
+        function exportAbsencesToExcel() {
+            const table = document.getElementById('absencesTable');
+            const ws = XLSX.utils.table_to_sheet(table);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "غیابات");
+            XLSX.writeFile(wb, "غیابات.xlsx");
         }
 
         // Teacher Success Message
