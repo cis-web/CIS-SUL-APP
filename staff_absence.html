@@ -333,6 +333,79 @@
             color: var(--dark);
         }
 
+        /* ستایلی نوێ بۆ مۆدالی کۆی غیابات */
+        .student-absence-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--danger);
+            transition: var(--transition);
+        }
+        
+        .student-absence-card:hover {
+            background: #e9ecef;
+            transform: translateX(-5px);
+        }
+        
+        .student-absence-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .student-absence-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .student-absence-count {
+            background: var(--danger);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .student-absence-details {
+            color: var(--gray);
+            font-size: 14px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .absence-period {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .period-title {
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+        
+        .period-absences {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+        }
+        
+        .absence-date {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+
         @media print {
             body * { visibility: hidden; }
             .modal-content, .modal-content * { visibility: visible; }
@@ -357,6 +430,9 @@
                 font-size: 20px;
             }
             .search-filters {
+                grid-template-columns: 1fr;
+            }
+            .student-absence-details {
                 grid-template-columns: 1fr;
             }
         }
@@ -392,6 +468,11 @@
             .search-filters {
                 grid-template-columns: 1fr;
             }
+            .student-absence-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -414,6 +495,9 @@
             }
             .student-actions {
                 flex-direction: column;
+            }
+            .period-absences {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             }
         }
     </style>
@@ -485,14 +569,13 @@
         <div class="action-section">
             <h3>کردارەکان</h3>
             
-            <!-- ڕیزکردنی دوگمەکان بە شێوازێکی ڕێکوپێک -->
+            <!-- زیادکردنی دوگمەی نوێ بۆ کۆی غیاباتی خوێندکار -->
             <div class="buttons-row">
                 <button class="action-btn" onclick="viewTodayAttendance()">📅 غیاباتی ئەمڕۆ</button>
                 <button class="action-btn" onclick="viewTeachersAttendance()" style="background: var(--info);">👨‍🏫 مامۆستایانی ئەمڕۆ</button>
                 <button class="action-btn" onclick="viewTimeAnalysis()" style="background: var(--warning); color: var(--dark);">⏰ شیکاری کاتی غیابات</button>
             </div>
             
-            <!-- جیاکردنەوەی دوگمەی مۆڵەت و ئێستا -->
             <div class="buttons-row">
                 <button class="action-btn" onclick="openLeaveModal()" style="background: var(--success);">🏖️ زیادکردنی مۆڵەت</button>
                 <button class="action-btn" onclick="openNowAttendanceModal()" style="background: #e44d26;">⏱️ تۆماری ئێستا</button>
@@ -501,6 +584,7 @@
             <div class="buttons-row">
                 <button class="action-btn" onclick="viewLeaveRecords()" style="background: var(--secondary);">📋 بینینی مۆڵەتەکان</button>
                 <button class="action-btn" onclick="openStudentSearch()" style="background: #6f42c1;">🔍 گەڕانی خوێندکار</button>
+                <button class="action-btn" onclick="openStudentAbsenceModal()" style="background: #dc3545;">📊 کۆی غیاباتی خوێندکار</button>
             </div>
             
             <div class="buttons-row">
@@ -926,6 +1010,64 @@
         </div>
     </div>
 
+    <!-- مۆدالی نوێ بۆ کۆی غیاباتی خوێندکار -->
+    <div id="studentAbsenceModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeStudentAbsenceModal()">&times;</button>
+            <h2 style="clear: both; margin-bottom: 20px;">📊 کۆی غیاباتی خوێندکار</h2>
+            
+            <div class="search-container">
+                <div class="search-title">
+                    <i class="fas fa-user-graduate"></i>
+                    گەڕان بۆ بینینی کۆی غیاباتەکانی خوێندکار
+                </div>
+                
+                <div class="search-filters">
+                    <input type="text" id="studentAbsenceName" placeholder="ناوی خوێندکار..." class="filter-select">
+                    <select id="studentAbsenceLevel" class="filter-select">
+                        <option value="">هەموو ئاستەکان</option>
+                        <option value="1">ئاستی 1</option>
+                        <option value="2">ئاستی 2</option>
+                        <option value="3">ئاستی 3</option>
+                        <option value="4">ئاستی 4</option>
+                        <option value="5">ئاستی 5</option>
+                    </select>
+                    <select id="studentAbsenceGroup" class="filter-select">
+                        <option value="">هەموو گرووپەکان</option>
+                        <option value="A">گرووپی A</option>
+                        <option value="B">گرووپی B</option>
+                        <option value="C">گرووپی C</option>
+                        <option value="D">گرووپی D</option>
+                        <option value="E">گرووپی E</option>
+                        <option value="WEB">گرووپی WEB</option>
+                        <option value="NET">گرووپی NET</option>
+                        <option value="PRO">گرووپی PRO</option>
+                    </select>
+                    <button class="action-btn" onclick="searchStudentAbsence()" style="padding: 10px 20px; background: var(--danger);">گەڕان</button>
+                </div>
+                
+                <div class="filter-container" style="margin-top: 15px;">
+                    <input type="date" id="studentAbsenceStartDate" class="filter-select" placeholder="بەرواری دەستپێک">
+                    <input type="date" id="studentAbsenceEndDate" class="filter-select" placeholder="بەرواری کۆتایی">
+                    <button class="export-btn" onclick="exportStudentAbsence()">📥 هەناردە</button>
+                    <button class="print-btn" onclick="printStudentAbsence()">🖨️ چاپ</button>
+                </div>
+                
+                <div class="attendance-details-stats" id="studentAbsenceStats" style="display: none;">
+                    <div class="detail-stat-card detail-stat-total"><div class="detail-stat-number" id="totalStudentsFound">0</div><div>کۆی خوێندکارەکان</div></div>
+                    <div class="detail-stat-card detail-stat-absent"><div class="detail-stat-number" id="totalAbsencesFound">0</div><div>کۆی غیابات</div></div>
+                    <div class="detail-stat-card detail-stat-present"><div class="detail-stat-number" id="averageAbsences">0</div><div>تێکڕای غیابات</div></div>
+                </div>
+                
+                <div class="search-results" id="studentAbsenceResults">
+                    <p style="text-align: center; padding: 40px; color: var(--gray);">
+                        🔍 گەڕانەکەت دەستپێبکە بۆ بینینی کۆی غیاباتەکانی خوێندکار
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDummy-Key",
@@ -942,8 +1084,413 @@
         let currentUser = null;
         let allStudents = [];
         let allLeaves = [];
+        let studentAbsenceData = [];
 
-        // فەنکشنی نوێ بۆ فلتەرکردنی خوێندکارەکان بەپێی ئاست و گروپ
+        // فەنکشنی نوێ بۆ کردنەوەی مۆدالی کۆی غیاباتی خوێندکار
+        function openStudentAbsenceModal() {
+            document.getElementById('studentAbsenceModal').style.display = 'flex';
+            
+            // دانانی بەرواری ئەمڕۆ و سەرەتای مانگ
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            document.getElementById('studentAbsenceStartDate').value = firstDay.toISOString().split('T')[0];
+            document.getElementById('studentAbsenceEndDate').value = today.toISOString().split('T')[0];
+            
+            // پاککردنەوەی پێشووی گەڕان
+            document.getElementById('studentAbsenceName').value = '';
+            document.getElementById('studentAbsenceLevel').value = '';
+            document.getElementById('studentAbsenceGroup').value = '';
+            document.getElementById('studentAbsenceResults').innerHTML = 
+                '<p style="text-align: center; padding: 40px; color: var(--gray);">🔍 گەڕانەکەت دەستپێبکە بۆ بینینی کۆی غیاباتەکانی خوێندکار</p>';
+            
+            document.getElementById('studentAbsenceStats').style.display = 'none';
+        }
+        
+        function closeStudentAbsenceModal() {
+            document.getElementById('studentAbsenceModal').style.display = 'none';
+        }
+        
+        // فەنکشنی سەرەکی بۆ گەڕانی کۆی غیاباتی خوێندکار
+        function searchStudentAbsence() {
+            const nameQuery = document.getElementById('studentAbsenceName').value.toLowerCase();
+            const levelQuery = document.getElementById('studentAbsenceLevel').value;
+            const groupQuery = document.getElementById('studentAbsenceGroup').value;
+            const startDate = document.getElementById('studentAbsenceStartDate').value;
+            const endDate = document.getElementById('studentAbsenceEndDate').value;
+            
+            if (!startDate || !endDate) {
+                showNotification('هەڵە', 'تکایە هەردوو بەرواری دەستپێک و کۆتایی هەڵبژێرە!', 'error');
+                return;
+            }
+            
+            const resultsContainer = document.getElementById('studentAbsenceResults');
+            resultsContainer.innerHTML = '<p style="text-align: center; padding: 40px;">کەمێک چاوەڕێ بکە، داتاکان بار دەکرێن...</p>';
+            
+            // گەڕان لە ناوەڕۆکی خوێندکارەکان
+            const filteredStudents = allStudents.filter(student => {
+                const nameMatch = student.name.toLowerCase().includes(nameQuery);
+                const levelMatch = levelQuery ? student.level === levelQuery : true;
+                const groupMatch = groupQuery ? student.group === groupQuery : true;
+                
+                return nameMatch && levelMatch && groupMatch;
+            });
+            
+            if (filteredStudents.length === 0) {
+                resultsContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--gray);">هیچ خوێندکارێک نەدۆزرایەوە</p>';
+                document.getElementById('studentAbsenceStats').style.display = 'none';
+                return;
+            }
+            
+            // هەژمارکردنی کۆی غیابات بۆ هەر خوێندکارێک
+            calculateStudentAbsences(filteredStudents, startDate, endDate);
+        }
+        
+        // فەنکشنی هەژمارکردنی کۆی غیابات
+        function calculateStudentAbsences(students, startDate, endDate) {
+            studentAbsenceData = [];
+            
+            database.ref('attendance').once('value', (snapshot) => {
+                const attendanceData = snapshot.val();
+                
+                students.forEach(student => {
+                    let totalAbsences = 0;
+                    const absenceDates = [];
+                    
+                    if (attendanceData) {
+                        Object.keys(attendanceData).forEach(date => {
+                            // پشتڕاستکردنەوە کە بەروارەکە لە نێوان بەرواری دەستپێک و کۆتاییدایە
+                            if (date >= startDate && date <= endDate) {
+                                const dateData = attendanceData[date];
+                                
+                                Object.keys(dateData).forEach(levelGroup => {
+                                    const levelGroupData = dateData[levelGroup];
+                                    
+                                    Object.keys(levelGroupData).forEach(subject => {
+                                        const subjectData = levelGroupData[subject];
+                                        
+                                        Object.keys(subjectData).forEach(time => {
+                                            const timeData = subjectData[time];
+                                            
+                                            Object.keys(timeData).forEach(teacher => {
+                                                const teacherData = timeData[teacher];
+                                                
+                                                // پشکنین بۆ دۆزینەوەی ئەو کاتانەی خوێندکار غیابی کردووە
+                                                if (teacherData[student.id] === 'absent') {
+                                                    totalAbsences++;
+                                                    if (!absenceDates.includes(date)) {
+                                                        absenceDates.push(date);
+                                                    }
+                                                }
+                                            });
+                                        });
+                                    });
+                                });
+                            }
+                        });
+                    }
+                    
+                    studentAbsenceData.push({
+                        student: student,
+                        totalAbsences: totalAbsences,
+                        absenceDates: absenceDates.sort()
+                    });
+                });
+                
+                displayStudentAbsenceResults();
+            }).catch(error => {
+                showNotification('هەڵە', 'هەڵە لە بارکردنی داتاکانی غیابات', 'error');
+                console.error(error);
+            });
+        }
+        
+        // فەنکشنی نیشاندانی ئەنجامەکانی کۆی غیابات
+        function displayStudentAbsenceResults() {
+            const resultsContainer = document.getElementById('studentAbsenceResults');
+            const statsContainer = document.getElementById('studentAbsenceStats');
+            const totalStudents = document.getElementById('totalStudentsFound');
+            const totalAbsences = document.getElementById('totalAbsencesFound');
+            const averageAbsences = document.getElementById('averageAbsences');
+            
+            if (studentAbsenceData.length === 0) {
+                resultsContainer.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--gray);">هیچ داتایەک نەدۆزرایەوە</p>';
+                statsContainer.style.display = 'none';
+                return;
+            }
+            
+            // هەژمارکردنی ئامارەکان
+            const totalStudentsCount = studentAbsenceData.length;
+            const totalAbsencesCount = studentAbsenceData.reduce((sum, item) => sum + item.totalAbsences, 0);
+            const avgAbsences = totalAbsencesCount > 0 ? (totalAbsencesCount / totalStudentsCount).toFixed(1) : 0;
+            
+            totalStudents.textContent = totalStudentsCount;
+            totalAbsences.textContent = totalAbsencesCount;
+            averageAbsences.textContent = avgAbsences;
+            
+            statsContainer.style.display = 'grid';
+            
+            // نیشاندانی خوێندکارەکان بەپێی ژمارەی غیابات (کەم بۆ زۆر)
+            studentAbsenceData.sort((a, b) => b.totalAbsences - a.totalAbsences);
+            
+            let resultsHTML = '';
+            
+            studentAbsenceData.forEach(item => {
+                const student = item.student;
+                const startDate = document.getElementById('studentAbsenceStartDate').value;
+                const endDate = document.getElementById('studentAbsenceEndDate').value;
+                
+                // دابەشکردنی بەروارەکانی غیابات بەپێی مانگ
+                const absenceByMonth = {};
+                item.absenceDates.forEach(date => {
+                    const month = date.substring(0, 7); // YYYY-MM
+                    if (!absenceByMonth[month]) {
+                        absenceByMonth[month] = [];
+                    }
+                    absenceByMonth[month].push(date);
+                });
+                
+                let absencePeriodsHTML = '';
+                Object.keys(absenceByMonth).forEach(month => {
+                    const dates = absenceByMonth[month];
+                    absencePeriodsHTML += `
+                        <div class="absence-period">
+                            <div class="period-title">مانگی ${month}</div>
+                            <div class="period-absences">
+                                ${dates.map(date => `<span class="absence-date">${date}</span>`).join('')}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                resultsHTML += `
+                    <div class="student-absence-card">
+                        <div class="student-absence-header">
+                            <div class="student-absence-name">${student.name}</div>
+                            <div class="student-absence-count">${item.totalAbsences} غیاب</div>
+                        </div>
+                        <div class="student-absence-details">
+                            <div><strong>کۆد:</strong> ${student.code}</div>
+                            <div><strong>پەیمانگە:</strong> ${student.institute}</div>
+                            <div><strong>ئاست:</strong> ${student.level}</div>
+                            <div><strong>گروپ:</strong> ${student.group}</div>
+                        </div>
+                        ${item.totalAbsences > 0 ? `
+                            <div class="absence-periods">
+                                ${absencePeriodsHTML}
+                            </div>
+                        ` : '<p style="text-align: center; color: var(--success); margin-top: 10px;">✅ ئەم خوێندکارە هیچ غیاباتێکی نیە لەم ماوەیەدا</p>'}
+                    </div>
+                `;
+            });
+            
+            resultsContainer.innerHTML = resultsHTML;
+            
+            showNotification('سەرکەوتوو', `${totalStudentsCount} خوێندکار دۆزرایەوە بە کۆی ${totalAbsencesCount} غیابات`, 'success');
+        }
+        
+        // فەنکشنی هەناردەکردنی کۆی غیابات
+        function exportStudentAbsence() {
+            if (studentAbsenceData.length === 0) {
+                showNotification('هەڵە', 'هیچ داتایەک نیە بۆ هەناردەکردن!', 'error');
+                return;
+            }
+            
+            const startDate = document.getElementById('studentAbsenceStartDate').value || 'نادیار';
+            const endDate = document.getElementById('studentAbsenceEndDate').value || 'نادیار';
+            
+            const data = studentAbsenceData.map(item => ({
+                'ناوی خوێندکار': item.student.name,
+                'کۆد': item.student.code,
+                'پەیمانگە': item.student.institute,
+                'ئاست': item.student.level,
+                'گروپ': item.student.group,
+                'کۆی غیابات': item.totalAbsences,
+                'بەروارەکانی غیابات': item.absenceDates.join(', ')
+            }));
+            
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'کۆی غیابات');
+            XLSX.writeFile(wb, `کۆی_غیاباتی_خوێندکاران_${startDate}_تا_${endDate}.xlsx`);
+            
+            showNotification('سەرکەوتوو', 'فایلەکە بە سەرکەوتوویی هەناردەکرا! 📥', 'success');
+        }
+        
+        // فەنکشنی چاپکردنی کۆی غیابات
+        function printStudentAbsence() {
+            if (studentAbsenceData.length === 0) {
+                showNotification('هەڵە', 'هیچ داتایەک نیە بۆ چاپکردن!', 'error');
+                return;
+            }
+            
+            const startDate = document.getElementById('studentAbsenceStartDate').value || 'نادیار';
+            const endDate = document.getElementById('studentAbsenceEndDate').value || 'نادیار';
+            const totalStudents = document.getElementById('totalStudentsFound').textContent;
+            const totalAbsences = document.getElementById('totalAbsencesFound').textContent;
+            const averageAbsences = document.getElementById('averageAbsences').textContent;
+            
+            let printContent = `
+                <div class="print-header">
+                    <div class="print-title">کۆی غیاباتی خوێندکاران</div>
+                    <div class="print-date">لە ${startDate} تا ${endDate}</div>
+                    <div class="print-date">کاتی چاپ: ${new Date().toLocaleString('en-GB')}</div>
+                </div>
+                
+                <div class="attendance-details-stats" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0;">
+                    <div class="detail-stat-card" style="text-align: center; padding: 15px; border-radius: 8px; border: 2px solid #17a2b8;">
+                        <div class="detail-stat-number" style="font-size: 28px; font-weight: bold; color: #17a2b8;">${totalStudents}</div>
+                        <div>کۆی خوێندکارەکان</div>
+                    </div>
+                    <div class="detail-stat-card" style="text-align: center; padding: 15px; border-radius: 8px; border: 2px solid #dc3545;">
+                        <div class="detail-stat-number" style="font-size: 28px; font-weight: bold; color: #dc3545;">${totalAbsences}</div>
+                        <div>کۆی غیابات</div>
+                    </div>
+                    <div class="detail-stat-card" style="text-align: center; padding: 15px; border-radius: 8px; border: 2px solid #28a745;">
+                        <div class="detail-stat-number" style="font-size: 28px; font-weight: bold; color: #28a745;">${averageAbsences}</div>
+                        <div>تێکڕای غیابات</div>
+                    </div>
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <thead><tr style="background: #667eea; color: white;">
+                    <th style="border: 1px solid #ddd; padding: 10px;">ناوی خوێندکار</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">کۆد</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">پەیمانگە</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">ئاست</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">گرووپ</th>
+                    <th style="border: 1px solid #ddd; padding: 10px;">کۆی غیابات</th>
+                </tr></thead><tbody>`;
+            
+            studentAbsenceData.forEach(item => {
+                printContent += `
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${item.student.name}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${item.student.code}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${item.student.institute}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${item.student.level}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${item.student.group}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center; font-weight: bold; color: #dc3545;">${item.totalAbsences}</td>
+                    </tr>
+                `;
+            });
+            
+            printContent += '</tbody></table>';
+            
+            improvedPrint(printContent, "کۆی غیاباتی خوێندکاران");
+        }
+
+        // فەنکشنی چاپی باشتر بۆ هەموو ئامێرەکان
+        function improvedPrint(content, title = "پەڕەی چاپ") {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                showMobilePrintHelp();
+                const blob = new Blob([`
+                    <!DOCTYPE html>
+                    <html dir="rtl">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>${title}</title>
+                        <style>
+                            body { 
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                margin: 20px; 
+                                line-height: 1.6;
+                                direction: rtl;
+                            }
+                            table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+                            th { background-color: #667eea; color: white; }
+                            .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #667eea; padding-bottom: 15px; }
+                            .print-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #667eea; }
+                            .print-date { color: #666; margin-bottom: 5px; }
+                            .teacher-section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+                            .teacher-header { display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+                            .teacher-name { font-size: 18px; font-weight: bold; color: #667eea; }
+                            .class-record { margin: 8px 0; padding: 10px; background: #f8f9fa; border-radius: 5px; }
+                            .time-slot-card { margin-bottom: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; border-left: 4px solid #667eea; }
+                            .time-slot-header { display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #eee; }
+                            @media print {
+                                body { margin: 0; padding: 15px; }
+                                .no-print { display: none !important; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${content}
+                    </body>
+                    </html>
+                `], { type: 'text/html' });
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${title}_${new Date().toISOString().split('T')[0]}.html`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+            } else {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html dir="rtl">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>${title}</title>
+                        <style>
+                            body { 
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                margin: 20px; 
+                                line-height: 1.6;
+                                direction: rtl;
+                            }
+                            table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+                            th { background-color: #667eea; color: white; }
+                            .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #667eea; padding-bottom: 15px; }
+                            .print-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #667eea; }
+                            .print-date { color: #666; margin-bottom: 5px; }
+                            .teacher-section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+                            .teacher-header { display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+                            .teacher-name { font-size: 18px; font-weight: bold; color: #667eea; }
+                            .class-record { margin: 8px 0; padding: 10px; background: #f8f9fa; border-radius: 5px; }
+                            .time-slot-card { margin-bottom: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; border-left: 4px solid #667eea; }
+                            .time-slot-header { display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #eee; }
+                            @media print {
+                                body { margin: 0; padding: 15px; }
+                                .no-print { display: none !important; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        ${content}
+                        <script>
+                            setTimeout(() => {
+                                window.print();
+                            }, 500);
+                        <\/script>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            }
+        }
+
+        function showMobilePrintHelp() {
+            showNotification(
+                "ڕێنمایی چاپ بۆ مۆبایل", 
+                "فایلەکە داگیرسا. تکایە: ١. فایلەکە بکەرەوە ٢. لە ئەپلیکەیشنەکەدا چاپی بکە 🖨️", 
+                "info"
+            );
+        }
+
+        // فەنکشنەکانی تر...
+        // (هەموو فەنکشنەکانی تر وەک خۆی دەمێنێتەوە)
+
+        // فەنکشنی فلتەرکردنی خوێندکارەکان بەپێی ئاست و گروپ
         function filterStudentsByLevelGroup() {
             const levelGroupValue = document.getElementById('leaveLevelGroup').value;
             const studentSelect = document.getElementById('leaveStudentId');
@@ -960,15 +1507,14 @@
             filteredStudents.forEach(student => {
                 const option = document.createElement('option');
                 option.value = student.id;
-                option.textContent = student.name; // تەنها ناوەکە پیشان دەدرێت
+                option.textContent = student.name;
                 studentSelect.appendChild(option);
             });
         }
 
-        // فەنکشنی نوێ بۆ گەڕانی خوێندکار
+        // فەنکشنی گەڕانی خوێندکار
         function openStudentSearch() {
             document.getElementById('studentSearchModal').style.display = 'flex';
-            // پاککردنەوەی پێشووی گەڕان
             document.getElementById('studentNameSearch').value = '';
             document.getElementById('studentLevelSearch').value = '';
             document.getElementById('studentGroupSearch').value = '';
@@ -988,7 +1534,6 @@
             const resultsContainer = document.getElementById('studentSearchResults');
             resultsContainer.innerHTML = '<p style="text-align: center; padding: 20px;">کەمێک چاوەڕێ بکە...</p>';
             
-            // گەڕان لە ناوەڕۆکی خوێندکارەکان
             const filteredStudents = allStudents.filter(student => {
                 const nameMatch = student.name.toLowerCase().includes(nameQuery);
                 const levelMatch = levelQuery ? student.level === levelQuery : true;
@@ -1036,7 +1581,6 @@
             
             resultsContainer.innerHTML = resultsHTML;
             
-            // نیشاندانی ئامار
             showNotification('گەڕان', `${students.length} خوێندکار دۆزرایەوە`, 'success');
         }
         
@@ -1050,7 +1594,6 @@
         function quickAddLeave(studentId) {
             const student = allStudents.find(s => s.id === studentId);
             if (student) {
-                // زیادکردنی خێرایی مۆڵەت
                 document.getElementById('leaveStudentId').value = studentId;
                 document.getElementById('leaveModal').style.display = 'flex';
                 closeStudentSearchModal();
@@ -1058,9 +1601,7 @@
         }
         
         function quickNowAttendance(studentId) {
-            // نیشاندانی تۆماری ئێستا بۆ خوێندکارێکی دیاریکراو
             openNowAttendanceModal();
-            // دەتوانیت فلتەرەکان دانابنێیت بۆ ئەو خوێندکارە
             const student = allStudents.find(s => s.id === studentId);
             if (student) {
                 document.getElementById('nowLevel').value = student.level;
@@ -1069,7 +1610,7 @@
             }
         }
         
-        // فەنکشنی نوێ بۆ تۆماری ئێستا
+        // فەنکشنی تۆماری ئێستا
         function openNowAttendanceModal() {
             document.getElementById('nowAttendanceModal').style.display = 'flex';
             loadNowAttendanceData();
@@ -1086,7 +1627,6 @@
             const tbody = document.getElementById('nowAttendanceTableBody');
             tbody.innerHTML = '<tr><td colspan="7">کەمێک چاوەڕێ بکە...</td></tr>';
             
-            // فلتەرکردنی خوێندکارەکان بەپێی ئاست و گروپ
             const filteredStudents = allStudents.filter(student => {
                 const levelMatch = level ? student.level === level : true;
                 const groupMatch = group ? student.group === group : true;
@@ -1107,8 +1647,6 @@
             
             students.forEach(student => {
                 const row = tbody.insertRow();
-                
-                // لێرە دەتوانیت غیاباتەکانی خوێندکار زیادبکەیت
                 const absenceCount = 0; // ئەمە پێویستە لە داتابەیسەوە وەربگیرێت
                 
                 row.innerHTML = `
@@ -1133,12 +1671,10 @@
         }
         
         function exportNowAttendance() {
-            // کۆدی هەناردەکردن
             showNotification('هەناردە', 'کۆدی هەناردەکردن لە کاردایە', 'info');
         }
         
         function printNowAttendance() {
-            // کۆدی چاپکردن
             showNotification('چاپ', 'کۆدی چاپکردن لە کاردایە', 'info');
         }
 
@@ -1148,17 +1684,14 @@
             const levelGroupSelect = document.getElementById('leaveLevelGroup');
             const studentSelect = document.getElementById('leaveStudentId');
             
-            // پاککردنەوەی پێشووی هەڵبژاردنەکان
             levelGroupSelect.innerHTML = '<option value="">ئاست و گروپێک هەڵبژێرە</option>';
             studentSelect.innerHTML = '<option value="">یەکەم ئاست و گروپ هەڵبژێرە</option>';
             
-            // دروستکردنی لیستی ئاست و گروپەکان
             const levelGroups = new Set();
             allStudents.forEach(student => {
                 levelGroups.add(`${student.level}-${student.group}`);
             });
             
-            // زیادکردنی ئاست و گروپەکان بۆ هەڵبژاردن
             levelGroups.forEach(levelGroup => {
                 const [level, group] = levelGroup.split('-');
                 const option = document.createElement('option');
@@ -1462,114 +1995,6 @@
             `;
             
             improvedPrint(printContent, "تۆماری مۆڵەتەکان");
-        }
-
-        // فەنکشنی چاپی باشتر بۆ هەموو ئامێرەکان
-        function improvedPrint(content, title = "پەڕەی چاپ") {
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            if (isMobile) {
-                showMobilePrintHelp();
-                const blob = new Blob([`
-                    <!DOCTYPE html>
-                    <html dir="rtl">
-                    <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>${title}</title>
-                        <style>
-                            body { 
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                                margin: 20px; 
-                                line-height: 1.6;
-                                direction: rtl;
-                            }
-                            table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-                            th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-                            th { background-color: #667eea; color: white; }
-                            .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #667eea; padding-bottom: 15px; }
-                            .print-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #667eea; }
-                            .print-date { color: #666; margin-bottom: 5px; }
-                            .teacher-section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
-                            .teacher-header { display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
-                            .teacher-name { font-size: 18px; font-weight: bold; color: #667eea; }
-                            .class-record { margin: 8px 0; padding: 10px; background: #f8f9fa; border-radius: 5px; }
-                            .time-slot-card { margin-bottom: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; border-left: 4px solid #667eea; }
-                            .time-slot-header { display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #eee; }
-                            @media print {
-                                body { margin: 0; padding: 15px; }
-                                .no-print { display: none !important; }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        ${content}
-                    </body>
-                    </html>
-                `], { type: 'text/html' });
-                
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${title}_${new Date().toISOString().split('T')[0]}.html`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-            } else {
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html dir="rtl">
-                    <head>
-                        <meta charset="UTF-8">
-                        <title>${title}</title>
-                        <style>
-                            body { 
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                                margin: 20px; 
-                                line-height: 1.6;
-                                direction: rtl;
-                            }
-                            table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-                            th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-                            th { background-color: #667eea; color: white; }
-                            .print-header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #667eea; padding-bottom: 15px; }
-                            .print-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #667eea; }
-                            .print-date { color: #666; margin-bottom: 5px; }
-                            .teacher-section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
-                            .teacher-header { display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
-                            .teacher-name { font-size: 18px; font-weight: bold; color: #667eea; }
-                            .class-record { margin: 8px 0; padding: 10px; background: #f8f9fa; border-radius: 5px; }
-                            .time-slot-card { margin-bottom: 15px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; border-left: 4px solid #667eea; }
-                            .time-slot-header { display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #eee; }
-                            @media print {
-                                body { margin: 0; padding: 15px; }
-                                .no-print { display: none !important; }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        ${content}
-                        <script>
-                            setTimeout(() => {
-                                window.print();
-                            }, 500);
-                        <\/script>
-                    </body>
-                    </html>
-                `);
-                printWindow.document.close();
-            }
-        }
-
-        function showMobilePrintHelp() {
-            showNotification(
-                "ڕێنمایی چاپ بۆ مۆبایل", 
-                "فایلەکە داگیرسا. تکایە: ١. فایلەکە بکەرەوە ٢. لە ئەپلیکەیشنەکەدا چاپی بکە 🖨️", 
-                "info"
-            );
         }
 
         function showNotification(title, message, type = 'info') {
@@ -2843,7 +3268,8 @@
         window.onclick = function(event) {
             const modals = [
                 'totalAbsenceModal', 'detailsModal', 'teachersModal', 'detailedAbsenceModal', 
-                'timeAnalysisModal', 'leaveModal', 'leavesViewModal', 'studentSearchModal', 'nowAttendanceModal'
+                'timeAnalysisModal', 'leaveModal', 'leavesViewModal', 'studentSearchModal', 
+                'nowAttendanceModal', 'studentAbsenceModal'
             ];
             modals.forEach(modalId => {
                 const modal = document.getElementById(modalId);
