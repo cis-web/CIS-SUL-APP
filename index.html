@@ -90,8 +90,14 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 16px;
+            padding: 0;
             animation: fadeIn 0.5s ease;
+            background: var(--light-bg);
+            min-height: 100vh;
+        }
+        
+        .content-wrapper {
+            padding: 0 12px 16px;
         }
         
         @keyframes fadeIn {
@@ -101,11 +107,11 @@
         
         /* Header */
         .header {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 0;
+            padding: 20px 16px 30px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             text-align: center;
         }
         
@@ -120,8 +126,8 @@
             height: 80px;
             border-radius: 50%;
             object-fit: contain;
-            border: 3px solid var(--primary);
-            box-shadow: 0 6px 18px rgba(102, 126, 234, 0.2);
+            border: 3px solid var(--white);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             background-color: white;
             padding: 6px;
             animation: logoFloat 3s ease-in-out infinite;
@@ -129,31 +135,75 @@
         
         @keyframes logoFloat {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
+            50% { transform: translateY(-10px); }
         }
         
         .header h1 {
-            color: var(--primary);
+            color: var(--white);
             font-size: 18px;
             margin-bottom: 6px;
             font-weight: 700;
         }
         
         .header p {
-            color: var(--text-gray);
+            color: rgba(255,255,255,0.9);
             font-size: 13px;
         }
         
         /* Cards Grid */
         .compact-grid {
             display: grid;
-            gap: 12px;
+            gap: 16px;
             grid-template-columns: 1fr;
         }
         
         @media (min-width: 640px) {
             .compact-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .compact-card p {
+                display: block;
+            }
+            
+            .compact-card {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 16px;
+            }
+            
+            .compact-card-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .compact-icon {
+                width: 48px;
+                height: 48px;
+                margin-bottom: 8px;
+            }
+            
+            .compact-icon i {
+                font-size: 20px;
+            }
+            
+            .compact-card h3 {
+                font-size: 15px;
+                margin-bottom: 4px;
+            }
+            
+            .compact-card p {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+            
+            .compact-login-btn {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+            
+            .compact-login-btn i {
+                font-size: 12px;
             }
         }
         
@@ -164,40 +214,108 @@
             }
             
             .container {
-                padding: 24px;
+                padding: 0;
+            }
+            
+            .content-wrapper {
+                padding: 30px 24px;
             }
             
             .header {
-                padding: 28px;
-                margin-bottom: 24px;
+                padding: 32px;
+                margin-bottom: 30px;
+                border-radius: 20px;
             }
             
             .institute-logo {
-                width: 100px;
-                height: 100px;
+                width: 120px;
+                height: 120px;
             }
             
             .header h1 {
-                font-size: 22px;
+                font-size: 26px;
             }
             
             .header p {
-                font-size: 15px;
+                font-size: 16px;
+            }
+            
+            .compact-card {
+                padding: 20px;
+                border-radius: 16px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .compact-card-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .compact-card p {
+                display: block;
+            }
+            
+            .compact-icon {
+                width: 56px;
+                height: 56px;
+                margin-bottom: 12px;
+            }
+            
+            .compact-icon i {
+                font-size: 24px;
+            }
+            
+            .compact-card h3 {
+                font-size: 17px;
+                margin-bottom: 6px;
+            }
+            
+            .compact-card p {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .compact-login-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                gap: 8px;
+            }
+            
+            .compact-login-btn i {
+                font-size: 13px;
+            }
+            
+            .footer {
+                border-radius: 16px;
+                padding: 20px;
             }
         }
         
         /* Card Styles */
         .compact-card {
             background: var(--white);
-            border-radius: 14px;
-            padding: 18px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
             transition: all 0.3s ease;
             display: flex;
-            flex-direction: column;
-            gap: 14px;
+            flex-direction: row;
+            align-items: center;
+            gap: 12px;
             position: relative;
             overflow: hidden;
+        }
+        
+        .compact-card-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .compact-card-text {
+            flex: 1;
         }
         
         .compact-card::before {
@@ -215,7 +333,7 @@
         
         .compact-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
         }
         
         .compact-card:hover::before {
@@ -223,55 +341,62 @@
         }
         
         .compact-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.25);
         }
         
         .compact-icon i {
-            font-size: 22px;
+            font-size: 18px;
             color: var(--white);
         }
         
         .compact-card h3 {
-            font-size: 16px;
+            font-size: 14px;
             color: var(--text-dark);
-            margin-bottom: 6px;
+            margin-bottom: 2px;
             font-weight: 600;
+            line-height: 1.3;
         }
         
         .compact-card p {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-gray);
-            line-height: 1.5;
-            flex: 1;
+            line-height: 1.3;
+            display: none;
         }
         
         .compact-login-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            padding: 10px 16px;
+            gap: 4px;
+            padding: 8px 10px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: var(--white);
             text-decoration: none;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 11px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .compact-login-btn i {
+            font-size: 10px;
         }
         
         .compact-login-btn:active {
             transform: scale(0.98);
-            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
         }
         
         .compact-login-btn i {
@@ -285,17 +410,17 @@
         /* Footer */
         .footer {
             background: var(--white);
-            border-radius: 14px;
-            padding: 18px;
+            border-radius: 0;
+            padding: 16px;
             margin-top: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
             text-align: center;
         }
         
         .developer-info {
             color: var(--text-gray);
             font-size: 12px;
-            line-height: 1.7;
+            line-height: 1.6;
         }
         
         .developer-info strong {
@@ -340,43 +465,15 @@
             background: linear-gradient(135deg, #30cfd0, #330867);
         }
         
-        /* Responsive adjustments for very small screens */
+        /* Responsive adjustments */
         @media (max-width: 380px) {
-            .container {
-                padding: 12px;
-            }
-            
-            .header {
-                padding: 16px;
-                margin-bottom: 12px;
-            }
-            
-            .institute-logo {
-                width: 70px;
-                height: 70px;
-            }
-            
-            .header h1 {
-                font-size: 16px;
-            }
-            
-            .header p {
-                font-size: 12px;
-            }
-            
-            .compact-grid {
-                gap: 10px;
-            }
-            
             .compact-card {
                 padding: 16px;
-                gap: 12px;
             }
             
             .compact-icon {
-                width: 45px;
-                height: 45px;
-                margin-bottom: 8px;
+                width: 48px;
+                height: 48px;
             }
             
             .compact-icon i {
@@ -388,79 +485,7 @@
             }
             
             .compact-card p {
-                font-size: 11px;
-            }
-            
-            .compact-login-btn {
-                padding: 9px 14px;
                 font-size: 12px;
-            }
-            
-            .footer {
-                padding: 16px;
-            }
-        }
-        
-        /* Ensure all cards fit on one screen for mobile */
-        @media (max-height: 700px) and (max-width: 768px) {
-            .header {
-                padding: 16px;
-            }
-            
-            .header h1 {
-                font-size: 16px;
-            }
-            
-            .header p {
-                font-size: 12px;
-            }
-            
-            .institute-logo {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .container {
-                padding: 12px 16px;
-            }
-            
-            .compact-grid {
-                gap: 8px;
-            }
-            
-            .compact-card {
-                padding: 14px;
-                gap: 10px;
-            }
-            
-            .compact-icon {
-                width: 40px;
-                height: 40px;
-                margin-bottom: 6px;
-            }
-            
-            .compact-icon i {
-                font-size: 18px;
-            }
-            
-            .compact-card h3 {
-                font-size: 14px;
-                margin-bottom: 4px;
-            }
-            
-            .compact-card p {
-                font-size: 11px;
-                line-height: 1.4;
-            }
-            
-            .compact-login-btn {
-                padding: 8px 12px;
-                font-size: 11px;
-            }
-            
-            .footer {
-                padding: 14px;
-                margin-top: 12px;
             }
         }
     </style>
@@ -490,16 +515,19 @@
             <p>سیستەمی بەڕێوەبردنی پەیمانگە - هەڵبژاردنی بەش</p>
         </div>
         
-        <!-- Cards Grid -->
-        <div class="compact-grid">
+        <div class="content-wrapper">
+            <!-- Cards Grid -->
+            <div class="compact-grid">
             <!-- داشبۆردی بەڕێوەبەر -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-user-shield"></i>
                     </div>
-                    <h3>داشبۆردی بەڕێوەبەر</h3>
-                    <p>سیستەمی بەڕێوەبردنی خشتە، خوێندکاران، مامۆستایان و ئامادەبوون</p>
+                    <div class="compact-card-text">
+                        <h3>داشبۆردی بەڕێوەبەر</h3>
+                        <p>سیستەمی بەڕێوەبردنی خشتە، خوێندکاران، مامۆستایان و ئامادەبوون</p>
+                    </div>
                 </div>
                 <a href="admin.html" class="compact-login-btn">
                     <span>چوونەژوورەوە</span>
@@ -509,12 +537,14 @@
             
             <!-- داشبۆردی مامۆستایان -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-chalkboard-teacher"></i>
                     </div>
-                    <h3>داشبۆردی مامۆستایان</h3>
-                    <p>سیستەمی بینینی خشتە، تۆمارکردنی ئامادەبوون و نمرەدان</p>
+                    <div class="compact-card-text">
+                        <h3>داشبۆردی مامۆستایان</h3>
+                        <p>سیستەمی بینینی خشتە، تۆمارکردنی ئامادەبوون و نمرەدان</p>
+                    </div>
                 </div>
                 <a href="teacher-dashbord.html" class="compact-login-btn">
                     <span>چوونەژوورەوە</span>
@@ -522,14 +552,16 @@
                 </a>
             </div>
             
-            <!-- تۆماری غیابات -->
+            <!-- کارمەندی غیابات و مۆڵەت -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-clipboard-check"></i>
                     </div>
-                    <h3>تۆماری غیابات</h3>
-                    <p>سیستەمی پێداچوونەوە و ڕاپۆرتی تەواوی غیاباتی پەیمانگە</p>
+                    <div class="compact-card-text">
+                        <h3>کارمەندی غیابات و مۆڵەت</h3>
+                        <p>سیستەمی پێداچوونەوە و ڕاپۆرتی تەواوی غیاباتی پەیمانگە</p>
+                    </div>
                 </div>
                 <a href="staff_absence.html" class="compact-login-btn">
                     <span>چوونەژوورەوە</span>
@@ -539,12 +571,14 @@
             
             <!-- توێژینەوە -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-search"></i>
                     </div>
-                    <h3>سیستەمی توێژینەوە</h3>
-                    <p>سیستەمی بەڕێوەبردن و نمرەدانی تۆمارەکانی تەواوکردنی خوێندکاران</p>
+                    <div class="compact-card-text">
+                        <h3>سیستەمی توێژینەوە</h3>
+                        <p>سیستەمی بەڕێوەبردن و نمرەدانی تۆمارەکانی تەواوکردنی خوێندکاران</p>
+                    </div>
                 </div>
                 <a href="research.html" class="compact-login-btn">
                     <span>چوونەژوورەوە</span>
@@ -554,12 +588,14 @@
             
             <!-- ئامار -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-suitcase"></i>
                     </div>
-                    <h3>سیستەمی ئامار</h3>
-                    <p>سیستەمی بەڕێوەبردنی بار و کەرەستەکانی پەیمانگە</p>
+                    <div class="compact-card-text">
+                        <h3>سیستەمی ئامار</h3>
+                        <p>سیستەمی بەڕێوەبردنی بار و کەرەستەکانی پەیمانگە</p>
+                    </div>
                 </div>
                 <a href="luggage.html" class="compact-login-btn">
                     <span>چوونەژوورەوە</span>
@@ -569,27 +605,30 @@
             
             <!-- کتێبخانە -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-book"></i>
                     </div>
-                    <h3>سیستەمی کتێبخانە</h3>
-                    <p>سیستەمی بەڕێوەبردنی کتێب و سەرچاوە خوێندنەوەییەکان</p>
+                    <div class="compact-card-text">
+                        <h3>سیستەمی کتێبخانە</h3>
+                        <p>سیستەمی بەڕێوەبردنی کتێب و سەرچاوە خوێندنەوەییەکان</p>
+                    </div>
                 </div>
                 <a href="book.html" class="compact-login-btn">
                     <span>چوونەژوورەوە</span>
                     <i class="fas fa-arrow-left"></i>
                 </a>
             </div>
-        </div>
-        
-        <!-- Footer -->
-        <div class="footer">
-            <div class="developer-info">
-                <strong>ئەم سیستەمە لەلایەن ماجدانور دروستکراوە</strong>
-                <div>پەیوەندی: ٠٧٧٠١٤٥٨٤٧٤</div>
-                <div style="margin-top: 6px; color: #94a3b8; font-size: 10px;">
-                    © 2025 پەیمانگەی کۆمپیتەری سلێمانی - هەموو مافێک پارێزراوە
+                    </div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <div class="developer-info">
+                    <strong>ئەم سیستەمە لەلایەن ماجدانور دروستکراوە</strong>
+                    <div>پەیوەندی: ٠٧٧٠١٤٥٨٤٧٤</div>
+                    <div style="margin-top: 6px; color: #94a3b8; font-size: 10px;">
+                        © 2025 پەیمانگەی کۆمپیتەری سلێمانی
+                    </div>
                 </div>
             </div>
         </div>
