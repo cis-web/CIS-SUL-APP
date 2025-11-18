@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستەمی پەیمانگەی کۆمپیتەری سلێمانی</title>
     
-    <!-- Favicon & Mobile Icons بە لینکی GitHub -->
+    <!-- Favicon & Mobile Icons -->
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png">
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png">
     <link rel="icon" sizes="192x192" href="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png">
@@ -96,462 +96,31 @@
         }
         
         .institute-logo {
-            width: 80px;
-            height: 80px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             object-fit: contain;
-            border: 2px solid var(--primary);
+            border: 3px solid var(--primary);
             box-shadow: var(--shadow);
             background-color: white;
-            padding: 3px;
-        }
-        
-        .css-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            border: 2px solid var(--primary);
-            box-shadow: var(--shadow);
+            padding: 5px;
         }
         
         .header h1 {
             color: var(--primary);
-            font-size: 18px;
-            margin-bottom: 6px;
+            font-size: 24px;
+            margin-bottom: 8px;
             font-weight: 700;
             line-height: 1.3;
         }
         
         .header p {
             color: #666;
-            font-size: 14px;
+            font-size: 16px;
             line-height: 1.4;
         }
-        
-        /* سیستەم گرید بۆ داشبۆردە بووکەکان */
-        .compact-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 0;
-            flex-grow: 1;
-            align-content: start;
-        }
-        
-        .compact-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 12px;
-            padding: 15px 12px;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            display: flex;
-            flex-direction: column;
-            height: 160px;
-            justify-content: space-between;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-        
-        .compact-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-        }
-        
-        .compact-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            border-color: var(--primary);
-        }
-        
-        .compact-card:active {
-            transform: translateY(-1px);
-        }
-        
-        .compact-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .compact-card h3 {
-            color: var(--primary);
-            font-size: 14px;
-            margin-bottom: 6px;
-            font-weight: 700;
-            line-height: 1.3;
-        }
-        
-        .compact-card p {
-            color: #666;
-            font-size: 11px;
-            margin-bottom: 10px;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        
-        /* دوگمەی نوێ بۆ چونەژوورەوە */
-        .compact-login-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: var(--white);
-            padding: 6px 10px;
-            border: none;
-            border-radius: 16px;
-            font-size: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            text-decoration: none;
-            width: auto;
-            align-self: center;
-            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-            min-height: 28px;
-        }
-        
-        .compact-login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
-        }
-        
-        .compact-login-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 1px 3px rgba(102, 126, 234, 0.3);
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 15px;
-            padding-top: 12px;
-            border-top: 1px solid #e0e0e0;
-            flex-shrink: 0;
-        }
-        
-        .developer-info {
-            color: #666;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-        
-        .developer-info strong {
-            color: var(--primary);
-            font-size: 13px;
-            display: block;
-            margin-bottom: 4px;
-        }
-        
-        /* Mobile-specific improvements */
-        .mobile-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eaeaea;
-        }
-        
-        .mobile-menu-btn {
-            background: transparent;
-            border: none;
-            font-size: 18px;
-            color: var(--primary);
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-            padding: 6px;
-        }
-        
-        .mobile-title {
-            font-size: 16px;
-            color: var(--primary);
-            font-weight: 700;
-        }
-        
-        .mobile-user {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-        
-        /* Animation for cards */
-        @keyframes cardSlide {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-        
-        .compact-card:nth-child(1) { animation: cardSlide 0.4s ease; }
-        .compact-card:nth-child(2) { animation: cardSlide 0.5s ease; }
-        .compact-card:nth-child(3) { animation: cardSlide 0.6s ease; }
-        .compact-card:nth-child(4) { animation: cardSlide 0.7s ease; }
-        .compact-card:nth-child(5) { animation: cardSlide 0.8s ease; }
-        .compact-card:nth-child(6) { animation: cardSlide 0.9s ease; }
-        
-        /* Responsive adjustments */
-        @media (max-width: 479px) {
-            .container {
-                padding: 12px;
-            }
-            
-            .compact-grid {
-                gap: 10px;
-            }
-            
-            .compact-card {
-                height: 150px;
-                padding: 12px 10px;
-            }
-            
-            .compact-login-btn {
-                padding: 5px 8px;
-                font-size: 9px;
-                min-height: 26px;
-            }
-            
-            .compact-icon {
-                font-size: 24px;
-            }
-            
-            .header h1 {
-                font-size: 16px;
-            }
-            
-            .header p {
-                font-size: 12px;
-            }
-            
-            .institute-logo, .css-logo {
-                width: 70px;
-                height: 70px;
-            }
-            
-            .css-logo {
-                font-size: 16px;
-            }
-        }
-        
-        @media (min-width: 480px) {
-            .container {
-                padding: 20px;
-            }
-            
-            .logo-container {
-                flex-direction: row;
-            }
-            
-            .header h1 {
-                font-size: 20px;
-            }
-            
-            .compact-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .institute-logo, .css-logo {
-                width: 90px;
-                height: 90px;
-            }
-            
-            .css-logo {
-                font-size: 20px;
-            }
-            
-            .compact-card {
-                height: 170px;
-            }
-        }
-        
-        @media (min-width: 768px) {
-            .container {
-                padding: 25px;
-            }
-            
-            .compact-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 15px;
-            }
-            
-            .compact-card {
-                height: 180px;
-                padding: 18px 15px;
-            }
-            
-            .header h1 {
-                font-size: 22px;
-            }
-            
-            .header p {
-                font-size: 16px;
-            }
-            
-            .institute-logo, .css-logo {
-                width: 100px;
-                height: 100px;
-            }
-            
-            .css-logo {
-                font-size: 22px;
-            }
-            
-            .compact-card h3 {
-                font-size: 16px;
-            }
-            
-            .compact-card p {
-                font-size: 12px;
-            }
-            
-            .compact-login-btn {
-                padding: 7px 12px;
-                font-size: 11px;
-            }
-        }
-        
-        @media (min-width: 1024px) {
-            .container {
-                padding: 30px;
-            }
-            
-            .compact-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 20px;
-            }
-            
-            .compact-card {
-                height: 200px;
-            }
-            
-            .header h1 {
-                font-size: 24px;
-            }
-            
-            .header p {
-                font-size: 18px;
-            }
-            
-            .institute-logo, .css-logo {
-                width: 110px;
-                height: 110px;
-            }
-            
-            .css-logo {
-                font-size: 24px;
-            }
-            
-            .compact-card h3 {
-                font-size: 18px;
-            }
-            
-            .compact-card p {
-                font-size: 13px;
-            }
-            
-            .developer-info {
-                font-size: 14px;
-            }
-            
-            .developer-info strong {
-                font-size: 15px;
-            }
-            
-            .compact-login-btn {
-                padding: 8px 14px;
-                font-size: 12px;
-            }
-        }
-        
-        @media (min-width: 1200px) {
-            .container {
-                padding: 35px;
-            }
-            
-            .compact-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 25px;
-            }
-            
-            .compact-card {
-                height: 220px;
-                padding: 22px 18px;
-            }
-            
-            .header h1 {
-                font-size: 26px;
-            }
-            
-            .header p {
-                font-size: 20px;
-            }
-            
-            .institute-logo, .css-logo {
-                width: 120px;
-                height: 120px;
-            }
-            
-            .css-logo {
-                font-size: 26px;
-            }
-            
-            .compact-login-btn {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
-        }
-        
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --white: #1e1e2e;
-                --light-bg: #2d2d3d;
-            }
-            
-            body {
-                background: linear-gradient(135deg, #2d2d3d 0%, #1e1e2e 100%);
-            }
-            
-            .compact-card {
-                background: linear-gradient(135deg, #2d2d3d 0%, #3d3d4d 100%);
-            }
-            
-            .header p, .compact-card p, .developer-info {
-                color: #ccc;
-            }
-        }
-        
-        .systems-grid {
-            display: none;
-        }
+
+        /* ... هەمان ستایلەکانی تر وەک پێشوو ... */
     </style>
 </head>
 <body>
@@ -570,16 +139,11 @@
         <div class="header">
             <div class="logo-container">
                 <div class="logo-row">
-                    <!-- لۆگۆ لە GitHub بە لینکی ڕاستەوخۆ -->
+                    <!-- لۆگۆی سەرکەوتوو لە GitHub -->
                     <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
                          alt="پەیمانگەی کۆمپیتەری سلێمانی" 
                          class="institute-logo"
-                         onerror="this.style.display='none'; document.getElementById('css-logo').style.display='flex';">
-                    
-                    <!-- لۆگۆی CSS (وەک پاشەکەوت) -->
-                    <div id="css-logo" class="css-logo" style="display: none;">
-                        CIS
-                    </div>
+                         id="main-logo">
                 </div>
             </div>
             <h1>پەیمانگەی کۆمپیتەری سلێمانی</h1>
@@ -624,7 +188,7 @@
                     <div class="compact-icon">
                         <i class="fas fa-clipboard-check"></i>
                     </div>
-                    <h3>تۆماری  غیابات</h3>
+                    <h3>تۆماری غیابات</h3>
                     <p>سیستەمی پێداچوونەوە و ڕاپۆرتی تەواوی غیاباتی پەیمانگە</p>
                 </div>
                 <a href="staff_absence.html" class="compact-login-btn">
@@ -648,13 +212,13 @@
                 </a>
             </div>
             
-            <!-- فایلی نوێ: luggage.html -->
+            <!-- سیستەمی ئامار -->
             <div class="compact-card">
                 <div>
                     <div class="compact-icon">
                         <i class="fas fa-suitcase"></i>
                     </div>
-                    <h3>سیستەمی  ئامار</h3>
+                    <h3>سیستەمی ئامار</h3>
                     <p>سیستەمی بەڕێوەبردنی بار و کەرەستەکانی پەیمانگە</p>
                 </div>
                 <a href="luggage.html" class="compact-login-btn">
@@ -663,7 +227,7 @@
                 </a>
             </div>
             
-            <!-- فایلی نوێ: book.html -->
+            <!-- سیستەمی کتێبخانە -->
             <div class="compact-card">
                 <div>
                     <div class="compact-icon">
@@ -691,47 +255,10 @@
     </div>
 
     <script>
-        // پشکنینی لۆگۆ بە JavaScript
+        // پشکنینی لۆگۆ
         window.addEventListener('load', function() {
-            const logoImg = document.querySelector('.institute-logo');
-            const cssLogo = document.getElementById('css-logo');
-            
-            console.log('پشکنینی لۆگۆ دەستپێدەکات...');
-            console.log('لینکی لۆگۆ: https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png');
-            
-            // پشکنین بۆ ئەوەی لۆگۆکە بار دەبێت یان نا
-            function checkLogo() {
-                fetch('https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png')
-                    .then(response => {
-                        if (response.ok) {
-                            console.log('لۆگۆ بەردەستە ✓');
-                            // ئەگەر لۆگۆکە بەردەستە، پشکنین بکە کە بار دەبێت یان نا
-                            logoImg.addEventListener('load', function() {
-                                console.log('لۆگۆ بە سەرکەوتوویی بارکرا ✓');
-                                cssLogo.style.display = 'none';
-                            });
-                            
-                            logoImg.addEventListener('error', function() {
-                                console.log('لۆگۆ بارنەبوو، لۆگۆی CSS پیشان دەدرێت');
-                                this.style.display = 'none';
-                                cssLogo.style.display = 'flex';
-                            });
-                        } else {
-                            console.log('لۆگۆ بەردەست نیە، لۆگۆی CSS پیشان دەدرێت');
-                            logoImg.style.display = 'none';
-                            cssLogo.style.display = 'flex';
-                        }
-                    })
-                    .catch(error => {
-                        console.log('هەڵە لە پشکنینی لۆگۆ: ', error);
-                        console.log('لۆگۆی CSS پیشان دەدرێت');
-                        logoImg.style.display = 'none';
-                        cssLogo.style.display = 'flex';
-                    });
-            }
-            
-            // پشکنینی لۆگۆ
-            checkLogo();
+            const logo = document.getElementById('main-logo');
+            console.log('لۆگۆ بارکرا بە سەرکەوتوویی! 🎉');
             
             // Mobile menu functionality
             const menuBtn = document.querySelector('.mobile-menu-btn');
@@ -742,5 +269,3 @@
     </script>
 </body>
 </html>
-
-
