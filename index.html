@@ -5,18 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستەمی پەیمانگەی کۆمپیتەری سلێمانی</title>
     
-    <!-- Favicon & Mobile Icons -->
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png">
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png">
-    <link rel="icon" sizes="192x192" href="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png">
-    <link rel="icon" sizes="512x512" href="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png">
     
-    <!-- PWA Settings -->
     <meta name="theme-color" content="#667eea">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="پەیمانگەی CIS">
-    <meta name="application-name" content="پەیمانگەی کۆمپیتەری سلێمانی">
     <meta name="description" content="سیستەمی بەڕێوەبردنی پەیمانگەی کۆمپیتەری سلێمانی">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -29,241 +22,646 @@
         
         :root {
             --primary: #667eea;
-            --primary-dark: #5a6fd8;
+            --primary-dark: #5568d3;
             --secondary: #764ba2;
-            --success: #28a745;
-            --info: #17a2b8;
-            --warning: #ffc107;
-            --danger: #dc3545;
+            --success: #10b981;
+            --info: #3b82f6;
+            --warning: #f59e0b;
+            --danger: #ef4444;
             --white: #ffffff;
-            --light-bg: #f8f9fa;
-            --shadow: 0 4px 20px rgba(0,0,0,0.1);
-            --card-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            --light-bg: #f8fafc;
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --border: #e2e8f0;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0;
             direction: rtl;
             line-height: 1.6;
+            color: var(--text-dark);
         }
         
-        .container {
+        /* Mobile Header */
+        .mobile-header {
             background: var(--white);
-            border-radius: 0;
-            box-shadow: none;
-            width: 100%;
-            height: 100vh;
-            padding: 15px;
-            animation: fadeIn 0.6s ease;
-            position: relative;
-            overflow: auto;
+            padding: 12px 16px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .mobile-menu-btn, .mobile-user {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--light-bg);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-btn:active, .mobile-user:active {
+            transform: scale(0.95);
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .mobile-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            flex: 1;
+            text-align: center;
+            padding: 0 10px;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0;
+            animation: fadeIn 0.5s ease;
+            background: var(--light-bg);
+            min-height: 100vh;
+        }
+        
+        .content-wrapper {
+            padding: 0 12px 16px;
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
+        /* Header */
         .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 0;
+            padding: 20px 16px 30px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             text-align: center;
-            margin-bottom: 15px;
-            position: relative;
-            flex-shrink: 0;
         }
         
         .logo-container {
             display: flex;
-            align-items: center;
             justify-content: center;
-            gap: 16px;
-            margin-bottom: 10px;
-            flex-direction: column;
-        }
-        
-        .logo-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
+            margin-bottom: 12px;
         }
         
         .institute-logo {
-            width: 120px;
-            height: 120px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             object-fit: contain;
-            border: 3px solid var(--primary);
-            box-shadow: var(--shadow);
+            border: 3px solid var(--white);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             background-color: white;
-            padding: 5px;
+            padding: 6px;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
         
         .header h1 {
-            color: var(--primary);
-            font-size: 24px;
-            margin-bottom: 8px;
+            color: var(--white);
+            font-size: 18px;
+            margin-bottom: 6px;
             font-weight: 700;
-            line-height: 1.3;
         }
         
         .header p {
-            color: #666;
-            font-size: 16px;
-            line-height: 1.4;
+            color: rgba(255,255,255,0.9);
+            font-size: 13px;
         }
-
-        /* ... هەمان ستایلەکانی تر وەک پێشوو ... */
+        
+        /* Cards Grid */
+        .compact-grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: 1fr;
+        }
+        
+        @media (min-width: 640px) {
+            .compact-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .compact-card p {
+                display: block;
+            }
+            
+            .compact-card {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 16px;
+            }
+            
+            .compact-card-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .compact-icon {
+                width: 48px;
+                height: 48px;
+                margin-bottom: 8px;
+            }
+            
+            .compact-icon i {
+                font-size: 20px;
+            }
+            
+            .compact-card h3 {
+                font-size: 15px;
+                margin-bottom: 4px;
+            }
+            
+            .compact-card p {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+            
+            .compact-login-btn {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+            
+            .compact-login-btn i {
+                font-size: 12px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .compact-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+            
+            .container {
+                padding: 0;
+            }
+            
+            .content-wrapper {
+                padding: 30px 24px;
+            }
+            
+            .header {
+                padding: 32px;
+                margin-bottom: 30px;
+                border-radius: 20px;
+            }
+            
+            .institute-logo {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .header h1 {
+                font-size: 26px;
+            }
+            
+            .header p {
+                font-size: 16px;
+            }
+            
+            .compact-card {
+                padding: 20px;
+                border-radius: 16px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .compact-card-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .compact-card p {
+                display: block;
+            }
+            
+            .compact-icon {
+                width: 56px;
+                height: 56px;
+                margin-bottom: 12px;
+            }
+            
+            .compact-icon i {
+                font-size: 24px;
+            }
+            
+            .compact-card h3 {
+                font-size: 17px;
+                margin-bottom: 6px;
+            }
+            
+            .compact-card p {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            
+            .compact-login-btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                gap: 8px;
+            }
+            
+            .compact-login-btn i {
+                font-size: 13px;
+            }
+            
+            .footer {
+                border-radius: 16px;
+                padding: 20px;
+            }
+        }
+        
+        /* Card Styles */
+        .compact-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .compact-card-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .compact-card-text {
+            flex: 1;
+        }
+        
+        .compact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+        
+        .compact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        
+        .compact-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .compact-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.25);
+        }
+        
+        .compact-icon i {
+            font-size: 18px;
+            color: var(--white);
+        }
+        
+        .compact-card h3 {
+            font-size: 14px;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        
+        .compact-card p {
+            font-size: 11px;
+            color: var(--text-gray);
+            line-height: 1.3;
+            display: none;
+        }
+        
+        .compact-login-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 8px 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 11px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .compact-login-btn i {
+            font-size: 10px;
+        }
+        
+        .compact-login-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+        
+        .compact-login-btn i {
+            transition: transform 0.3s ease;
+        }
+        
+        .compact-card:hover .compact-login-btn i {
+            transform: translateX(-3px);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--white);
+            border-radius: 0;
+            padding: 16px;
+            margin-top: 16px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .developer-info {
+            color: var(--text-gray);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .developer-info strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+        
+        /* Loading Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .loading {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* Different colors for each card */
+        .compact-card:nth-child(1) .compact-icon {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .compact-card:nth-child(2) .compact-icon {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+        
+        .compact-card:nth-child(3) .compact-icon {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+        
+        .compact-card:nth-child(4) .compact-icon {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+        
+        .compact-card:nth-child(5) .compact-icon {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+        }
+        
+        .compact-card:nth-child(6) .compact-icon {
+            background: linear-gradient(135deg, #30cfd0, #330867);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 380px) {
+            .compact-card {
+                padding: 16px;
+            }
+            
+            .compact-icon {
+                width: 48px;
+                height: 48px;
+            }
+            
+            .compact-icon i {
+                font-size: 20px;
+            }
+            
+            .compact-card h3 {
+                font-size: 15px;
+            }
+            
+            .compact-card p {
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Mobile Header -->
-        <div class="mobile-header">
-            <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="mobile-title">Computer Institute Of Sulaimany</div>
-            <div class="mobile-user">
-                <i class="fas fa-user"></i>
-            </div>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <button class="mobile-menu-btn" onclick="showMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="mobile-title">CIS Sulaimany</div>
+        <div class="mobile-user" onclick="showProfile()">
+            <i class="fas fa-user"></i>
         </div>
-        
+    </div>
+    
+    <div class="container">
+        <!-- Header -->
         <div class="header">
             <div class="logo-container">
-                <div class="logo-row">
-                    <!-- لۆگۆی سەرکەوتوو لە GitHub -->
-                    <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
-                         alt="پەیمانگەی کۆمپیتەری سلێمانی" 
-                         class="institute-logo"
-                         id="main-logo">
-                </div>
+                <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
+                     alt="پەیمانگەی کۆمپیتەری سلێمانی" 
+                     class="institute-logo"
+                     id="main-logo">
             </div>
             <h1>پەیمانگەی کۆمپیتەری سلێمانی</h1>
             <p>سیستەمی بەڕێوەبردنی پەیمانگە - هەڵبژاردنی بەش</p>
         </div>
         
-        <!-- Compact View -->
-        <div class="compact-grid" id="compactView">
-            <!-- سیستەمی داشبۆردی بەڕێوەبەر -->
+        <div class="content-wrapper">
+            <!-- Cards Grid -->
+            <div class="compact-grid">
+            <!-- داشبۆردی بەڕێوەبەر -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-user-shield"></i>
                     </div>
-                    <h3>داشبۆردی بەڕێوەبەر</h3>
-                    <p>سیستەمی بەڕێوەبردنی خشتە، خوێندکاران، مامۆستایان و ئامادەبوون</p>
+                    <div class="compact-card-text">
+                        <h3>داشبۆردی بەڕێوەبەر</h3>
+                        <p>سیستەمی بەڕێوەبردنی خشتە، خوێندکاران، مامۆستایان و ئامادەبوون</p>
+                    </div>
                 </div>
                 <a href="admin.html" class="compact-login-btn">
+                    <span>چوونەژوورەوە</span>
                     <i class="fas fa-arrow-left"></i>
-                    چوونەژوورەوە
                 </a>
             </div>
             
-            <!-- سیستەمی داشبۆردی مامۆستایان -->
+            <!-- داشبۆردی مامۆستایان -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-chalkboard-teacher"></i>
                     </div>
-                    <h3>داشبۆردی مامۆستایان</h3>
-                    <p>سیستەمی بینینی خشتە، تۆمارکردنی ئامادەبوون و نمرەدان</p>
+                    <div class="compact-card-text">
+                        <h3>داشبۆردی مامۆستایان</h3>
+                        <p>سیستەمی بینینی خشتە، تۆمارکردنی ئامادەبوون و نمرەدان</p>
+                    </div>
                 </div>
                 <a href="teacher-dashbord.html" class="compact-login-btn">
+                    <span>چوونەژوورەوە</span>
                     <i class="fas fa-arrow-left"></i>
-                    چوونەژوورەوە
                 </a>
             </div>
             
-            <!-- سیستەمی کارمەندی تۆماری غیابات -->
+            <!-- کارمەندی غیابات و مۆڵەت -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-clipboard-check"></i>
                     </div>
-                    <h3>تۆماری غیابات</h3>
-                    <p>سیستەمی پێداچوونەوە و ڕاپۆرتی تەواوی غیاباتی پەیمانگە</p>
+                    <div class="compact-card-text">
+                        <h3>کارمەندی غیابات و مۆڵەت</h3>
+                        <p>سیستەمی پێداچوونەوە و ڕاپۆرتی تەواوی غیاباتی پەیمانگە</p>
+                    </div>
                 </div>
                 <a href="staff_absence.html" class="compact-login-btn">
+                    <span>چوونەژوورەوە</span>
                     <i class="fas fa-arrow-left"></i>
-                    چوونەژوورەوە
                 </a>
             </div>
             
-            <!-- سیستەمی توێژینەوە -->
+            <!-- توێژینەوە -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-search"></i>
                     </div>
-                    <h3>سیستەمی توێژینەوە</h3>
-                    <p>سیستەمی بەڕێوەبردن و نمرەدانی تۆمارەکانی تەواوکردنی خوێندکاران</p>
+                    <div class="compact-card-text">
+                        <h3>سیستەمی توێژینەوە</h3>
+                        <p>سیستەمی بەڕێوەبردن و نمرەدانی تۆمارەکانی تەواوکردنی خوێندکاران</p>
+                    </div>
                 </div>
                 <a href="research.html" class="compact-login-btn">
+                    <span>چوونەژوورەوە</span>
                     <i class="fas fa-arrow-left"></i>
-                    چوونەژوورەوە
                 </a>
             </div>
             
-            <!-- سیستەمی ئامار -->
+            <!-- ئامار -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-suitcase"></i>
                     </div>
-                    <h3>سیستەمی ئامار</h3>
-                    <p>سیستەمی بەڕێوەبردنی بار و کەرەستەکانی پەیمانگە</p>
+                    <div class="compact-card-text">
+                        <h3>سیستەمی ئامار</h3>
+                        <p>سیستەمی بەڕێوەبردنی بار و کەرەستەکانی پەیمانگە</p>
+                    </div>
                 </div>
                 <a href="luggage.html" class="compact-login-btn">
+                    <span>چوونەژوورەوە</span>
                     <i class="fas fa-arrow-left"></i>
-                    چوونەژوورەوە
                 </a>
             </div>
             
-            <!-- سیستەمی کتێبخانە -->
+            <!-- کتێبخانە -->
             <div class="compact-card">
-                <div>
+                <div class="compact-card-content">
                     <div class="compact-icon">
                         <i class="fas fa-book"></i>
                     </div>
-                    <h3>سیستەمی کتێبخانە</h3>
-                    <p>سیستەمی بەڕێوەبردنی کتێب و سەرچاوە خوێندنەوەییەکان</p>
+                    <div class="compact-card-text">
+                        <h3>سیستەمی کتێبخانە</h3>
+                        <p>سیستەمی بەڕێوەبردنی کتێب و سەرچاوە خوێندنەوەییەکان</p>
+                    </div>
                 </div>
                 <a href="book.html" class="compact-login-btn">
+                    <span>چوونەژوورەوە</span>
                     <i class="fas fa-arrow-left"></i>
-                    چوونەژوورەوە
                 </a>
             </div>
-        </div>
-        
-        <div class="footer">
-            <div class="developer-info">
-                <strong>ئەم سیستەمە لەلایەن ماجدانور دروستکراوە</strong>
-                <div>پەیوەندی: ٠٧٧٠١٤٥٨٤٧٤</div>
-                <div style="margin-top: 8px; color: #999; font-size: 10px;">
-                    © 2025 پەیمانگەی کۆمپیتەری سلێمانی - هەموو مافێک پارێزراوە
+                    </div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <div class="developer-info">
+                    <strong>ئەم سیستەمە لەلایەن ماجدانور دروستکراوە</strong>
+                    <div>پەیوەندی: ٠٧٧٠١٤٥٨٤٧٤</div>
+                    <div style="margin-top: 6px; color: #94a3b8; font-size: 10px;">
+                        © 2025 پەیمانگەی کۆمپیتەری سلێمانی
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // پشکنینی لۆگۆ
+        // Logo loading check
         window.addEventListener('load', function() {
             const logo = document.getElementById('main-logo');
-            console.log('لۆگۆ بارکرا بە سەرکەوتوویی! 🎉');
-            
-            // Mobile menu functionality
-            const menuBtn = document.querySelector('.mobile-menu-btn');
-            menuBtn.addEventListener('click', function() {
-                alert('لیستی بەکارهێنەر لێرە پیشان دەدرێت');
+            logo.addEventListener('error', function() {
+                console.error('کێشەیەک لە بارکردنی لۆگۆدا هەیە');
+            });
+            logo.addEventListener('load', function() {
+                console.log('لۆگۆ بە سەرکەوتوویی بارکرا! 🎉');
+            });
+        });
+
+        function showMenu() {
+            alert('لیستی سیستەمەکان لە سەرەوە پیشان دراوە');
+        }
+
+        function showProfile() {
+            alert('زانیاریەکانی بەکارهێنەر');
+        }
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
             });
         });
     </script>
