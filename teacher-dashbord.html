@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سیستەمی داشبۆردی مامۆستایان / پەیمانگەی کۆمپیتەری سلێمانی</title>
+    <title>سیستەمی داشبۆردی مامۆستایان / پەیمانگەی کۆمپیوتەری سلێمانی</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
     <style>
-        /* هەمان ستایلەکان وەک پێشتر */
         * {
             margin: 0;
             padding: 0;
@@ -1105,6 +1104,35 @@
         .detail-stat-present .detail-stat-number {
             color: var(--success);
         }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        
+        .remember-me input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .remember-me label {
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .auto-login-msg {
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+            margin-bottom: 15px;
+            background: rgba(23, 162, 184, 0.1);
+            color: var(--info);
+            border: 1px solid rgba(23, 162, 184, 0.2);
+        }
 
         @media (max-width: 768px) {
             .container {
@@ -1201,6 +1229,10 @@
             <i class="fas fa-exclamation-circle"></i> ناوی بەکارهێنەر یان وشەی نهێنی هەڵەیە!
         </div>
         
+        <div class="auto-login-msg" id="autoLoginMsg">
+            <i class="fas fa-check-circle"></i> بە سەرکەوتووی چوویتە ژوورەوە بە سیستەمی یادگاری!
+        </div>
+        
         <form class="login-form" onsubmit="handleLogin(event)">
             <div class="form-group">
                 <label for="username"><i class="fas fa-user"></i> ناوی بەکارهێنەر</label>
@@ -1210,6 +1242,11 @@
             <div class="form-group">
                 <label for="password"><i class="fas fa-lock"></i> وشەی نهێنی</label>
                 <input type="password" id="password" placeholder="وشەی نهێنی" required>
+            </div>
+            
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe">
+                <label for="rememberMe"> بیرم بهێنە</label>
             </div>
             
             <button type="submit" class="login-btn">
@@ -1796,6 +1833,45 @@
 
         initializeData();
 
+        // Check if user is already logged in
+        function checkAutoLogin() {
+            const savedLogin = localStorage.getItem('teacherAutoLogin');
+            const autoLoginEnabled = localStorage.getItem('autoLoginEnabled') !== 'false';
+            
+            if (savedLogin && autoLoginEnabled) {
+                const loginData = JSON.parse(savedLogin);
+                document.getElementById('username').value = loginData.username;
+                document.getElementById('password').value = loginData.password;
+                document.getElementById('rememberMe').checked = true;
+                
+                // Auto login
+                handleAutoLogin(loginData.username, loginData.password);
+            } else {
+                // Check if there's a saved username only
+                const savedUsername = localStorage.getItem('teacherUsername');
+                if (savedUsername) {
+                    document.getElementById('username').value = savedUsername;
+                    document.getElementById('rememberMe').checked = true;
+                }
+            }
+        }
+
+        // Handle auto login
+        function handleAutoLogin(username, password) {
+            database.ref('teachers/' + username).once('value', (snapshot) => {
+                const teacher = snapshot.val();
+                if (teacher && teacher.password === password) {
+                    currentUser = { username, ...teacher };
+                    showTeacherDashboard();
+                    document.getElementById('autoLoginMsg').style.display = 'block';
+                    
+                    setTimeout(() => {
+                        document.getElementById('autoLoginMsg').style.display = 'none';
+                    }, 3000);
+                }
+            });
+        }
+
         // Load Students from Firebase
         function loadStudents() {
             database.ref('students').on('value', (snapshot) => {
@@ -1978,12 +2054,29 @@
             event.preventDefault();
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
             const errorMsg = document.getElementById('errorMsg');
 
             database.ref('teachers/' + username).once('value', (snapshot) => {
                 const teacher = snapshot.val();
                 if (teacher && teacher.password === password) {
                     currentUser = { username, ...teacher };
+                    
+                    // Save login data if remember me is checked
+                    if (rememberMe) {
+                        localStorage.setItem('teacherAutoLogin', JSON.stringify({
+                            username: username,
+                            password: password
+                        }));
+                        localStorage.setItem('teacherUsername', username);
+                        localStorage.setItem('autoLoginEnabled', 'true');
+                    } else {
+                        // Only save username if remember me is not checked
+                        localStorage.removeItem('teacherAutoLogin');
+                        localStorage.setItem('teacherUsername', username);
+                        localStorage.setItem('autoLoginEnabled', 'false');
+                    }
+                    
                     showTeacherDashboard();
                 } else {
                     errorMsg.style.display = 'block';
@@ -3336,6 +3429,13 @@
             document.getElementById('teacherDashboard').style.display = 'none';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
+            
+            // Ask user if they want to clear saved login
+            if (confirm('دەتەوێت زانیاریەکانی چوونەژوورەوە بسڕیتەوە؟')) {
+                localStorage.removeItem('teacherAutoLogin');
+                localStorage.removeItem('teacherUsername');
+                localStorage.removeItem('autoLoginEnabled');
+            }
         }
 
         // Close modal when clicking outside
@@ -3353,6 +3453,11 @@
                 notificationPanel.style.display = 'none';
             }
         }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAutoLogin();
+        });
     </script>
 </body>
 </html>
