@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سیستەمی داشبۆردی مامۆستایان / پەیمانگەی کۆمپیوتەری سلێمانی</title>
+    <title>سیستەمی داشبۆردی مامۆستایان / پەیمانگەی کۆمپیتەری سلێمانی</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -1134,6 +1134,20 @@
             border: 1px solid rgba(23, 162, 184, 0.2);
         }
 
+        /* نوی: ستایل بۆ دووگمەی یادم بهێنە */
+        .remember-me-section {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .remember-me-section h4 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -1246,7 +1260,7 @@
             
             <div class="remember-me">
                 <input type="checkbox" id="rememberMe">
-                <label for="rememberMe"> بیرم بهێنە</label>
+                <label for="rememberMe">یادم بهێنە</label>
             </div>
             
             <button type="submit" class="login-btn">
@@ -1341,6 +1355,10 @@
             <!-- دوگمەی نوێ بۆ کۆی غیاباتی خوێندکار -->
             <button class="action-btn" onclick="switchTeacherSection('studentAbsence')" style="background: #6f42c1;">
                 <i class="fas fa-chart-bar"></i> کۆی غیابات
+            </button>
+            <!-- دوگمەی نوێ بۆ ڕێکخستنەکان -->
+            <button class="action-btn" onclick="switchTeacherSection('settings')" style="background: #6c757d;">
+                <i class="fas fa-cog"></i> ڕێکخستنەکان
             </button>
         </div>
         
@@ -1702,6 +1720,47 @@
             </div>
         </div>
         
+        <!-- نوی: بەشی ڕێکخستنەکان -->
+        <div class="action-section" id="teacherSettingsSection" style="display: none;">
+            <h3>
+                <i class="fas fa-cog"></i> ڕێکخستنەکان
+            </h3>
+            
+            <div class="settings-group">
+                <h4 style="margin: 20px 0 15px 0; color: var(--dark);">
+                    <i class="fas fa-user-lock"></i> ڕێکخستنەکانی چوونەژوورەوە
+                </h4>
+                
+                <div class="remember-me" style="margin: 15px 0;">
+                    <input type="checkbox" id="settingsRememberMe" onchange="updateRememberMeSetting()">
+                    <label for="settingsRememberMe" style="font-size: 16px; font-weight: 600;">سیستەمی یادگاری چالاک بکە</label>
+                </div>
+                
+                <p style="color: var(--gray); font-size: 14px; margin-bottom: 15px;">
+                    ئەگەر ئەم هەڵبژاردە چالاک بکەیت، بە شێوەیەکی خۆکار چوونەژوورەوە دەکەیت جاری داهاتوو. 
+                    ئەگەر ناچالاکی بکەیت، پێویستە هەمیشە وشەی نهێنی بنووسیت.
+                </p>
+                
+                <div class="current-status" style="padding: 12px; background: #e7f3ff; border-radius: 8px; margin: 10px 0;">
+                    <i class="fas fa-info-circle" style="color: var(--info);"></i>
+                    <span id="rememberMeStatus" style="margin-right: 8px; font-weight: 600;"></span>
+                </div>
+            </div>
+            
+            <div class="remember-me-section">
+                <h4>
+                    <i class="fas fa-memory"></i> ڕێکخستنەکانی یادگاری
+                </h4>
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMeDashboard" onchange="updateRememberMeSetting()">
+                    <label for="rememberMeDashboard">یادم بهێنە بۆ جاری داهاتوو</label>
+                </div>
+                <p style="color: var(--gray); font-size: 12px; margin-top: 8px;">
+                    ئەگەر ئەم هەڵبژاردە چالاک بکەیت، بە شێوەیەکی خۆکار چوونەژوورەوە دەکەیت جاری داهاتوو
+                </p>
+            </div>
+        </div>
+        
         <button class="logout-btn" onclick="logout()">
             <i class="fas fa-sign-out-alt"></i> چوونەدەرەوە
         </button>
@@ -2019,6 +2078,7 @@
             document.getElementById('teacherGradesSection').style.display = 'none';
             document.getElementById('teacherNotificationsSection').style.display = 'none';
             document.getElementById('teacherStudentAbsenceSection').style.display = 'none';
+            document.getElementById('teacherSettingsSection').style.display = 'none';
             
             if (section === 'schedule') {
                 document.getElementById('teacherScheduleSection').style.display = 'block';
@@ -2046,6 +2106,9 @@
                 
                 document.getElementById('studentAbsenceStartDate').value = firstDay.toISOString().split('T')[0];
                 document.getElementById('studentAbsenceEndDate').value = today.toISOString().split('T')[0];
+            } else if (section === 'settings') {
+                document.getElementById('teacherSettingsSection').style.display = 'block';
+                loadRememberMeSetting();
             }
         }
 
@@ -2097,6 +2160,7 @@
             loadSchedules();
             switchTeacherSection('schedule');
             updateTeacherNotificationBadge();
+            loadRememberMeSetting();
         }
 
         // Load Attendance Students
@@ -3282,6 +3346,50 @@
             XLSX.writeFile(wb, `کۆی_غیاباتی_خوێندکاران_${startDate}_تا_${endDate}.xlsx`);
         }
 
+        // نوی: فەنکشنەکانی یادم بهێنە
+        function loadRememberMeSetting() {
+            const autoLoginEnabled = localStorage.getItem('autoLoginEnabled') !== 'false';
+            document.getElementById('settingsRememberMe').checked = autoLoginEnabled;
+            document.getElementById('rememberMeDashboard').checked = autoLoginEnabled;
+            
+            const statusElement = document.getElementById('rememberMeStatus');
+            if (autoLoginEnabled) {
+                statusElement.textContent = 'سیستەمی یادگاری چالاکە';
+                statusElement.style.color = 'var(--success)';
+            } else {
+                statusElement.textContent = 'سیستەمی یادگاری ناچالاکە';
+                statusElement.style.color = 'var(--danger)';
+            }
+        }
+        
+        function updateRememberMeSetting() {
+            const rememberMe = document.getElementById('settingsRememberMe').checked;
+            localStorage.setItem('autoLoginEnabled', rememberMe.toString());
+            
+            // هاوڕێکردنی هەردوو چێکبۆکسەکە
+            document.getElementById('rememberMeDashboard').checked = rememberMe;
+            
+            if (!rememberMe) {
+                // ئەگەر یادگاری نەکات، زانیاری چوونەژوورەوە بسڕەوە
+                localStorage.removeItem('teacherAutoLogin');
+            } else {
+                // ئەگەر یادگاری بکات، زانیاری ئێستا پاشەکەوت بکە
+                const savedUsername = localStorage.getItem('teacherUsername');
+                if (savedUsername && currentUser) {
+                    const loginData = {
+                        username: savedUsername,
+                        password: currentUser.password
+                    };
+                    localStorage.setItem('teacherAutoLogin', JSON.stringify(loginData));
+                }
+            }
+            
+            loadRememberMeSetting();
+            showTeacherSuccess(rememberMe ? 
+                '✅ سیستەمی یادگاری چالاککرا' : 
+                '❌ سیستەمی یادگاری ناچالاککرا');
+        }
+
         // Notification Functions
         function toggleTeacherNotifications() {
             const panel = document.getElementById('teacherNotificationPanel');
@@ -3424,18 +3532,21 @@
 
         // Logout
         function logout() {
+            // پرسیار لە بەکارهێنەر بکە ئەگەر دەیەوێت یادگاری بسڕێتەوە
+            const rememberMeEnabled = localStorage.getItem('autoLoginEnabled') === 'true';
+            
+            if (rememberMeEnabled) {
+                if (confirm('دەتەوێت چوونەدەرەوە بکەیت، بەڵام سیستەمی یادگاری چالاکە؟ ئەگەر بیسڕیتەوە، پێویستە جاری داهاتوو وشەی نهێنی بنوسیتەوە.')) {
+                    localStorage.removeItem('teacherAutoLogin');
+                    localStorage.setItem('autoLoginEnabled', 'false');
+                }
+            }
+            
             currentUser = null;
             document.getElementById('loginPage').style.display = 'block';
             document.getElementById('teacherDashboard').style.display = 'none';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
-            
-            // Ask user if they want to clear saved login
-            if (confirm('دەتەوێت زانیاریەکانی چوونەژوورەوە بسڕیتەوە؟')) {
-                localStorage.removeItem('teacherAutoLogin');
-                localStorage.removeItem('teacherUsername');
-                localStorage.removeItem('autoLoginEnabled');
-            }
         }
 
         // Close modal when clicking outside
