@@ -1148,6 +1148,35 @@
             color: var(--dark);
         }
 
+        /* نوی: ستایل بۆ بەشی وانەکانی ئەمڕۆ */
+        .today-classes-section {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        
+        .today-classes-section h3 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-size: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .today-class-count {
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -1221,13 +1250,11 @@
     <div id="loginPage" class="container">
         <div class="header">
             <div class="logo-container">
-                <!-- لۆگۆی سەرەکی لە GitHub -->
                 <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
                      alt="پەیمانگەی کۆمپیتەری سلێمانی" 
                      class="institute-logo"
                      onerror="this.style.display='none'; document.getElementById('login-css-logo').style.display='flex';">
                 
-                <!-- لۆگۆی CSS (ئەگەر وێنەکە کار نەکرد) -->
                 <div id="login-css-logo" style="display: none; width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; font-size: 28px; font-weight: bold; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border: 3px solid var(--primary);">
                     CIS
                 </div>
@@ -1277,13 +1304,11 @@
     <div id="teacherDashboard" class="container dashboard">
         <div class="dashboard-header">
             <div class="logo-container">
-                <!-- لۆگۆی سەرەکی لە GitHub -->
                 <img src="https://raw.githubusercontent.com/cis-web/CIS-SUL-APP/main/cis-web/logo.png" 
                      alt="پەیمانگەی کۆمپیتەری سلێمانی" 
                      class="institute-logo"
                      onerror="this.style.display='none'; document.getElementById('dashboard-css-logo').style.display='flex';">
                 
-                <!-- لۆگۆی CSS (ئەگەر وێنەکە کار نەکرد) -->
                 <div id="dashboard-css-logo" style="display: none; width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; font-size: 28px; font-weight: bold; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.2); border: 3px solid white;">
                     CIS
                 </div>
@@ -1327,12 +1352,16 @@
                 <div class="stat-number" id="teacherTodayClasses">0</div>
                 <div class="stat-label">وانەکانی ئەمڕۆ</div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-user-graduate"></i>
-                </div>
-                <div class="stat-number" id="teacherTotalStudents">0</div>
-                <div class="stat-label">کۆی خوێندکاران</div>
+        </div>
+        
+        <!-- Today's Classes Section -->
+        <div class="today-classes-section">
+            <h3>
+                <i class="fas fa-calendar-day"></i> وانەکانی ئەمڕۆ
+                <span id="todayClassCount" class="today-class-count">0</span>
+            </h3>
+            <div id="todayScheduleList">
+                <!-- Today's schedules will be loaded here -->
             </div>
         </div>
         
@@ -1363,7 +1392,7 @@
         </div>
         
         <!-- Teacher Schedule Section -->
-        <div class="action-section" id="teacherScheduleSection">
+        <div class="action-section" id="teacherScheduleSection" style="display: none;">
             <h3>
                 <i class="fas fa-calendar-alt"></i> خشتەی وانەکانی من
                 <div class="print-actions">
@@ -1738,7 +1767,7 @@
                 
                 <p style="color: var(--gray); font-size: 14px; margin-bottom: 15px;">
                     ئەگەر ئەم هەڵبژاردە چالاک بکەیت، بە شێوەیەکی خۆکار چوونەژوورەوە دەکەیت جاری داهاتوو. 
-                    ئەگەر ناچالاکی بکەیت، پێویستە هەمیشە وشەی نهێنی بنووسیت.
+                    ئەگەر ناچالاکی بکەیت، پێویستە هەمیشە وشەی نهێنی بنوسیت.
                 </p>
                 
                 <div class="current-status" style="padding: 12px; background: #e7f3ff; border-radius: 8px; margin: 10px 0;">
@@ -1860,7 +1889,7 @@
         const database = firebase.database();
 
         let currentUser = null;
-        let currentTeacherSection = 'schedule';
+        let currentTeacherSection = 'today';
         let allStudents = [];
         let allSchedules = [];
         let currentAttendanceData = {};
@@ -1942,8 +1971,6 @@
                         allStudents.push({ id: key, ...students[key] });
                     });
                 }
-                
-                document.getElementById('teacherTotalStudents').textContent = allStudents.length;
             });
         }
 
@@ -1963,6 +1990,7 @@
                     updateTeacherScheduleCounts();
                     loadTeacherSchedules();
                     loadTeacherCourses();
+                    loadTodaySchedules();
                 }
             });
         }
@@ -1977,6 +2005,49 @@
             
             document.getElementById('teacherTotalClasses').textContent = teacherSchedules.length;
             document.getElementById('teacherTodayClasses').textContent = todaySchedules.length;
+            document.getElementById('todayClassCount').textContent = todaySchedules.length;
+        }
+
+        // Load Today's Schedules
+        function loadTodaySchedules() {
+            if (!currentUser) return;
+            
+            const container = document.getElementById('todayScheduleList');
+            container.innerHTML = '';
+            
+            const teacherSchedules = allSchedules.filter(s => s.teacherName === currentUser.name);
+            const today = new Date().toLocaleDateString('ku', { weekday: 'long' });
+            const todaySchedules = teacherSchedules.filter(s => s.day === today);
+            
+            if (todaySchedules.length === 0) {
+                container.innerHTML = '<p class="no-results">هیچ وانەیەکت نییە ئەمڕۆ! 🎉</p>';
+                return;
+            }
+            
+            todaySchedules.forEach((schedule, index) => {
+                const card = document.createElement('div');
+                card.className = 'schedule-card';
+                card.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                card.style.color = 'white';
+                card.style.borderRight = '5px solid #ffc107';
+                card.innerHTML = `
+                    <div class="schedule-card-header">
+                        <span style="color: white;">📚 ${schedule.subject}</span>
+                        <span style="color: white;">🕐 ${schedule.time}</span>
+                    </div>
+                    <div class="schedule-card-body">
+                        <div class="schedule-info-row">
+                            <span style="color: rgba(255,255,255,0.9);">پۆل:</span>
+                            <span style="color: white; font-weight: bold;">${schedule.classNum}</span>
+                        </div>
+                        <div class="schedule-info-row">
+                            <span style="color: rgba(255,255,255,0.9);">ڕۆژ:</span>
+                            <span style="color: white; font-weight: bold;">📅 ${schedule.day}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
         // Load Teacher Schedules
@@ -2080,7 +2151,9 @@
             document.getElementById('teacherStudentAbsenceSection').style.display = 'none';
             document.getElementById('teacherSettingsSection').style.display = 'none';
             
-            if (section === 'schedule') {
+            if (section === 'today') {
+                // Today's classes are always visible by default
+            } else if (section === 'schedule') {
                 document.getElementById('teacherScheduleSection').style.display = 'block';
                 loadTeacherSchedules();
             } else if (section === 'attendance') {
@@ -2158,7 +2231,7 @@
                 `بەخێربێیت، ${currentUser.name}!`;
             loadStudents();
             loadSchedules();
-            switchTeacherSection('schedule');
+            switchTeacherSection('today');
             updateTeacherNotificationBadge();
             loadRememberMeSetting();
         }
