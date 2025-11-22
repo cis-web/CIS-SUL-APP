@@ -139,7 +139,7 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
         
-        .login-btn, .submit-btn {
+        .login-btn, .submit-btn, .back-btn {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: var(--white);
             padding: 16px;
@@ -155,9 +155,20 @@
             gap: 8px;
         }
         
-        .login-btn:hover, .submit-btn:hover {
+        .login-btn:hover, .submit-btn:hover, .back-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .back-btn {
+            background: var(--gray);
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #5a6268;
+            box-shadow: 0 8px 20px rgba(108, 117, 125, 0.4);
         }
         
         .error-msg {
@@ -1306,6 +1317,11 @@
             
             <div class="success-msg" id="successMsg"></div>
             
+            <!-- دوگمەی گەڕانەوە بۆ داشبۆرد -->
+            <button class="back-btn" onclick="switchSection('dashboard')" id="backToDashboardBtn" style="display: none;">
+                <i class="fas fa-arrow-right"></i> گەڕانەوە بۆ داشبۆرد
+            </button>
+            
             <!-- Schedules Section -->
             <div id="schedulesSection">
                 <div class="search-container">
@@ -1727,7 +1743,7 @@
         const database = firebase.database();
 
         let currentUser = null;
-        let currentSection = 'schedules';
+        let currentSection = 'dashboard';
         let allStudents = [];
         let allTeachers = [];
         let allSchedules = [];
@@ -1802,6 +1818,7 @@
             loadStudents();
             loadTeachers();
             loadNotifications();
+            switchSection('dashboard');
         }
 
         // Load Notifications
@@ -2161,22 +2178,32 @@
             document.getElementById('studentsSection').style.display = 'none';
             document.getElementById('teachersSection').style.display = 'none';
             document.getElementById('attendanceSection').style.display = 'none';
+            document.getElementById('backToDashboardBtn').style.display = 'none';
             
-            if (section === 'schedules') {
+            if (section === 'dashboard') {
+                document.getElementById('schedulesSection').style.display = 'block';
+                document.getElementById('sectionTitle').textContent = 'داشبۆردی سەرەکی';
+                document.getElementById('stats-grid').style.display = 'grid';
+                searchSchedules();
+            } else if (section === 'schedules') {
                 document.getElementById('schedulesSection').style.display = 'block';
                 document.getElementById('sectionTitle').textContent = 'خشتەی وانەکان';
+                document.getElementById('backToDashboardBtn').style.display = 'flex';
                 searchSchedules();
             } else if (section === 'students') {
                 document.getElementById('studentsSection').style.display = 'block';
                 document.getElementById('sectionTitle').textContent = 'خوێندکاران';
+                document.getElementById('backToDashboardBtn').style.display = 'flex';
                 searchStudents();
             } else if (section === 'teachers') {
                 document.getElementById('teachersSection').style.display = 'block';
                 document.getElementById('sectionTitle').textContent = 'مامۆستایان';
+                document.getElementById('backToDashboardBtn').style.display = 'flex';
                 searchTeachers();
             } else if (section === 'attendance') {
                 document.getElementById('attendanceSection').style.display = 'block';
                 document.getElementById('sectionTitle').textContent = 'ڕاپۆرتی غیابات';
+                document.getElementById('backToDashboardBtn').style.display = 'flex';
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('attendanceDate').value = today;
                 loadAttendance();
@@ -3287,4 +3314,3 @@
     </script>
 </body>
 </html>
-
